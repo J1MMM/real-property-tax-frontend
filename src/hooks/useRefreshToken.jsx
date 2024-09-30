@@ -1,19 +1,23 @@
 import axios from "../api/axios";
 import useAuth from "./useAuth";
-
+import Cookies from "js-cookie";
 const UseRefreshToken = () => {
   const { setAuth } = useAuth();
 
   const refresh = async () => {
-    const response = await axios.get("/refresh", {
-      withCredentials: true,
+    const token = Cookies.get("token");
+
+    const response = await axios.get("/checkToken", {
+      headers: { Authorization: `Bearer ${token}` },
+
+      withCredentials: false,
     });
 
-    console.log(response.data.accessToken);
+    console.log(response.data);
     setAuth((prev) => {
       return {
         ...prev,
-        accessToken: response.data.accessToken,
+        accessToken: token,
       };
     });
     return response.data.accessToken;

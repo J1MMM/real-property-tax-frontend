@@ -1,7 +1,7 @@
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 200;
 export const DRAWER_WIDTH_CLOSED = 60;
-export const BASE_URL = "http://localhost:4000";
+export const BASE_URL = "http://192.168.68.113:4000";
 
 // Role IDs following a pattern for different categories
 const ROLES_LIST = {

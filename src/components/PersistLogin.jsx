@@ -14,7 +14,6 @@ const PersistLogin = () => {
   // get access token
   const refresh = UseRefreshToken();
   const { auth } = useAuth();
-  console.log(auth);
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {

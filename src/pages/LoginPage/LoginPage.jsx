@@ -5,6 +5,7 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import "./index.scss";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
+import Cookies from "js-cookie";
 
 const LoginPage = () => {
   const { auth, setAuth } = useAuth();
@@ -21,22 +22,32 @@ const LoginPage = () => {
     setDisable(true);
     try {
       const response = await axios.post(
-        "/login",
+        "/api/user/login",
         JSON.stringify({ email, password }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          withCredentials: false,
         }
       );
       console.log(response.data);
-      const accessToken = response?.data?.token;
 
-      setAuth({ accessToken });
-      setEmail("");
-      setPassword("");
-
-      navigate(from, { replace: true });
+      if (response.data.token) {
+        const token = response?.data?.token;
+        Cookies.set("token", token);
+        setAuth({ accessToken: token });
+        setEmail("");
+        setPassword("");
+        navigate(from, { replace: true });
+      } else {
+        if (response.data.error) {
+          setFormMsg(response.data.error);
+        } else {
+          setFormMsg(response.data.message);
+        }
+      }
     } catch (error) {
+      console.log(error);
+
       if (!error?.response) {
         setFormMsg("No Server Response");
       } else if (error.response?.status == 400) {
@@ -49,7 +60,7 @@ const LoginPage = () => {
     }
     setDisable(false);
   };
-  console.log(auth);
+
   if (auth?.accessToken) {
     return <Navigate to="/" />;
   }
@@ -66,60 +77,49 @@ const LoginPage = () => {
             REAL PROPERTY TAX MANAGEMENT SYSTEM
           </Typography>
         </div>
+
         <Box
           component="form"
           sx={{
-            "& > :not(style)": {
-              m: 1,
-              width: "280px",
-            },
-            // border: " 1px solid red",
             display: "flex",
             flexDirection: "column",
+            width: "280px",
+            gap: 1,
           }}
-          noValidate
           autoComplete="off"
           onSubmit={handleSubmit}
         >
           <TextField
-            id="email"
+            disabled={disable}
+            fullWidth
             label="Email"
-            type="email"
+            margin="dense"
+            // type="email"
             variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            sx={{
-              "& .MuiInputBase-input": {
-                height: "15px", // Adjust height as needed
-                fontSize: "14px", // Adjust font size if needed
-              },
-            }}
           />
           <TextField
-            id="password"
+            disabled={disable}
+            fullWidth
+            margin="dense"
             label="Password"
             type="password"
             variant="outlined"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            sx={{
-              "& .MuiInputBase-input": {
-                height: "15px", // Adjust height as needed
-                fontSize: "15px", // Adjust font size if needed
-              },
-            }}
           />
+
+          <Typography color="error" width="55%" minWidth={300}>
+            {formMsg}
+          </Typography>
           <Button
             type="submit"
             variant="contained"
-            color="primary"
-            sx={{
-              width: "280px", // Makes the button take full width of its container
-              height: "35px", // Adjust height as needed
-              fontSize: "14px", // Adjust font size if needed
-            }}
+            sx={{ paddingY: 1 }}
+            disabled={disable}
           >
             Login
           </Button>

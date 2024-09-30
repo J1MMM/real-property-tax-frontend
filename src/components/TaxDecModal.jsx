@@ -9,6 +9,10 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel"; // Import FormControlLabel
 import Checkbox from "@mui/material/Checkbox"; // Import Checkbox
+import Fieldset from "./Fieldset";
+import { Stack } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { ASSESSMENT_ROLL_COLUMN } from "../utils/constant";
 
 // Define boxStyle
 const boxStyle = {
@@ -17,15 +21,89 @@ const boxStyle = {
   mb: "10px",
 };
 
-const style = {
-  maxWidth: "100%",
-  width: "55%",
-  height: "95vh",
-  bgcolor: "background.paper",
-  borderRadius: "10px",
-  boxShadow: 24,
-  overflowY: "auto",
-};
+const classificationTaableColumn = [
+  {
+    field: "classification",
+    headerName: "Classification",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "area",
+    headerName: "Area",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "marketValue",
+    headerName: "Market Value",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "actualUse",
+    headerName: "Actual Use",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "level",
+    headerName: "Level",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "assessedValue",
+    headerName: "Assessed Value",
+    editable: true,
+    headerClassName: "data-grid-header",
+    flex: 1,
+  },
+];
+
+const rows = [
+  {
+    id: 1,
+    classification: "MELANIE CAPULONG ALIDIO",
+    area: "18-968",
+    marketValue: "03-0044-04479",
+    actualUse: "Washingtin St.",
+    level: "L",
+    assessedValue: "R",
+  },
+  {
+    id: 2,
+    classification: "MELANIE CAPULONG ALIDIO",
+    area: "18-968",
+    marketValue: "03-0044-04479",
+    actualUse: "Washingtin St.",
+    level: "L",
+    assessedValue: "R",
+  },
+  {
+    id: 3,
+    classification: "MELANIE CAPULONG ALIDIO",
+    area: "18-968",
+    marketValue: "03-0044-04479",
+    actualUse: "Washingtin St.",
+    level: "L",
+    assessedValue: "R",
+  },
+  {
+    id: 4,
+    classification: "MELANIE CAPULONG ALIDIO",
+    area: "18-968",
+    marketValue: "03-0044-04479",
+    actualUse: "Washingtin St.",
+    level: "L",
+    assessedValue: "R",
+  },
+];
 
 const icons = {
   "Add Taxdec": <CreateNewFolderOutlinedIcon sx={{ fontSize: 28 }} />,
@@ -57,19 +135,15 @@ export default function TaxDecModal(props) {
   return (
     <>
       <Dialog
+        maxWidth="lg"
         open={props.open}
         onClose={props.handleClose}
-        scroll={scroll}
-        PaperProps={{
-          sx: { ...style }, // Apply styles directly to the Paper component inside Dialog
-        }}
+        scroll="paper"
       >
         <DialogTitle
-          id="scroll-dialog-title"
           sx={{
             display: "flex",
             justifyContent: "center",
-            p: 2.5,
             backgroundColor: "primary.main",
             color: "#ffffff",
             fontWeight: 600, // Correct weight for semi-bold
@@ -77,205 +151,216 @@ export default function TaxDecModal(props) {
         >
           TAX DECLARATION OF REAL PROPERTY
         </DialogTitle>
-        <DialogContent dividers={scroll === "paper"}>
+
+        <DialogContent
+          dividers
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
-              mb: "10px",
             }}
           >
             <TextField
-              id="td-no"
+              name="tdNo"
               label="T.D. No."
               variant="outlined"
               sx={{ width: "45%" }}
             />
+
             <TextField
-              id="property-id-no"
+              name="propertyIdNo"
               label="Property Identification No."
               variant="outlined"
               sx={{ width: "45%" }}
             />
           </Box>
 
-          <fieldset>
-            <legend>OWNER INFORMATION</legend>
-            <Box sx={boxStyle}>
+          <Fieldset title="Owner's Information">
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1 }}
+                margin="dense"
+                fullWidth
                 id="outlined-basic"
                 label="First Name"
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
+                margin="dense"
+                fullWidth
                 id="outlined-basic"
                 label="last Name"
                 variant="outlined"
               />
               <TextField
+                margin="dense"
+                fullWidth
                 sx={{ flexGrow: 1 }}
                 id="outlined-basic"
                 label="Middle Name"
                 variant="outlined"
               />
-            </Box>
-            <Box sx={boxStyle}>
+            </Stack>
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1 }}
+                margin="dense"
+                fullWidth
                 id="outlined-basic"
                 label="Address"
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
+                margin="dense"
+                fullWidth
                 id="outlined-basic"
                 label="TIN No."
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
+                margin="dense"
+                fullWidth
+                variant="outlined"
                 id="outlined-basic"
+                label="Telephone No."
+              />
+            </Stack>
+          </Fieldset>
+
+          <Fieldset title="Administrator / Beneficial User">
+            <Stack direction="row" gap={1}>
+              <TextField
+                margin="dense"
+                fullWidth
+                label="First Name"
+                variant="outlined"
+              />
+              <TextField
+                margin="dense"
+                fullWidth
+                label="last Name"
+                variant="outlined"
+              />
+              <TextField
+                margin="dense"
+                fullWidth
+                label="Middle Name"
+                variant="outlined"
+              />
+            </Stack>
+            <Stack direction="row" gap={1}>
+              <TextField
+                margin="dense"
+                fullWidth
+                label="Address"
+                variant="outlined"
+              />
+              <TextField
+                margin="dense"
+                fullWidth
+                label="TIN No."
+                variant="outlined"
+              />
+              <TextField
+                margin="dense"
+                fullWidth
                 label="Telephone No."
                 variant="outlined"
               />
-            </Box>
-            <fieldset>
-              <legend>ADMINISTRATOR / BENEFICIAL USER</legend>
-              <Box sx={boxStyle}>
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  id="outlined-basic"
-                  label="First Name"
-                  variant="outlined"
-                />
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  id="outlined-basic"
-                  label="last Name"
-                  variant="outlined"
-                />
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  id="outlined-basic"
-                  label="Middle Name"
-                  variant="outlined"
-                />
-              </Box>
-              <Box sx={boxStyle}>
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  id="outlined-basic"
-                  label="Address"
-                  variant="outlined"
-                />
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  id="outlined-basic"
-                  label="TIN No."
-                  variant="outlined"
-                />
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  id="outlined-basic"
-                  label="Telephone No."
-                  variant="outlined"
-                />
-              </Box>
-            </fieldset>
-          </fieldset>
+            </Stack>
+          </Fieldset>
 
-          <fieldset>
-            <legend>PROPERTY INFORMATION</legend>
-            <Box sx={boxStyle}>
+          <Fieldset title="Property Information">
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Number and Street"
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Barangay/District"
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Municipality & Province/City"
                 variant="outlined"
               />
-            </Box>
-            <Box sx={boxStyle}>
+            </Stack>
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="OCT/TCT/CLOA No.."
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Survey No."
                 variant="outlined"
               />
-            </Box>
-            <Box sx={boxStyle}>
+            </Stack>
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="CCT"
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Lot No"
                 variant="outlined"
               />
-            </Box>
-            <Box sx={boxStyle}>
+            </Stack>
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Date"
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Block No."
                 variant="outlined"
               />
+            </Stack>
+          </Fieldset>
+
+          <Fieldset title="Boundaries">
+            <Box sx={boxStyle}>
+              <FormControlLabel
+                sx={{ flexGrow: 1 }}
+                control={<Checkbox />}
+                label="LAND"
+              />
+              <FormControlLabel
+                sx={{ flexGrow: 1 }}
+                control={<Checkbox />}
+                label="BUILDING"
+              />
+              <FormControlLabel
+                sx={{ flexGrow: 1 }}
+                control={<Checkbox />}
+                label="MACHINERY"
+              />
+              <FormControlLabel
+                sx={{ flexGrow: 1 }}
+                control={<Checkbox />}
+                label="OTHER"
+              />
             </Box>
-            <fieldset>
-              <legend>BOUNDARIES</legend>
-              <Box sx={boxStyle}>
-                <FormControlLabel
-                  sx={{ flexGrow: 1 }}
-                  control={<Checkbox />}
-                  label="LAND"
-                />
-                <FormControlLabel
-                  sx={{ flexGrow: 1 }}
-                  control={<Checkbox />}
-                  label="BUILDING"
-                />
-                <FormControlLabel
-                  sx={{ flexGrow: 1 }}
-                  control={<Checkbox />}
-                  label="MACHINERY"
-                />
-                <FormControlLabel
-                  sx={{ flexGrow: 1 }}
-                  control={<Checkbox />}
-                  label="OTHER"
-                />
-              </Box>
-            </fieldset>
-            <legend>TAXABILITY</legend>
+          </Fieldset>
+
+          <Fieldset title="TAXABILITY">
             <FormControlLabel
               sx={{ flexGrow: 1 }}
               control={<Checkbox />}
@@ -286,93 +371,84 @@ export default function TaxDecModal(props) {
               control={<Checkbox />}
               label="EXEMPT"
             />
-          </fieldset>
-          <Button
-            variant="contained"
-            sx={{ display: "block", my: 2, ml: "auto" }}
-          >
-            Add Classification
-          </Button>
-          <fieldset>
-            <legend>CLASSIFICATION</legend>
-            <TextField
-              sx={{ flexGrow: 1, width: "7vw" }}
-              id="outlined-basic"
-              label="Classification"
-              variant="outlined"
-            />
-            <TextField
-              sx={{ flexGrow: 1, width: "5vw" }}
-              id="outlined-basic"
-              label="Area"
-              variant="outlined"
-            />
-            <TextField
-              sx={{ flexGrow: 1 }}
-              id="outlined-basic"
-              label="Market Value"
-              variant="outlined"
-            />
-            <TextField
-              sx={{ flexGrow: 1 }}
-              id="outlined-basic"
-              label="Actual Use"
-              variant="outlined"
-            />
-            <TextField
-              sx={{ flexGrow: 1, width: "5vw" }}
-              id="outlined-basic"
-              label="Level"
-              variant="outlined"
-            />
-            <TextField
-              sx={{ flexGrow: 1 }}
-              id="outlined-basic"
-              label="Assessed Value"
-              variant="outlined"
-            />
-          </fieldset>
+          </Fieldset>
 
-          <fieldset className="cancels">
-            <legend className="cancels">CANCELS</legend>
-            <Box sx={boxStyle}>
+          <Fieldset title="CLASSIFICATION">
+            <Button
+              variant="contained"
+              sx={{ display: "block", ml: "auto", mb: 1 }}
+            >
+              Add Classification
+            </Button>
+            <DataGrid
+              onCellEditStart={(e, n) => {
+                console.log(e);
+              }}
+              onCellKeyDown={(e, n) => {
+                console.log(n.target.value);
+              }}
+              hideFooter
+              rows={rows}
+              columns={classificationTaableColumn}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 10,
+                  },
+                },
+              }}
+              pageSizeOptions={[10]}
+              disableRowSelectionOnClick
+              sx={{
+                ".data-grid-header": {
+                  bgcolor: "primary.main",
+                  color: "#fff",
+                },
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: "bold", // Make header title bold
+                },
+                "& .MuiDataGrid-cell": {
+                  borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
+                },
+                "& .MuiDataGrid-row": {
+                  "&:last-child .MuiDataGrid-cell": {
+                    borderBottom: "none", // Remove bottom border from last row
+                  },
+                },
+              }}
+            />
+          </Fieldset>
+          <Fieldset title="Cancel">
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1, width: "6vw" }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Cancels T.D. No."
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1, width: "5vw" }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Owner"
                 variant="outlined"
               />
-            </Box>
-            <Box sx={boxStyle}>
+            </Stack>
+            <Stack direction="row" gap={1}>
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Previous A.V. Php"
                 variant="outlined"
               />
               <TextField
-                sx={{ flexGrow: 1 }}
-                id="outlined-basic"
+                margin="dense"
+                fullWidth
                 label="Property Index Number"
                 variant="outlined"
               />
-            </Box>
-            <Box sx={{ boxStyle }}>
-              <TextField
-                sx={{ width: "100%" }}
-                id="outlined-multiline-flexible"
-                label="Memoranda"
-                multiline
-                maxRows={4}
-              />
-            </Box>
-          </fieldset>
+            </Stack>
+            <TextField margin="dense" fullWidth label="Memoranda" />
+          </Fieldset>
         </DialogContent>
         <DialogActions>
           <Button
