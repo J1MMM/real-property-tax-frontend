@@ -61,6 +61,10 @@ export const ASSESSMENT_ROLL_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
+    renderCell: (params, i) => {
+      const classification = params.row.classification;
+      return <span>{classification[0].actualUse}</span>;
+    },
   },
   {
     field: "LocationOfProperty",
