@@ -17,28 +17,28 @@ export default ROLES_LIST;
 
 export const ASSESSMENT_ROLL_COLUMN = [
   {
-    field: "PropertyOwner",
+    field: "fname",
     headerName: "PROPERTY OWNER",
     width: 300,
     editable: false,
     headerClassName: "data-grid-header",
   },
   {
-    field: "PropertyIndexNo",
+    field: "PID",
     headerName: "PROPERTY INDEX NO.",
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
   },
   {
-    field: "ARPno",
+    field: "ArpNo",
     headerName: "ARP NO.",
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
   },
   {
-    field: "OwnedAddress",
+    field: "Address",
     headerName: "OWNED ADDRESS",
     width: 200,
     editable: false,
@@ -61,6 +61,10 @@ export const ASSESSMENT_ROLL_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
+    renderCell: (params, i) => {
+      const classification = params.row.classification;
+      return <span>{classification[0].actualUse}</span>;
+    },
   },
   {
     field: "LocationOfProperty",
@@ -75,6 +79,10 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
+    renderCell: (params, i) => {
+      const classification = params.row.classification;
+      return <span>{classification[0].assessedVal}</span>;
+    },
   },
   {
     field: "Taxability",

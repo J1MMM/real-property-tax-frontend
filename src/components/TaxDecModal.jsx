@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,6 +12,8 @@ import Fieldset from "./Fieldset";
 import { Stack } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { ASSESSMENT_ROLL_COLUMN } from "../utils/constant";
+import { useState } from "react";
+import { v4 } from "uuid";
 
 // Define boxStyle
 const boxStyle = {
@@ -66,71 +67,55 @@ const classificationTaableColumn = [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    classification: "MELANIE CAPULONG ALIDIO",
-    area: "18-968",
-    marketValue: "03-0044-04479",
-    actualUse: "Washingtin St.",
-    level: "L",
-    assessedValue: "R",
-  },
-  {
-    id: 2,
-    classification: "MELANIE CAPULONG ALIDIO",
-    area: "18-968",
-    marketValue: "03-0044-04479",
-    actualUse: "Washingtin St.",
-    level: "L",
-    assessedValue: "R",
-  },
-  {
-    id: 3,
-    classification: "MELANIE CAPULONG ALIDIO",
-    area: "18-968",
-    marketValue: "03-0044-04479",
-    actualUse: "Washingtin St.",
-    level: "L",
-    assessedValue: "R",
-  },
-  {
-    id: 4,
-    classification: "MELANIE CAPULONG ALIDIO",
-    area: "18-968",
-    marketValue: "03-0044-04479",
-    actualUse: "Washingtin St.",
-    level: "L",
-    assessedValue: "R",
-  },
-];
-
 const icons = {
   "Add Taxdec": <CreateNewFolderOutlinedIcon sx={{ fontSize: 28 }} />,
 };
 
 export default function TaxDecModal(props) {
-  const [open, setOpen] = React.useState(false);
-  const [scroll, setScroll] = React.useState("paper");
+  const [formData, setFormData] = useState({
+    tdNo: "",
+    pin: "",
+    classification: [],
+  });
 
-  const handleClickOpen = (scrollType) => () => {
-    setOpen(true);
-    setScroll(scrollType);
+  const CLASSIFICATION_DEFAULT = {
+    classification: "",
+    area: "",
+    marketValue: "",
+    actualUse: "",
+    level: "",
+    assessedValue: "",
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const [classificationData, setClassificationData] = useState(
+    CLASSIFICATION_DEFAULT
+  );
+
+  const handleChange = (e) => {
+    setClassificationData({
+      ...classificationData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const descriptionElementRef = React.useRef(null);
-  React.useEffect(() => {
-    if (open) {
-      const { current: descriptionElement } = descriptionElementRef;
-      if (descriptionElement !== null) {
-        descriptionElement.focus();
-      }
-    }
-  }, [open]);
+  const handleAddClassification = () => {
+    const id = v4();
+
+    setFormData((prev) => ({
+      ...formData,
+      classification: [
+        ...prev.classification,
+        { ...classificationData, id: id },
+      ],
+    }));
+
+    console.log(formData);
+
+    setClassificationData(CLASSIFICATION_DEFAULT);
+    setOpenClassificationModal(false);
+  };
+
+  const [openClassificationModal, setOpenClassificationModal] = useState(false);
 
   return (
     <>
@@ -377,9 +362,11 @@ export default function TaxDecModal(props) {
             <Button
               variant="contained"
               sx={{ display: "block", ml: "auto", mb: 1 }}
+              onClick={() => setOpenClassificationModal(true)}
             >
               Add Classification
             </Button>
+
             <DataGrid
               onCellEditStart={(e, n) => {
                 console.log(e);
@@ -388,7 +375,7 @@ export default function TaxDecModal(props) {
                 console.log(n.target.value);
               }}
               hideFooter
-              rows={rows}
+              rows={formData.classification}
               columns={classificationTaableColumn}
               initialState={{
                 pagination: {
@@ -398,6 +385,7 @@ export default function TaxDecModal(props) {
                 },
               }}
               pageSizeOptions={[10]}
+              autoHeight
               disableRowSelectionOnClick
               sx={{
                 ".data-grid-header": {
@@ -418,7 +406,7 @@ export default function TaxDecModal(props) {
               }}
             />
           </Fieldset>
-          <Fieldset title="Cancel">
+          {/* <Fieldset title="Cancel">
             <Stack direction="row" gap={1}>
               <TextField
                 margin="dense"
@@ -448,7 +436,7 @@ export default function TaxDecModal(props) {
               />
             </Stack>
             <TextField margin="dense" fullWidth label="Memoranda" />
-          </Fieldset>
+          </Fieldset> */}
         </DialogContent>
         <DialogActions>
           <Button
@@ -458,6 +446,106 @@ export default function TaxDecModal(props) {
             Cancel
           </Button>
           <Button>Submit</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        maxWidth="sm"
+        open={openClassificationModal}
+        onClose={() => setOpenClassificationModal(false)}
+        scroll="paper"
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            backgroundColor: "primary.main",
+            color: "#ffffff",
+            fontWeight: 600, // Correct weight for semi-bold
+          }}
+        >
+          Add Classification
+        </DialogTitle>
+
+        <DialogContent
+          dividers
+          sx={{ display: "flex", flexDirection: "column" }}
+        >
+          <Stack direction="row" gap={1}>
+            <TextField
+              margin="dense"
+              fullWidth
+              label="Classification"
+              variant="outlined"
+              name="classification"
+              value={classificationData.classification}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              fullWidth
+              label="Area"
+              variant="outlined"
+              name="area"
+              value={classificationData.area}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              fullWidth
+              label="Market Value"
+              variant="outlined"
+              name="marketValue"
+              value={classificationData.marketValue}
+              onChange={handleChange}
+            />
+          </Stack>
+          <Stack direction="row" gap={1}>
+            <TextField
+              margin="dense"
+              fullWidth
+              label="Actual Use"
+              variant="outlined"
+              name="actualUse"
+              value={classificationData.actualUse}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              fullWidth
+              label="Level"
+              variant="outlined"
+              name="level"
+              value={classificationData.level}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              fullWidth
+              label="Assessed Value"
+              variant="outlined"
+              name="assessedValue"
+              value={classificationData.assessedValue}
+              onChange={handleChange}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            size="small"
+            color="primary"
+            onClick={() => setOpenClassificationModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={handleAddClassification}
+          >
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
     </>
