@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
@@ -10,6 +10,8 @@ import {
   ASSESSMENT_ROLL_TAB_LINKS,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { getAssessorData } from "../../features/assessor/assessorSlice";
 
 const rows = [
   {
@@ -41,7 +43,13 @@ const rows = [
 ];
 
 function AssessmentRoll() {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => state.assessor);
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(getAssessorData());
+  }, [dispatch]);
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
@@ -81,7 +89,7 @@ function AssessmentRoll() {
 
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
-            rows={rows}
+            rows={data}
             columns={ASSESSMENT_ROLL_COLUMN}
             initialState={{
               pagination: {
