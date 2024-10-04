@@ -8,52 +8,24 @@ import TaxDecModal from "../../components/TaxDecModal";
 import {
   ASSESSMENT_ROLL_COLUMN,
   ASSESSMENT_ROLL_TAB_LINKS,
+  SOCKET,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { getAssessorData } from "../../features/assessor/assessorSlice";
-
-const rows = [
-  {
-    id: 1,
-    PropertyOwner: "MELANIE CAPULONG ALIDIO",
-    PropertyIndexNo: "18-968",
-    ARPno: "03-0044-04479",
-    OwnedAddress: "Washingtin St.",
-    Kind: "L",
-    Class: "R",
-    LocationOfProperty: "San Cristobal",
-    AssessedValue: "31,320.00",
-    Taxability: "T",
-    Effectivity: "2024",
-  },
-  {
-    id: 2,
-    PropertyOwner: "MELANIE CAPULONG ALIDIO",
-    PropertyIndexNo: "18-968",
-    ARPno: "03-0044-04479",
-    OwnedAddress: "Washingtin St.",
-    Kind: "L",
-    Class: "R",
-    LocationOfProperty: "San Cristobal",
-    AssessedValue: "31,320.00",
-    Taxability: "T",
-    Effectivity: "2024",
-  },
-];
+import { useQuery, useQueryClient } from "react-query";
+import { fetchInitialData } from "../../api/assessorAPI";
 
 function AssessmentRoll() {
-  const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.assessor);
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
 
-  useEffect(() => {
-    dispatch(getAssessorData());
-  }, [dispatch]);
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery("data", fetchInitialData);
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
   };
+
+  useEffect(() => {}, [queryClient]); // Ensure queryClient is in the dependency array
 
   return (
     <>
@@ -89,16 +61,17 @@ function AssessmentRoll() {
 
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
+            loading={isLoading}
             rows={data}
             columns={ASSESSMENT_ROLL_COLUMN}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 10,
+                  pageSize: 100,
                 },
               },
             }}
-            pageSizeOptions={[10]}
+            pageSizeOptions={[10, 50, 100]}
             disableRowSelectionOnClick
             sx={{
               ".data-grid-header": {

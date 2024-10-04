@@ -20,6 +20,7 @@ function App() {
               <Route>
                 <Route path="" element={<AssessmentRoll />} />
                 <Route path="archive" element={<AssessmentRoll />} />
+                <Route path="consolidate" element={<AssessmentRoll />} />
               </Route>
 
               <Route path="landtax-division" element={<AssessmentRoll />} />

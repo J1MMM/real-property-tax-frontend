@@ -1,8 +1,11 @@
+import { Typography } from "@mui/material";
+import { io } from "socket.io-client";
+
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 200;
 export const DRAWER_WIDTH_CLOSED = 60;
-export const BASE_URL = "http://192.168.68.113:4000";
-
+export const BASE_URL = "http://192.168.68.117:4000";
+export const SOCKET = io(BASE_URL);
 // Role IDs following a pattern for different categories
 const ROLES_LIST = {
   SuperAdmin: 1000, // Super Administrator
@@ -19,9 +22,19 @@ export const ASSESSMENT_ROLL_COLUMN = [
   {
     field: "fname",
     headerName: "PROPERTY OWNER",
-    width: 300,
     editable: false,
+    flex: 1,
     headerClassName: "data-grid-header",
+    renderCell: (params, i) => {
+      const fname = params.row?.fname;
+      const mname = params.row?.mname;
+      const lname = params.row?.lname;
+      return (
+        <span>
+          {fname} {mname} {lname}
+        </span>
+      );
+    },
   },
   {
     field: "PID",
@@ -29,6 +42,7 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
+    flex: 1,
   },
   {
     field: "ArpNo",
@@ -36,6 +50,7 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
+    flex: 1,
   },
   {
     field: "Address",
@@ -43,15 +58,35 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
+    flex: 1,
   },
   {
-    field: "Kind",
+    field: "",
     headerName: "KIND",
     width: 200,
     editable: false,
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
+    flex: 1,
+    renderCell: (params, i) => {
+      const boundaries = Array.isArray(params.row.Boundaries)
+        ? params.row.Boundaries
+        : [];
+
+      return (
+        <span>
+          {boundaries?.map((obj, i) => {
+            return (
+              <span key={i}>
+                {obj?.active && obj?.boundaryType}{" "}
+                {boundaries?.length > 0 ? "/" : ""}
+              </span>
+            );
+          })}
+        </span>
+      );
+    },
   },
   {
     field: "Class",
@@ -65,6 +100,7 @@ export const ASSESSMENT_ROLL_COLUMN = [
       const classification = params.row.classification;
       return <span>{classification[0].actualUse}</span>;
     },
+    flex: 1,
   },
   {
     field: "LocationOfProperty",
@@ -72,6 +108,17 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
+    flex: 1,
+
+    renderCell: (params, i) => {
+      const block = params.row.BLOCK;
+      const brgy = params.row.Brgy;
+      return (
+        <span>
+          {block} {brgy}
+        </span>
+      );
+    },
   },
   {
     field: "AssessedValue",
@@ -83,15 +130,17 @@ export const ASSESSMENT_ROLL_COLUMN = [
       const classification = params.row.classification;
       return <span>{classification[0].assessedVal}</span>;
     },
+    flex: 1,
   },
   {
-    field: "Taxability",
+    field: "TAXABILITY",
     headerName: "TAXABILITY",
     width: 200,
     editable: false,
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
+    flex: 1,
   },
   {
     field: "Effectivity",
@@ -101,13 +150,72 @@ export const ASSESSMENT_ROLL_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
+    flex: 1,
   },
 ];
+
+export const CLASSIFICATION_COLUMN = [
+  {
+    field: "classification",
+    headerName: "Classification",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "area",
+    headerName: "Area",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "marketValue",
+    headerName: "Market Value",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "actualUse",
+    headerName: "Actual Use",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "level",
+    headerName: "Level",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "assessedValue",
+    headerName: "Assessed Value",
+    editable: true,
+    headerClassName: "data-grid-header",
+    flex: 1,
+  },
+];
+
+export const CLASSIFICATION_DEFAULT = {
+  classification: "",
+  area: "",
+  marketValue: "",
+  actualUse: "",
+  level: "",
+  assessedValue: "",
+};
 
 export const ASSESSMENT_ROLL_TAB_LINKS = [
   {
     to: "/",
     label: "Assessment Roll",
+  },
+  {
+    to: "/consolidate",
+    label: "Consolidate",
   },
   {
     to: "/archive",

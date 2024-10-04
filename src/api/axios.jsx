@@ -3,7 +3,7 @@ import { BASE_URL } from "../utils/constant";
 
 export default axios.create({
   baseURL: BASE_URL,
-  withCredentials: true,
+  withCredentials: false,
 });
 
 export const axiosPrivate = axios.create({
