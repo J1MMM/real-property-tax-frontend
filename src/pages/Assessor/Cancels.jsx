@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
 import TaxDecModal from "../../components/TaxDecModal";
+import RPTview from "./RPTview";
 import {
   ASSESSMENT_ROLL_COLUMN,
-  ASSESSMENT_ROLL_TAB_LINKS,
+  ASSESSOR_TAB_LINKS,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { getAssessorData } from "../../features/assessor/assessorSlice";
 
 const rows = [
   {
@@ -42,22 +41,23 @@ const rows = [
   },
 ];
 
-function AssessmentRoll() {
-  const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.assessor);
+function Cancels() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
-
-  useEffect(() => {
-    dispatch(getAssessorData());
-  }, [dispatch]);
+  const [openRPTview, setOpenRPTview] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
   };
 
+  const handleCellDoubleClick = (params) => {
+    setSelectedRow(params.row); // Capture the double-clicked row data
+    setOpenRPTview(true); // Open RPTview when a cell is double-clicked
+  };
+
   return (
     <>
-      <Tab links={ASSESSMENT_ROLL_TAB_LINKS} />
+      <Tab links={ASSESSOR_TAB_LINKS} />
 
       <Box sx={{ p: 2, boxSizing: "border-box" }}>
         <Box
@@ -78,18 +78,11 @@ function AssessmentRoll() {
               Office of the Property Appraiser
             </Typography>
           </Stack>
-          <Button
-            onClick={handleButtonClick}
-            variant="contained"
-            startIcon={<CreateNewFolderOutlined />}
-          >
-            Add Taxdec
-          </Button>
         </Box>
 
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
-            rows={data}
+            rows={[]}
             columns={ASSESSMENT_ROLL_COLUMN}
             initialState={{
               pagination: {
@@ -100,6 +93,7 @@ function AssessmentRoll() {
             }}
             pageSizeOptions={[10]}
             disableRowSelectionOnClick
+            onCellDoubleClick={handleCellDoubleClick}
             sx={{
               ".data-grid-header": {
                 bgcolor: "primary.main",
@@ -121,6 +115,19 @@ function AssessmentRoll() {
         </Box>
       </Box>
 
+      <RPTview
+        open={openRPTview} // Ensure this state is passed as the open prop
+        handleClose={() => setOpenRPTview(false)}
+        row={selectedRow}
+        actionButton={
+          <>
+            <Button variant="outlined" sx={{ color: "rgb(12, 19, 99)" }}>
+              GENERATE FORM
+            </Button>
+          </>
+        }
+      />
+
       <TaxDecModal
         open={taxdecModalOpen}
         handleClose={() => setTaxdecModalOpen(false)}
@@ -129,4 +136,4 @@ function AssessmentRoll() {
   );
 }
 
-export default AssessmentRoll;
+export default Cancels;

@@ -4,17 +4,18 @@ import App from "./App.jsx";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./styles/theme.jsx";
 import { AuthProvider } from "./context/AuthProvider.jsx";
-import { Provider } from "react-redux";
-import { store } from "./store/store.js";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient({});
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Provider store={store}>
-      <AuthProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <App />
         </ThemeProvider>
-      </AuthProvider>
-    </Provider>
+      </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>
 );
