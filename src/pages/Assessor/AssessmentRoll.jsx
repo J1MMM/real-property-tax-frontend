@@ -29,6 +29,9 @@ function AssessmentRoll() {
   };
 
   const handleCellDoubleClick = (params) => {
+    console.log("doubloe click");
+    console.log(params.row);
+
     setSelectedRow(params.row); // Capture the double-clicked row data
     setOpenRPTview(true); // Open RPTview when a cell is double-clicked
   };
