@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 import { io } from "socket.io-client";
 
 export const HEADER_HEIGHT = "80px";
-export const DRAWER_WIDTH_OPEN = 200;
+export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
 export const BASE_URL = "http://192.168.68.117:4000";
 export const SOCKET = io(BASE_URL);
@@ -208,17 +208,103 @@ export const CLASSIFICATION_DEFAULT = {
   assessedValue: "",
 };
 
-export const ASSESSMENT_ROLL_TAB_LINKS = [
+export const ASSESSOR_TAB_LINKS = [
   {
     to: "/",
     label: "Assessment Roll",
   },
   {
-    to: "/consolidate",
-    label: "Consolidate",
+    to: "/cancels",
+    label: "Canscels",
+  },
+];
+
+export const COMPUTED_COLUMN = [
+  {
+    field: "ComputationDate",
+    headerName: "DATE",
+    width: 200,
+    editable: false,
+    align: "center",
+    headerAlign: "center",
+    editable: false,
+    headerClassName: "data-grid-header",
   },
   {
-    to: "/archive",
-    label: "Archive",
+    field: "PropertyOwner",
+    headerName: "PROPERTY OWNER NAME",
+    width: 320,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "LocationOfProperty",
+    headerName: "LOCATION",
+    width: 320,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "PINno",
+    headerName: "PIN NUMBER",
+    width: 220,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "ARPno",
+    headerName: "ARP No.",
+    width: 270,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "AssessedValue",
+    headerName: "ASSESSED VALUE",
+    width: 220,
+    editable: false,
+    align: "center",
+    headerAlign: "center",
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "Amount",
+    headerName: "AMOUNT",
+    width: 220,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "ComputedBy",
+    headerName: "COMPUTED BY:",
+    width: 220,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+];
+
+export const LANDTAX_TAB_LINKS = [
+  {
+    to: "/landtax-division",
+    label: "Assessment Roll",
+  },
+  {
+    to: "/computed",
+    label: "Computed",
+  },
+  {
+    to: "/lpaidlist",
+    label: "Paid List",
+  },
+];
+
+export const CASH_TAB_LINKS = [
+  {
+    to: "/cash-division",
+    label: "Pending",
+  },
+  {
+    to: "/paidlist",
+    label: "Paid List",
   },
 ];

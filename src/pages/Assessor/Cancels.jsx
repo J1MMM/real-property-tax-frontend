@@ -1,35 +1,63 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
 import TaxDecModal from "../../components/TaxDecModal";
+import RPTview from "./RPTview";
 import {
   ASSESSMENT_ROLL_COLUMN,
-  ASSESSMENT_ROLL_TAB_LINKS,
-  SOCKET,
+  ASSESSOR_TAB_LINKS,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
-import { useQuery, useQueryClient } from "react-query";
-import { fetchInitialData } from "../../api/assessorAPI";
 
-function AssessmentRoll() {
+const rows = [
+  {
+    id: 1,
+    PropertyOwner: "MELANIE CAPULONG ALIDIO",
+    PropertyIndexNo: "18-968",
+    ARPno: "03-0044-04479",
+    OwnedAddress: "Washingtin St.",
+    Kind: "L",
+    Class: "R",
+    LocationOfProperty: "San Cristobal",
+    AssessedValue: "31,320.00",
+    Taxability: "T",
+    Effectivity: "2024",
+  },
+  {
+    id: 2,
+    PropertyOwner: "MELANIE CAPULONG ALIDIO",
+    PropertyIndexNo: "18-968",
+    ARPno: "03-0044-04479",
+    OwnedAddress: "Washingtin St.",
+    Kind: "L",
+    Class: "R",
+    LocationOfProperty: "San Cristobal",
+    AssessedValue: "31,320.00",
+    Taxability: "T",
+    Effectivity: "2024",
+  },
+];
+
+function Cancels() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
-
-  const queryClient = useQueryClient();
-
-  const { data, isLoading } = useQuery("data", fetchInitialData);
+  const [openRPTview, setOpenRPTview] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
   };
 
-  useEffect(() => {}, [queryClient]); // Ensure queryClient is in the dependency array
+  const handleCellDoubleClick = (params) => {
+    setSelectedRow(params.row); // Capture the double-clicked row data
+    setOpenRPTview(true); // Open RPTview when a cell is double-clicked
+  };
 
   return (
     <>
-      <Tab links={ASSESSMENT_ROLL_TAB_LINKS} />
+      <Tab links={ASSESSOR_TAB_LINKS} />
 
       <Box sx={{ p: 2, boxSizing: "border-box" }}>
         <Box
@@ -50,29 +78,22 @@ function AssessmentRoll() {
               Office of the Property Appraiser
             </Typography>
           </Stack>
-          <Button
-            onClick={handleButtonClick}
-            variant="contained"
-            startIcon={<CreateNewFolderOutlined />}
-          >
-            Add Taxdec
-          </Button>
         </Box>
 
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
-            loading={isLoading}
-            rows={data}
+            rows={[]}
             columns={ASSESSMENT_ROLL_COLUMN}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 100,
+                  pageSize: 10,
                 },
               },
             }}
-            pageSizeOptions={[10, 50, 100]}
+            pageSizeOptions={[10]}
             disableRowSelectionOnClick
+            onCellDoubleClick={handleCellDoubleClick}
             sx={{
               ".data-grid-header": {
                 bgcolor: "primary.main",
@@ -94,6 +115,19 @@ function AssessmentRoll() {
         </Box>
       </Box>
 
+      <RPTview
+        open={openRPTview} // Ensure this state is passed as the open prop
+        handleClose={() => setOpenRPTview(false)}
+        row={selectedRow}
+        actionButton={
+          <>
+            <Button variant="outlined" sx={{ color: "rgb(12, 19, 99)" }}>
+              GENERATE FORM
+            </Button>
+          </>
+        }
+      />
+
       <TaxDecModal
         open={taxdecModalOpen}
         handleClose={() => setTaxdecModalOpen(false)}
@@ -102,4 +136,4 @@ function AssessmentRoll() {
   );
 }
 
-export default AssessmentRoll;
+export default Cancels;

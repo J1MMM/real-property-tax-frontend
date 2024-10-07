@@ -1,12 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import AssessmentRoll from "./pages/AssessmentRoll/";
+import { AssessmentRoll, Cancels } from "./pages/Assessor";
 import Layout from "./components/Layout.jsx";
 import theme from "./styles/theme.jsx";
 import "./styles/global.scss";
 import LoginPage from "./pages/LoginPage/";
 import PersistLogin from "./components/PersistLogin.jsx";
 import RequireAuth from "./components/RequireAuth.jsx";
+import { LAssesssmentRoll, Computed, LPaidList } from "./pages/LandTax";
+import { PendingList, PaidList } from "./pages/Cash";
 
 function App() {
   return (
@@ -19,13 +21,19 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route>
                 <Route path="" element={<AssessmentRoll />} />
-                <Route path="archive" element={<AssessmentRoll />} />
-                <Route path="consolidate" element={<AssessmentRoll />} />
+                <Route path="cancels" element={<Cancels />} />
               </Route>
 
-              <Route path="landtax-division" element={<AssessmentRoll />} />
+              <Route>
+                <Route path="landtax-division" element={<LAssesssmentRoll />} />
+                <Route path="computed" element={<Computed />} />
+                <Route path="lpaidlist" element={<LPaidList />} />
+              </Route>
 
-              <Route path="cash-division" element={<AssessmentRoll />} />
+              <Route>
+                <Route path="cash-division" element={<PendingList />} />
+                <Route path="paidlist" element={<PaidList />} />
+              </Route>
             </Route>
           </Route>
         </Route>
