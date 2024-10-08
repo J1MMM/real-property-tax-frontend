@@ -4,11 +4,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
-import TaxDecModal from "../../components/TaxDecModal";
-import {
-  COMPUTED_COLUMN,
-  LANDTAX_TAB_LINKS,
-} from "../../utils/constant";
+
+import { COMPUTED_COLUMN, LANDTAX_TAB_LINKS } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 import Payment from "../Cash/Payment";
 
@@ -75,7 +72,7 @@ function LPaidList() {
               LANDTAX OFFICE
             </Typography>
             <Typography variant="body2">
-                Office of the Revenue Commissioner
+              Office of the Revenue Commissioner
             </Typography>
           </Stack>
         </Box>
@@ -115,27 +112,16 @@ function LPaidList() {
         </Box>
       </Box>
 
-      <Payment 
+      <Payment
         open={openPayment} // Ensure this state is passed as the open prop
-        handleClose={() => setOpenPayment(false)} 
-        row={selectedRow} 
-        Title={
-          <>
-          PAID | REAL PROPERTY TAX ORDER OF PAYMENT
-          </>
-        }
+        handleClose={() => setOpenPayment(false)}
+        row={selectedRow}
+        Title={<>PAID | REAL PROPERTY TAX ORDER OF PAYMENT</>}
         actionButton={
           <>
-          <Button variant="contained">
-            PROCEED TO PAYMENT
-          </Button>
+            <Button variant="contained">PROCEED TO PAYMENT</Button>
           </>
         }
-      />
-
-      <TaxDecModal
-        open={taxdecModalOpen}
-        handleClose={() => setTaxdecModalOpen(false)}
       />
     </>
   );

@@ -4,7 +4,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
-import TaxDecModal from "../../components/TaxDecModal";
 import RPTview from "./RPTview";
 import {
   ASSESSMENT_ROLL_COLUMN,
@@ -126,11 +125,6 @@ function Cancels() {
             </Button>
           </>
         }
-      />
-
-      <TaxDecModal
-        open={taxdecModalOpen}
-        handleClose={() => setTaxdecModalOpen(false)}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Collapse,
   Checkbox,
+  FormControl,
 } from "@mui/material";
 import Fieldset from "../../components/Fieldset";
 import { Stack } from "@mui/material";
@@ -20,7 +21,9 @@ import {
   CLASSIFICATION_COLUMN,
   CLASSIFICATION_DEFAULT,
 } from "../../utils/constant";
-
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 const boxStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -180,8 +183,8 @@ export default function RPTview(props) {
   const [formData, setFormData] = useState(FORM_INITIAL_DATA);
 
   const handleFormChange = (e) => {
-    setFormData({
-      ...formData,
+    setprops?.row({
+      ...props?.row,
       [e.target.name]: e.target.value,
     });
   };
@@ -193,6 +196,13 @@ export default function RPTview(props) {
   const handleClose = () => {
     setOpen(false);
   };
+  console.log(props.row?.year);
+
+  const year = dayjs(props.row?.year);
+  const dateEffectivity = dayjs(props.row?.dateOfEffectivity);
+  const propertyDate = dayjs(props.row?.DATE);
+
+  console.log(props.row);
 
   return (
     <>
@@ -229,7 +239,7 @@ export default function RPTview(props) {
               variant="outlined"
               sx={{ width: "45%" }}
               name="arp"
-              value={formData?.arp}
+              value={props.row?.ArpNo}
               onChange={handleFormChange}
             />
 
@@ -238,7 +248,7 @@ export default function RPTview(props) {
               variant="outlined"
               sx={{ width: "45%" }}
               name="pid"
-              value={formData?.pid}
+              value={props?.row?.PID}
               onChange={handleFormChange}
             />
           </Box>
@@ -251,7 +261,7 @@ export default function RPTview(props) {
                 label="First Name"
                 variant="outlined"
                 name="fname"
-                value={formData?.fname}
+                value={props?.row?.fname}
                 onChange={handleFormChange}
               />
               <TextField
@@ -261,7 +271,7 @@ export default function RPTview(props) {
                 label="last Name"
                 variant="outlined"
                 name="lname"
-                value={formData?.lname}
+                value={props?.row?.lname}
                 onChange={handleFormChange}
               />
               <TextField
@@ -272,7 +282,7 @@ export default function RPTview(props) {
                 label="Middle Name"
                 variant="outlined"
                 name="mname"
-                value={formData?.mname}
+                value={props?.row?.mname}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -284,7 +294,7 @@ export default function RPTview(props) {
                 label="Address"
                 variant="outlined"
                 name="Address"
-                value={formData?.Address}
+                value={props?.row?.Address}
                 onChange={handleFormChange}
               />
               <TextField
@@ -294,7 +304,7 @@ export default function RPTview(props) {
                 label="TIN No."
                 variant="outlined"
                 name="tin"
-                value={formData?.tin}
+                value={props?.row?.TIN}
                 onChange={handleFormChange}
               />
               <TextField
@@ -304,7 +314,7 @@ export default function RPTview(props) {
                 id="outlined-basic"
                 label="Telephone No."
                 name="tel"
-                value={formData?.tel}
+                value={props.row?.Telephone}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -318,7 +328,7 @@ export default function RPTview(props) {
                 label="First Name"
                 variant="outlined"
                 name="afname"
-                value={formData?.afname}
+                value={props?.row?.AdminFname}
                 onChange={handleFormChange}
               />
               <TextField
@@ -327,7 +337,7 @@ export default function RPTview(props) {
                 label="last Name"
                 variant="outlined"
                 name="alname"
-                value={formData?.alname}
+                value={props?.row?.AdminLname}
                 onChange={handleFormChange}
               />
               <TextField
@@ -336,7 +346,7 @@ export default function RPTview(props) {
                 label="Middle Name"
                 variant="outlined"
                 name="amname"
-                value={formData?.amname}
+                value={props?.row?.AdminMname}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -347,7 +357,7 @@ export default function RPTview(props) {
                 label="Address"
                 variant="outlined"
                 name="aAdd"
-                value={formData?.aAdd}
+                value={props?.row?.AdminAddress}
                 onChange={handleFormChange}
               />
               <TextField
@@ -356,7 +366,7 @@ export default function RPTview(props) {
                 label="TIN No."
                 variant="outlined"
                 name="atin"
-                value={formData?.atin}
+                value={props?.row?.AdminTIN}
                 onChange={handleFormChange}
               />
               <TextField
@@ -365,7 +375,7 @@ export default function RPTview(props) {
                 label="Telephone No."
                 variant="outlined"
                 name="atel"
-                value={formData?.atel}
+                value={props?.row?.AdminTel}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -379,7 +389,7 @@ export default function RPTview(props) {
                 label="Number and Street"
                 variant="outlined"
                 name="noSt"
-                value={formData?.noSt}
+                value={props?.row?.noAndSt}
                 onChange={handleFormChange}
               />
               <TextField
@@ -388,7 +398,7 @@ export default function RPTview(props) {
                 label="Barangay/District"
                 variant="outlined"
                 name="brgy"
-                value={formData?.brgy}
+                value={props?.row?.Brgy}
                 onChange={handleFormChange}
               />
               <TextField
@@ -406,7 +416,7 @@ export default function RPTview(props) {
                 label="OCT/TCT/CLOA No.."
                 variant="outlined"
                 name="oct"
-                value={formData?.oct}
+                value={props?.row?.oct}
                 onChange={handleFormChange}
               />
               <TextField
@@ -415,7 +425,7 @@ export default function RPTview(props) {
                 label="Survey No."
                 variant="outlined"
                 name="survey"
-                value={formData?.survey}
+                value={props?.row?.Survey}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -426,7 +436,7 @@ export default function RPTview(props) {
                 label="CCT"
                 variant="outlined"
                 name="cct"
-                value={formData?.cct}
+                value={props?.row?.cct}
                 onChange={handleFormChange}
               />
               <TextField
@@ -435,27 +445,23 @@ export default function RPTview(props) {
                 label="Lot No"
                 variant="outlined"
                 name="lot"
-                value={formData?.lot}
+                value={props?.row?.LOT}
                 onChange={handleFormChange}
               />
             </Stack>
             <Stack direction="row" gap={1}>
-              <TextField
-                margin="dense"
-                fullWidth
-                label="Date"
-                variant="outlined"
-                name="date"
-                value={formData?.date}
-                onChange={handleFormChange}
-              />
+              <FormControl margin="dense" fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker label="Date" value={propertyDate} readOnly />
+                </LocalizationProvider>
+              </FormControl>
               <TextField
                 margin="dense"
                 fullWidth
                 label="Block No."
                 variant="outlined"
                 name="block"
-                value={formData?.block}
+                value={props?.row?.BLOCK}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -466,30 +472,50 @@ export default function RPTview(props) {
               <FormControlLabel
                 control={<Checkbox />}
                 label="LAND"
-                checked={landIsActive}
-                onChange={(e) => setLandIsActive(e.target.checked)}
+                checked={props?.row?.Boundaries?.land}
+                onChange={(e) =>
+                  props.setSelectedRow((prev) => {
+                    return {
+                      ...prev,
+                      Boundaries: {
+                        ...prev.Boundaries,
+                        land: e.target.checked,
+                      },
+                    };
+                  })
+                }
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="BUILDING"
-                checked={buildingIsActive}
-                onChange={(e) => setBuildingActive(e.target.checked)}
+                checked={props?.row?.Boundaries?.building}
+                onChange={(e) =>
+                  props.setSelectedRow((prev) => {
+                    return {
+                      ...prev,
+                      Boundaries: {
+                        ...prev.Boundaries,
+                        building: e.target.checked,
+                      },
+                    };
+                  })
+                }
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="MACHINERY"
-                checked={machineryIsActive}
+                checked={props?.row?.Boundaries?.machinery}
                 onChange={(e) => setMachineryActive(e.target.checked)}
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="OTHERS"
-                checked={othersIsActive}
+                checked={props?.row?.Boundaries?.others}
                 onChange={(e) => setOthersActive(e.target.checked)}
               />
             </Stack>
 
-            <Collapse in={landIsActive}>
+            <Collapse in={props?.row?.Boundaries?.land}>
               <Fieldset title="LAND">
                 <Stack direction="row" gap={1}>
                   <TextField
@@ -577,7 +603,7 @@ export default function RPTview(props) {
               </Fieldset>
             </Collapse>
 
-            <Collapse in={buildingIsActive}>
+            <Collapse in={props?.row?.Boundaries?.building}>
               <Fieldset title="BUILDING">
                 <Stack direction="row" gap={1}>
                   <TextField
@@ -640,7 +666,7 @@ export default function RPTview(props) {
               </Fieldset>
             </Collapse>
 
-            <Collapse in={machineryIsActive}>
+            <Collapse in={props?.row?.Boundaries?.machinery}>
               <Fieldset title="MACHINERY">
                 <Stack direction="row" gap={1}>
                   <TextField
@@ -703,7 +729,7 @@ export default function RPTview(props) {
               </Fieldset>
             </Collapse>
 
-            <Collapse in={othersIsActive}>
+            <Collapse in={props?.row?.Boundaries?.others}>
               <Fieldset title="OTHERS">
                 <Stack direction="row" gap={1}>
                   <TextField
@@ -779,19 +805,40 @@ export default function RPTview(props) {
                 fullWidth
                 label="QTR"
                 variant="outlined"
+                value={props.row?.qtr}
               />
-              <TextField
+              {/* <TextField
                 margin="dense"
                 fullWidth
                 label="Year"
                 variant="outlined"
-              />
-              <TextField
-                margin="dense"
-                fullWidth
-                label="Date of Effectivity "
-                variant="outlined"
-              />
+                value={props.row?.year}
+              /> */}
+
+              <FormControl margin="dense" fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Year"
+                    value={year}
+                    format="YYYY"
+                    readOnly
+                    // onChange={(date) =>
+                    //   setFranchiseDetails((prev) => ({ ...prev, date: date }))
+                    // }
+                    // slotProps={{ textField: { required: true } }}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+
+              <FormControl margin="dense" fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Date of Effectivity"
+                    value={dateEffectivity}
+                    readOnly
+                  />
+                </LocalizationProvider>
+              </FormControl>
             </Stack>
           </Fieldset>
 
@@ -812,7 +859,7 @@ export default function RPTview(props) {
                 console.log(n.target.value);
               }}
               hideFooter
-              rows={formData.classification}
+              rows={[]}
               columns={CLASSIFICATION_COLUMN}
               initialState={{
                 pagination: {
@@ -850,6 +897,7 @@ export default function RPTview(props) {
                 fullWidth
                 label="Cancels T.D. No."
                 variant="outlined"
+                value={props.row?.oldArp}
               />
               <TextField
                 margin="dense"
@@ -961,7 +1009,6 @@ export default function RPTview(props) {
         </DialogContent>
 
         <DialogActions>
-          {" "}
           <Button
             variant="outlined"
             size="small"

@@ -4,14 +4,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
-import TaxDecModal from "../../components/TaxDecModal";
-import Payment from "./Payment";
-import {
-  COMPUTED_COLUMN,
-  CASH_TAB_LINKS,
-} from "../../utils/constant";
-import { CreateNewFolderOutlined } from "@mui/icons-material";
 
+import Payment from "./Payment";
+import { COMPUTED_COLUMN, CASH_TAB_LINKS } from "../../utils/constant";
+import { CreateNewFolderOutlined } from "@mui/icons-material";
 
 const rows = [
   {
@@ -75,9 +71,7 @@ function PendingList() {
             <Typography variant="h6" fontWeight={600}>
               CASH OFFICE
             </Typography>
-            <Typography variant="body2">
-                Office of the City Treasury
-            </Typography>
+            <Typography variant="body2">Office of the City Treasury</Typography>
           </Stack>
         </Box>
 
@@ -116,27 +110,16 @@ function PendingList() {
         </Box>
       </Box>
 
-      <Payment 
+      <Payment
         open={openPayment} // Ensure this state is passed as the open prop
-        handleClose={() => setOpenPayment(false)} 
-        row={selectedRow} 
-        Title={
-          <>
-          PENDING | REAL PROPERTY TAX ORDER OF PAYMENT
-          </>
-        }
+        handleClose={() => setOpenPayment(false)}
+        row={selectedRow}
+        Title={<>PENDING | REAL PROPERTY TAX ORDER OF PAYMENT</>}
         actionButton={
           <>
-          <Button variant="contained">
-            PROCEED TO PAYMENT
-          </Button>
+            <Button variant="contained">PROCEED TO PAYMENT</Button>
           </>
         }
-      />
-
-      <TaxDecModal
-        open={taxdecModalOpen}
-        handleClose={() => setTaxdecModalOpen(false)}
       />
     </>
   );

@@ -4,16 +4,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
-import TaxDecModal from "../../components/TaxDecModal";
 import {
   ASSESSMENT_ROLL_COLUMN,
   ASSESSOR_TAB_LINKS,
-  SOCKET,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 import { useQuery, useQueryClient } from "react-query";
 import { fetchInitialData } from "../../api/assessorAPI";
 import RPTview from "./RPTview";
+import AddTaxDecModal from "../../components/AddTaxDecModal";
 
 function AssessmentRoll() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
@@ -30,13 +29,34 @@ function AssessmentRoll() {
 
   const handleCellDoubleClick = (params) => {
     console.log("doubloe click");
-    console.log(params.row);
 
-    setSelectedRow(params.row); // Capture the double-clicked row data
+    const Boundaries = {
+      land: false,
+      building: false,
+      machinery: false,
+      others: false,
+    };
+
+    params?.row?.Boundaries?.map((obj) => {
+      if (obj?.boundaryType == "land" && obj?.active == "true") {
+        Boundaries.land = true;
+      }
+      if (obj?.boundaryType == "building" && obj?.active == "true") {
+        Boundaries.building = true;
+      }
+      if (obj?.boundaryType == "machinery" && obj?.active == "true") {
+        Boundaries.machinery = true;
+      }
+      if (obj?.boundaryType == "others" && obj?.active == "true") {
+        Boundaries.others = true;
+      }
+    });
+
+    setSelectedRow({ ...params.row, Boundaries }); // Capture the double-clicked row data
     setOpenRPTview(true); // Open RPTview when a cell is double-clicked
   };
 
-  useEffect(() => {}, [queryClient]); // Ensure queryClient is in the dependency array
+  useEffect(() => {}, []); // Ensure queryClient is in the dependency array
 
   return (
     <>
@@ -112,25 +132,14 @@ function AssessmentRoll() {
         row={selectedRow}
         actionButton={
           <>
-            <Button variant="contained" sx={{ color: "rgb(255, 255, 255)" }}>
-              TRANSFER
-            </Button>
-            <Button
-              variant="contained"
-              sx={{ color: "rgb(255, 255, 255)" }}
-              // rgb(168, 37, 37)
-              // rgb(12, 19, 99)
-            >
-              SUBDIVIDE
-            </Button>
-            <Button variant="outlined" sx={{ color: "rgb(12, 19, 99)" }}>
-              GENERATE FORM
-            </Button>
+            <Button variant="contained">TRANSFER</Button>
+            <Button variant="contained">SUBDIVIDE</Button>
+            <Button variant="outlined">GENERATE FORM</Button>
           </>
         }
       />
 
-      <TaxDecModal
+      <AddTaxDecModal
         open={taxdecModalOpen}
         handleClose={() => setTaxdecModalOpen(false)}
       />
