@@ -4,12 +4,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
-import TaxDecModal from "../../components/TaxDecModal";
-import Computation from "./Computation"
-import {
-  COMPUTED_COLUMN,
-  LANDTAX_TAB_LINKS,
-} from "../../utils/constant";
+import Computation from "./Computation";
+import { COMPUTED_COLUMN, LANDTAX_TAB_LINKS } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 
 const rows = [
@@ -75,7 +71,7 @@ function Computed() {
               LANDTAX OFFICE
             </Typography>
             <Typography variant="body2">
-                Office of the Revenue Commissioner
+              Office of the Revenue Commissioner
             </Typography>
           </Stack>
         </Box>
@@ -115,27 +111,16 @@ function Computed() {
         </Box>
       </Box>
 
-      <Computation 
+      <Computation
         open={openComputation} // Ensure this state is passed as the open prop
-        handleClose={() => setOpenComputation(false)} 
-        row={selectedRow} 
-        Title={
-          <>
-          REAL PROPERTY TAX ORDER OF PAYMENT
-          </>
-        }
+        handleClose={() => setOpenComputation(false)}
+        row={selectedRow}
+        Title={<>REAL PROPERTY TAX ORDER OF PAYMENT</>}
         actionButton={
           <>
-          <Button variant="outlined">
-            GENERATE PAYMENT ORDER
-          </Button>
+            <Button variant="outlined">GENERATE PAYMENT ORDER</Button>
           </>
         }
-      />
-
-      <TaxDecModal
-        open={taxdecModalOpen}
-        handleClose={() => setTaxdecModalOpen(false)}
       />
     </>
   );

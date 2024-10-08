@@ -32,7 +32,7 @@ const BOUNDARIES_DETAILS_INITIAL = {
   SWBoundary: "",
 };
 
-export default function TaxDecModal(props) {
+export default function AddTaxDecModal(props) {
   const [landIsActive, setLandIsActive] = useState(false);
   const [buildingIsActive, setBuildingActive] = useState(false);
   const [machineryIsActive, setMachineryActive] = useState(false);
@@ -943,7 +943,7 @@ export default function TaxDecModal(props) {
               label="Actual Use"
               variant="outlined"
               name="actualUse"
-              value={classificationData.actualUse}
+              value={classificationData?.actualUse}
               onChange={handleChange}
             />
             <TextField
