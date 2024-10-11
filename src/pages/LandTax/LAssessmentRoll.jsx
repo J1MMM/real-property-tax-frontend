@@ -11,6 +11,7 @@ import {
   LANDTAX_TAB_LINKS,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
+import { useQuery } from "react-query";
 
 const rows = [
   {

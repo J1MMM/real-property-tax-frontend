@@ -8,6 +8,7 @@ import RPTview from "./RPTview";
 import {
   ASSESSMENT_ROLL_COLUMN,
   ASSESSOR_TAB_LINKS,
+  CENCELS_TABLE_COLUMN,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 
@@ -82,7 +83,7 @@ function Cancels() {
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
             rows={[]}
-            columns={ASSESSMENT_ROLL_COLUMN}
+            columns={CENCELS_TABLE_COLUMN}
             initialState={{
               pagination: {
                 paginationModel: {

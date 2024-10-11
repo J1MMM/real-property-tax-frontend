@@ -17,25 +17,25 @@ function App() {
         <Route element={<PersistLogin />}>
           <Route path="/login" element={<LoginPage />} />
 
-          <Route element={<RequireAuth />}>
-            <Route path="/" element={<Layout />}>
-              <Route>
-                <Route path="" element={<AssessmentRoll />} />
-                <Route path="cancels" element={<Cancels />} />
-              </Route>
+          {/* <Route element={<RequireAuth />}> */}
+          <Route path="/" element={<Layout />}>
+            <Route>
+              <Route path="" element={<AssessmentRoll />} />
+              <Route path="cancels" element={<Cancels />} />
+            </Route>
 
-              <Route>
-                <Route path="landtax-division" element={<LAssesssmentRoll />} />
-                <Route path="computed" element={<Computed />} />
-                <Route path="lpaidlist" element={<LPaidList />} />
-              </Route>
+            <Route>
+              <Route path="landtax-division" element={<LAssesssmentRoll />} />
+              <Route path="computed" element={<Computed />} />
+              <Route path="lpaidlist" element={<LPaidList />} />
+            </Route>
 
-              <Route>
-                <Route path="cash-division" element={<PendingList />} />
-                <Route path="paidlist" element={<PaidList />} />
-              </Route>
+            <Route>
+              <Route path="cash-division" element={<PendingList />} />
+              <Route path="paidlist" element={<PaidList />} />
             </Route>
           </Route>
+          {/* </Route> */}
         </Route>
       </Routes>
     </BrowserRouter>

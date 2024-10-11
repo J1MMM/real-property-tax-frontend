@@ -9,16 +9,39 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel"; // Import FormControlLabel
 import Checkbox from "@mui/material/Checkbox"; // Import Checkbox
 import Fieldset from "./Fieldset";
-import { Collapse, Stack } from "@mui/material";
+import {
+  Collapse,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import {
+  ALERT_SEV,
   ASSESSMENT_ROLL_COLUMN,
+  BRGY_LIST,
   CLASSIFICATION_COLUMN,
   CLASSIFICATION_DEFAULT,
+  INITIAL_FORM_DATA,
 } from "../utils/constant";
 import { useState } from "react";
 import { v4 } from "uuid";
 import FlashOnOutlined from "@mui/icons-material/FlashOnOutlined";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { BoundariesCollapsible } from "./BoundariesCollapsible";
+import axios from "../api/axios";
+import { NumericFormat } from "react-number-format";
+import ClassificationCustomFooter from "./ClassificationCustomFooter";
+import dayjs from "dayjs";
+import ConfirmationDialog from "./ConfirmationDialog";
+import SnackBar from "./SnackBar";
+import { useQueryClient } from "react-query";
+import { ClassificationTable } from "./ClassificationTable";
 
 const BOUNDARIES_DETAILS_INITIAL = {
   boundaryType: "",
@@ -30,109 +53,42 @@ const BOUNDARIES_DETAILS_INITIAL = {
   SEBoundary: "",
   southBoundary: "",
   SWBoundary: "",
+  westBoundary: "",
+  NWBoundary: "",
 };
 
 export default function AddTaxDecModal(props) {
+  const queryClient = useQueryClient();
+
   const [landIsActive, setLandIsActive] = useState(false);
   const [buildingIsActive, setBuildingActive] = useState(false);
   const [machineryIsActive, setMachineryActive] = useState(false);
   const [othersIsActive, setOthersActive] = useState(false);
-  const [formData, setFormData] = useState({
-    arp: "121345211",
-    pid: "PID12345",
-    fname: "John",
-    mname: "Doe",
-    lname: "Smith",
-    Address: "123 Main St",
-    tin: "123-456-789",
-    tel: "123-456-7890",
-    afname: "Jane",
-    amname: "D.",
-    alname: "Doe",
-    aAdd: "456 Admin St",
-    atin: "987-654-321",
-    atel: "098-765-4321",
-    noSt: "No. 10, St. 5",
-    brgy: "Barangay 1",
-    oct: "OCT123456",
-    survey: "Survey 2023",
-    cct: "CCT123456",
-    lot: "LOT-123",
-    date: "2024-09-30",
-    block: "Block 1",
-    taxability: "Taxable",
-    qtr: 9,
-    year: 2024,
-    effectivity: 2024,
-    //   "boundaries": {
-    //     "land":"true",
-    //     "building":{
-    //         "haveBuilding":"true",
-    //         "numberOfBuildings":2,
-    //         "description":"malaki"
-    //     },"machinery":{
-    //         "haveMachinery":"true",
-    //         "numberOfMachinery":2,
-    //         "description":"apat ang gulong"
-    //     }
-    //   },
-    boundaries: [
-      // {
-      //   boundaryType: "land",
-      //   active: "false",
-      //   description: "ito ay lupa na tuyo na",
-      //   NEboundary: "194",
-      //   northBoundary: "192",
-      //   EastBoundary: "194",
-      //   SEBoundary: "194",
-      //   southBoundary: "123",
-      //   SWBoundary: "12",
-      // },
-      // {
-      //   boundaryType: "others",
-      //   active: "true",
-      //   description: "",
-      //   NEboundary: "",
-      //   northBoundary: "",
-      //   EastBoundary: "",
-      //   SEBoundary: "",
-      //   southBoundary: "",
-      //   SWBoundary: "",
-      // },
-    ],
-    classification: [
-      // {
-      //   classification: "land",
-      //   area: "100sqm",
-      //   marketval: 100000,
-      //   level: 0.15,
-      //   actualUse: "Residential",
-      //   assessedVal: 80000,
-      // },
-      // {
-      //   classification: "building",
-      //   area: "100sqm",
-      //   marketval: 100000,
-      //   level: 0.15,
-      //   actualUse: "Residential",
-      //   assessedVal: 80000,
-      // },
-    ],
-    oldArp: "123012031221",
-    memoranda: "article 112312312",
-  });
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [isDisable, setIsDisable] = useState(false);
+  const [alertShown, setAlertShown] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState(ALERT_SEV.info);
+  const [formMsg, setFormMsg] = useState("");
+
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
   const [openClassificationModal, setOpenClassificationModal] = useState(false);
-  const [landDetails, setLandDetails] = useState(BOUNDARIES_DETAILS_INITIAL);
-  const [buildingDetails, setBuildingDetails] = useState(
-    BOUNDARIES_DETAILS_INITIAL
-  );
-  const [machineryDetails, setMachineryDetails] = useState(
-    BOUNDARIES_DETAILS_INITIAL
-  );
-  const [othersDetails, setOthersDetails] = useState(
-    BOUNDARIES_DETAILS_INITIAL
-  );
+  const [landDetails, setLandDetails] = useState({
+    ...BOUNDARIES_DETAILS_INITIAL,
+    boundaryType: "land",
+  });
+  const [buildingDetails, setBuildingDetails] = useState({
+    ...BOUNDARIES_DETAILS_INITIAL,
+    boundaryType: "building",
+  });
+  const [machineryDetails, setMachineryDetails] = useState({
+    ...BOUNDARIES_DETAILS_INITIAL,
+    boundaryType: "machinery",
+  });
+  const [othersDetails, setOthersDetails] = useState({
+    ...BOUNDARIES_DETAILS_INITIAL,
+    boundaryType: "others",
+  });
 
   const [classificationData, setClassificationData] = useState(
     CLASSIFICATION_DEFAULT
@@ -176,30 +132,177 @@ export default function AddTaxDecModal(props) {
     });
   };
 
+  const handleCheckboxChange = (e) => {
+    switch (e.target.name) {
+      case "land": {
+        setLandIsActive(e.target.checked);
+        setLandDetails((prev) => ({
+          ...prev,
+          active: `${e.target.checked}`,
+        }));
+        break;
+      }
+      case "building": {
+        setBuildingActive(e.target.checked);
+        setBuildingDetails((prev) => ({
+          ...prev,
+          active: `${e.target.checked}`,
+        }));
+        break;
+      }
+      case "machinery": {
+        setMachineryActive(e.target.checked);
+        setMachineryDetails((prev) => ({
+          ...prev,
+          active: `${e.target.checked}`,
+        }));
+        break;
+      }
+      case "others": {
+        setOthersActive(e.target.checked);
+        setOthersDetails((prev) => ({
+          ...prev,
+          active: `${e.target.checked}`,
+        }));
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   const handleAddClassification = () => {
-    const id = v4();
+    if (classificationData.classification != "") {
+      const id = v4();
 
-    setFormData((prev) => ({
-      ...formData,
-      classification: [
-        ...prev.classification,
-        { ...classificationData, id: id },
-      ],
-    }));
+      setFormData((prev) => ({
+        ...formData,
+        classification: [
+          ...prev.classification,
+          { ...classificationData, id: id },
+        ],
+      }));
 
-    console.log(formData);
+      console.log(formData);
 
-    setClassificationData(CLASSIFICATION_DEFAULT);
-    setOpenClassificationModal(false);
+      setClassificationData(CLASSIFICATION_DEFAULT);
+      setOpenClassificationModal(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    setIsDisable(true);
+
+    try {
+      const id = v4();
+      // const DATE = dayjs(formData.DATE);
+      // const year = dayjs(formData.year);
+      // const dateOfEffectivity = dayjs(formData.dateOfEffectivity);
+
+      const newFormData = {
+        ...formData,
+        id: id,
+        Boundaries: [
+          landDetails,
+          buildingDetails,
+          machineryDetails,
+          othersDetails,
+        ],
+        DATE: formData.DATE.toISOString(),
+        year: formData.year.toISOString(),
+        dateOfEffectivity: formData.dateOfEffectivity.toISOString(),
+      };
+
+      const response = await axios.post("/api/assessor/createTax", newFormData);
+      console.log(response.data);
+
+      queryClient.setQueryData("assessorData", (oldData) => [
+        ...oldData,
+        newFormData,
+      ]);
+
+      setAlertShown(true);
+      setAlertSeverity(ALERT_SEV.success);
+      setFormMsg("Tax Created Successfully");
+      props?.setOpen(false);
+
+      setFormData(INITIAL_FORM_DATA);
+    } catch (error) {
+      console.log(error);
+      setAlertShown(true);
+      setAlertSeverity(ALERT_SEV.error);
+      setFormMsg(error?.message);
+
+      if (error.status == 409) {
+        setFormMsg("ARP Already Exist");
+      }
+    }
+
+    setConfirmationOpen(false);
+    setIsDisable(false);
+  };
+
+  const totalMarketValue = formData?.classification?.reduce(
+    (total, property) => {
+      return total + parseFloat(property?.marketValue); // Accumulate the marketval
+    },
+    0
+  );
+
+  const assessedValueTotal = formData?.classification?.reduce(
+    (total, property) => {
+      return total + parseFloat(property?.assessedValue); // Accumulate the marketval
+    },
+    0
+  );
+  const areaTotal = formData?.classification?.reduce((total, property) => {
+    return total + parseFloat(property?.area); // Accumulate the marketval
+  }, 0);
+
+  const handleCellEdit = (id, field, value) => {
+    // const updatedRows = rows.map((row) => {
+    //   if (row.id === id) {
+    //     return { ...row, [field]: value };
+    //   }
+    //   return row;
+    // });
+    // setRows(updatedRows);
+    // console.log(id);
+    // console.log(field);
+    // console.log(value);
+    const updatedArr = formData?.classification?.map((row) => {
+      if (row?.id == id) {
+        return { ...row, [field]: value };
+      }
+      return row;
+    });
+    setFormData((prev) => ({ ...prev, classification: updatedArr }));
+  };
+
+  const handleCellKeyDown = (event, cellParams) => {
+    const { field, id } = event; // Get the field and id of the cell being edited
+    const newValue = cellParams.target.value; // Get the current value of the input
+
+    console.log(event);
+
+    if (cellParams.key === "Enter") {
+      // Check if Enter key was pressed
+      handleCellEdit(id, field, newValue); // Call the function to edit the cell value
+    }
   };
 
   return (
     <>
       <Dialog
+        component={"form"}
         maxWidth="lg"
         open={props.open}
         onClose={props.handleClose}
         scroll="paper"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setConfirmationOpen(true);
+        }}
       >
         <DialogTitle
           sx={{
@@ -224,11 +327,12 @@ export default function AddTaxDecModal(props) {
             }}
           >
             <TextField
+              required
               label="T.D. No."
               variant="outlined"
               sx={{ width: "45%" }}
-              name="arp"
-              value={formData?.arp}
+              name="ArpNo"
+              value={formData?.ArpNo}
               onChange={handleFormChange}
             />
 
@@ -236,9 +340,10 @@ export default function AddTaxDecModal(props) {
               label="Property Identification No."
               variant="outlined"
               sx={{ width: "45%" }}
-              name="pid"
-              value={formData?.pid}
+              name="PID"
+              value={formData?.PID}
               onChange={handleFormChange}
+              required
             />
           </Box>
 
@@ -292,8 +397,8 @@ export default function AddTaxDecModal(props) {
                 id="outlined-basic"
                 label="TIN No."
                 variant="outlined"
-                name="tin"
-                value={formData?.tin}
+                name="TIN"
+                value={formData?.TIN}
                 onChange={handleFormChange}
               />
               <TextField
@@ -302,8 +407,8 @@ export default function AddTaxDecModal(props) {
                 variant="outlined"
                 id="outlined-basic"
                 label="Telephone No."
-                name="tel"
-                value={formData?.tel}
+                name="Telephone"
+                value={formData?.Telephone}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -316,8 +421,8 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="First Name"
                 variant="outlined"
-                name="afname"
-                value={formData?.afname}
+                name="AdminFname"
+                value={formData?.AdminFname}
                 onChange={handleFormChange}
               />
               <TextField
@@ -325,8 +430,8 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="last Name"
                 variant="outlined"
-                name="alname"
-                value={formData?.alname}
+                name="AdminLname"
+                value={formData?.AdminLname}
                 onChange={handleFormChange}
               />
               <TextField
@@ -334,8 +439,8 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Middle Name"
                 variant="outlined"
-                name="amname"
-                value={formData?.amname}
+                name="AdminMname"
+                value={formData?.AdminMname}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -345,8 +450,8 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Address"
                 variant="outlined"
-                name="aAdd"
-                value={formData?.aAdd}
+                name="AdminAddress"
+                value={formData?.AdminAddress}
                 onChange={handleFormChange}
               />
               <TextField
@@ -354,8 +459,8 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="TIN No."
                 variant="outlined"
-                name="atin"
-                value={formData?.atin}
+                name="AdminTIN"
+                value={formData?.AdminTIN}
                 onChange={handleFormChange}
               />
               <TextField
@@ -363,8 +468,8 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Telephone No."
                 variant="outlined"
-                name="atel"
-                value={formData?.atel}
+                name="AdminTel"
+                value={formData?.AdminTel}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -377,19 +482,31 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Number and Street"
                 variant="outlined"
-                name="noSt"
-                value={formData?.noSt}
+                name="noAndSt"
+                value={formData?.noAndSt}
                 onChange={handleFormChange}
               />
-              <TextField
-                margin="dense"
-                fullWidth
-                label="Barangay/District"
-                variant="outlined"
-                name="brgy"
-                value={formData?.brgy}
-                onChange={handleFormChange}
-              />
+
+              <FormControl fullWidth margin="dense">
+                <InputLabel id="Barangay/District">
+                  Barangay/District
+                </InputLabel>
+                <Select
+                  labelId="Barangay/District"
+                  id="demo-simple-select"
+                  value={formData.Brgy}
+                  name="Brgy"
+                  label="Barangay/District"
+                  onChange={handleFormChange}
+                >
+                  {BRGY_LIST.map((val, index) => (
+                    <MenuItem key={index} value={val}>
+                      {val}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
               <TextField
                 margin="dense"
                 fullWidth
@@ -413,8 +530,8 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Survey No."
                 variant="outlined"
-                name="survey"
-                value={formData?.survey}
+                name="Survey"
+                value={formData?.Survey}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -433,28 +550,31 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Lot No"
                 variant="outlined"
-                name="lot"
-                value={formData?.lot}
+                name="LOT"
+                value={formData?.LOT}
                 onChange={handleFormChange}
               />
             </Stack>
             <Stack direction="row" gap={1}>
-              <TextField
-                margin="dense"
-                fullWidth
-                label="Date"
-                variant="outlined"
-                name="date"
-                value={formData?.date}
-                onChange={handleFormChange}
-              />
+              <FormControl margin="dense" fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Date"
+                    value={formData.DATE == null ? null : dayjs(formData.DATE)}
+                    onChange={(newVal) =>
+                      setFormData((prev) => ({ ...prev, DATE: newVal }))
+                    }
+                    slotProps={{ textField: { required: true } }}
+                  />
+                </LocalizationProvider>
+              </FormControl>
               <TextField
                 margin="dense"
                 fullWidth
                 label="Block No."
                 variant="outlined"
-                name="block"
-                value={formData?.block}
+                name="BLOCK"
+                value={formData?.BLOCK}
                 onChange={handleFormChange}
               />
             </Stack>
@@ -466,309 +586,65 @@ export default function AddTaxDecModal(props) {
                 control={<Checkbox />}
                 label="LAND"
                 checked={landIsActive}
-                onChange={(e) => setLandIsActive(e.target.checked)}
+                name="land"
+                onChange={handleCheckboxChange}
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="BUILDING"
                 checked={buildingIsActive}
-                onChange={(e) => setBuildingActive(e.target.checked)}
+                name="building"
+                onChange={handleCheckboxChange}
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="MACHINERY"
                 checked={machineryIsActive}
-                onChange={(e) => setMachineryActive(e.target.checked)}
+                name="machinery"
+                onChange={handleCheckboxChange}
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="OTHERS"
                 checked={othersIsActive}
-                onChange={(e) => setOthersActive(e.target.checked)}
+                name="others"
+                onChange={handleCheckboxChange}
               />
             </Stack>
 
-            <Collapse in={landIsActive}>
-              <Fieldset title="LAND">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                    name="northBoundary"
-                    value={landDetails.northBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                    name="southBoundary"
-                    value={landDetails.southBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                    name="EastBoundary"
-                    value={landDetails.EastBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                    name="westBoundary"
-                    value={landDetails.westBoundary}
-                    onChange={handleLandChange}
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                    name="NEboundary"
-                    value={landDetails.NEboundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                    name="SWBoundary"
-                    value={landDetails.SWBoundary}
-                    onChange={handleLandChange}
-                  />
-
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                    name="SEBoundary"
-                    value={landDetails.SEBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                    name="NWBoundary"
-                    value={landDetails.NWBoundary}
-                    onChange={handleLandChange}
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
-
-            <Collapse in={buildingIsActive}>
-              <Fieldset title="BUILDING">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
-
-            <Collapse in={machineryIsActive}>
-              <Fieldset title="MACHINERY">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
-
-            <Collapse in={othersIsActive}>
-              <Fieldset title="OTHERS">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
+            <BoundariesCollapsible
+              handleLandChange={handleLandChange}
+              handleBuildingChange={handleBuildingChange}
+              handleMachineChange={handleMachineChange}
+              handleOthersChange={handleOthersChange}
+              landIsActive={landIsActive}
+              landDetails={landDetails}
+              buildingIsActive={buildingIsActive}
+              buildingDetails={buildingDetails}
+              machineryDetails={machineryDetails}
+              machineryIsActive={machineryIsActive}
+              othersIsActive={othersIsActive}
+              othersDetails={othersDetails}
+            />
           </Fieldset>
 
           <Fieldset title="TAXABILITY">
-            <FormControlLabel control={<Checkbox />} label="TAXABLE" />
-            <FormControlLabel control={<Checkbox />} label="EXEMPT" />
+            <FormControlLabel
+              onClick={() =>
+                setFormData((prev) => ({ ...prev, TAXABILITY: "TAXABILITY" }))
+              }
+              checked={formData?.TAXABILITY == "TAXABILITY"}
+              control={<Checkbox />}
+              label="TAXABLE"
+            />
+            <FormControlLabel
+              checked={formData?.TAXABILITY == "exempted"}
+              onClick={() =>
+                setFormData((prev) => ({ ...prev, TAXABILITY: "exempted" }))
+              }
+              control={<Checkbox />}
+              label="EXEMPT"
+            />
           </Fieldset>
 
           <Fieldset title="Effectively of Assessment/Reassessment">
@@ -778,19 +654,43 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="QTR"
                 variant="outlined"
+                name="qtr"
+                value={formData.qtr}
+                onChange={handleFormChange}
               />
-              <TextField
-                margin="dense"
-                fullWidth
-                label="Year"
-                variant="outlined"
-              />
-              <TextField
-                margin="dense"
-                fullWidth
-                label="Date of Effectivity "
-                variant="outlined"
-              />
+
+              <FormControl margin="dense" fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Year"
+                    value={formData.year == null ? null : dayjs(formData.year)}
+                    format="YYYY"
+                    onChange={(newVal) =>
+                      setFormData((prev) => ({ ...prev, year: newVal }))
+                    }
+                    slotProps={{ textField: { required: true } }}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+
+              <FormControl margin="dense" fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Date of Effectivity"
+                    value={
+                      formData.dateOfEffectivity == null
+                        ? null
+                        : dayjs(formData.dateOfEffectivity)
+                    }
+                    onChange={(newVal) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        dateOfEffectivity: newVal,
+                      }))
+                    }
+                  />
+                </LocalizationProvider>
+              </FormControl>
             </Stack>
           </Fieldset>
 
@@ -803,15 +703,9 @@ export default function AddTaxDecModal(props) {
               Add Classification
             </Button>
 
-            <DataGrid
-              onCellEditStart={(e, n) => {
-                console.log(e);
-              }}
-              onCellKeyDown={(e, n) => {
-                console.log(n.target.value);
-              }}
-              hideFooter
-              rows={formData.classification}
+            {/* <DataGrid
+              onCellKeyDown={handleCellKeyDown}
+              rows={formData?.classification}
               columns={CLASSIFICATION_COLUMN}
               initialState={{
                 pagination: {
@@ -840,6 +734,24 @@ export default function AddTaxDecModal(props) {
                   },
                 },
               }}
+              slots={{
+                footer: () => (
+                  <ClassificationCustomFooter
+                    totalMarketValue={totalMarketValueTotal}
+                    assessedValueTotal={assessedValueTotal}
+                    areaTotal={areaTotal}
+                  />
+                ),
+              }}
+            /> */}
+
+            <ClassificationTable
+              classification={formData?.classification}
+              rows={formData?.classification}
+              setFormData={setFormData}
+              totalMarketValue={totalMarketValue}
+              assessedValueTotal={assessedValueTotal}
+              areaTotal={areaTotal}
             />
           </Fieldset>
           <Fieldset title="Cancels">
@@ -849,6 +761,9 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Cancels T.D. No."
                 variant="outlined"
+                name="oldArp"
+                value={formData.oldArp}
+                onChange={handleFormChange}
               />
               <TextField
                 margin="dense"
@@ -871,17 +786,24 @@ export default function AddTaxDecModal(props) {
                 variant="outlined"
               />
             </Stack>
-            <TextField margin="dense" multiline fullWidth label="Memoranda" />
+            <TextField
+              margin="dense"
+              multiline
+              fullWidth
+              label="Memoranda"
+              name="memoranda"
+              value={formData.memoranda}
+              onChange={handleFormChange}
+            />
           </Fieldset>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={props.handleClose}
-            sx={{ color: "rgb(168, 37, 37)" }}
-          >
+          <Button size="small" onClick={props.handleClose} variant="outlined">
             Cancel
           </Button>
-          <Button>Submit</Button>
+          <Button size="small" type="submit" variant="contained">
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -918,6 +840,7 @@ export default function AddTaxDecModal(props) {
               onChange={handleChange}
             />
             <TextField
+              type="number"
               margin="dense"
               fullWidth
               label="Area"
@@ -925,8 +848,15 @@ export default function AddTaxDecModal(props) {
               name="area"
               value={classificationData.area}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">m²</InputAdornment>
+                  ),
+                },
+              }}
             />
-            <TextField
+            {/* <TextField
               margin="dense"
               fullWidth
               label="Market Value"
@@ -934,6 +864,27 @@ export default function AddTaxDecModal(props) {
               name="marketValue"
               value={classificationData.marketValue}
               onChange={handleChange}
+            /> */}
+
+            <NumericFormat
+              customInput={TextField}
+              margin="dense"
+              fullWidth
+              label="Market Value"
+              variant="outlined"
+              name="marketValue"
+              value={classificationData.marketValue}
+              onValueChange={(values) => {
+                const { value } = values; // value will be the unformatted number (e.g., 1234567)
+                handleChange({
+                  target: {
+                    name: "marketValue",
+                    value: value,
+                  },
+                });
+              }}
+              thousandSeparator=","
+              allowNegative={false} // Optional, to prevent negative numbers
             />
           </Stack>
           <Stack direction="row" gap={1}>
@@ -954,8 +905,15 @@ export default function AddTaxDecModal(props) {
               name="level"
               value={classificationData.level}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                },
+              }}
             />
-            <TextField
+            {/* <TextField
               margin="dense"
               fullWidth
               label="Assessed Value"
@@ -963,6 +921,27 @@ export default function AddTaxDecModal(props) {
               name="assessedValue"
               value={classificationData.assessedValue}
               onChange={handleChange}
+            /> */}
+
+            <NumericFormat
+              customInput={TextField}
+              margin="dense"
+              fullWidth
+              label="Assessed Value"
+              variant="outlined"
+              name="assessedValue"
+              value={classificationData.assessedValue}
+              onValueChange={(values) => {
+                const { value } = values; // value will be the unformatted number (e.g., 1234567)
+                handleChange({
+                  target: {
+                    name: "assessedValue",
+                    value: value,
+                  },
+                });
+              }}
+              thousandSeparator=","
+              allowNegative={false} // Optional, to prevent negative numbers
             />
           </Stack>
         </DialogContent>
@@ -984,6 +963,22 @@ export default function AddTaxDecModal(props) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <ConfirmationDialog
+        open={confirmationOpen}
+        setOpen={setConfirmationOpen}
+        confirm={handleSubmit}
+        title="Add Tax Dec Confirmation"
+        content="Are you sure you want to add this data? Once confirmed, it will be permanently added to the system."
+        disabled={isDisable}
+      />
+
+      <SnackBar
+        open={alertShown}
+        onClose={setAlertShown}
+        severity={alertSeverity}
+        msg={formMsg}
+      />
     </>
   );
 }
