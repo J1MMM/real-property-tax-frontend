@@ -8,6 +8,13 @@ body {
   margin: 0;
   padding: 0;
   scroll-behavior: smooth;
+
+  .PrivateSwitchBase-input {
+    border-color: red !important;
+    color: red !important;
+    background-color: red !important;
+    accent-color: #9b59b6;
+  }
 }
 .nav-link {
   text-decoration: none;

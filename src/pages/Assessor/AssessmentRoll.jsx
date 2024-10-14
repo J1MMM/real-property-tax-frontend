@@ -13,6 +13,8 @@ import { useQuery, useQueryClient } from "react-query";
 import { fetchInitialData } from "../../api/assessorAPI";
 import RPTview from "./RPTview";
 import AddTaxDecModal from "../../components/AddTaxDecModal";
+import { v4 } from "uuid";
+import useData from "../../hooks/useData";
 
 function AssessmentRoll() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
@@ -21,7 +23,7 @@ function AssessmentRoll() {
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery("data", fetchInitialData);
+  const { data, isLoading } = useData();
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
@@ -29,30 +31,47 @@ function AssessmentRoll() {
 
   const handleCellDoubleClick = (params) => {
     console.log("doubloe click");
+    console.log(params.row);
 
     const Boundaries = {
       land: false,
+      landDetails: {},
       building: false,
+      buildingDetails: {},
       machinery: false,
+      machineryDetails: {},
       others: false,
+      othersDetails: {},
     };
+
+    const classification = [];
 
     params?.row?.Boundaries?.map((obj) => {
       if (obj?.boundaryType == "land" && obj?.active == "true") {
         Boundaries.land = true;
+        Boundaries.landDetails = obj;
       }
       if (obj?.boundaryType == "building" && obj?.active == "true") {
         Boundaries.building = true;
+        Boundaries.buildingDetails = obj;
       }
       if (obj?.boundaryType == "machinery" && obj?.active == "true") {
         Boundaries.machinery = true;
+        Boundaries.machineryDetails = obj;
       }
       if (obj?.boundaryType == "others" && obj?.active == "true") {
         Boundaries.others = true;
+        Boundaries.othersDetails = obj;
       }
     });
 
-    setSelectedRow({ ...params.row, Boundaries }); // Capture the double-clicked row data
+    params?.row?.classification?.map((obj) => {
+      const id = v4();
+
+      classification.push({ ...obj, id });
+    });
+
+    setSelectedRow({ ...params.row, Boundaries, classification }); // Capture the double-clicked row data
     setOpenRPTview(true); // Open RPTview when a cell is double-clicked
   };
 
@@ -60,8 +79,6 @@ function AssessmentRoll() {
 
   return (
     <>
-      <Tab links={ASSESSOR_TAB_LINKS} />
-
       <Box sx={{ p: 2, boxSizing: "border-box" }}>
         <Box
           sx={{
@@ -81,17 +98,28 @@ function AssessmentRoll() {
               Office of the Property Appraiser
             </Typography>
           </Stack>
-          <Button
-            onClick={handleButtonClick}
-            variant="contained"
-            startIcon={<CreateNewFolderOutlined />}
-          >
-            Add Taxdec
-          </Button>
+          <Stack direction="row" gap={1}>
+            <Button
+              // onClick={handleButtonClick}
+              variant="outlined"
+              // startIcon={<CreateNewFolderOutlined />}
+              // disabled
+            >
+              consolidate
+            </Button>
+            <Button
+              onClick={handleButtonClick}
+              variant="contained"
+              startIcon={<CreateNewFolderOutlined />}
+            >
+              Add Taxdec
+            </Button>
+          </Stack>
         </Box>
 
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
+            checkboxSelection
             loading={isLoading}
             rows={data}
             columns={ASSESSMENT_ROLL_COLUMN}
@@ -114,12 +142,15 @@ function AssessmentRoll() {
                 fontWeight: "bold", // Make header title bold
               },
               "& .MuiDataGrid-cell": {
-                borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
+                // borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
               },
               "& .MuiDataGrid-row": {
                 "&:last-child .MuiDataGrid-cell": {
                   borderBottom: "none", // Remove bottom border from last row
                 },
+              },
+              ".MuiDataGrid-columnHeaderTitleContainer": {
+                bgcolor: "primary.main",
               },
             }}
           />
@@ -130,6 +161,7 @@ function AssessmentRoll() {
         open={openRPTview} // Ensure this state is passed as the open prop
         handleClose={() => setOpenRPTview(false)}
         row={selectedRow}
+        setSelectedRow={setSelectedRow}
         actionButton={
           <>
             <Button variant="contained">TRANSFER</Button>
@@ -141,6 +173,7 @@ function AssessmentRoll() {
 
       <AddTaxDecModal
         open={taxdecModalOpen}
+        setOpen={setTaxdecModalOpen}
         handleClose={() => setTaxdecModalOpen(false)}
       />
     </>

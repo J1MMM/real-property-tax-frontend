@@ -24,6 +24,9 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import ClassificationCustomFooter from "../../components/ClassificationCustomFooter";
+import { ClassificationTable } from "../../components/ClassificationTable";
+import { BoundariesCollapsible } from "../../components/BoundariesCollapsible";
 const boxStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -127,6 +130,7 @@ const FORM_INITIAL_DATA = {
 };
 export default function RPTview(props) {
   const [open, setOpen] = useState(false);
+  const [readOnly, setReadOnly] = useState(true);
 
   const [landIsActive, setLandIsActive] = useState(false);
   const [buildingIsActive, setBuildingActive] = useState(false);
@@ -146,27 +150,59 @@ export default function RPTview(props) {
   };
 
   const handleLandChange = (e) => {
-    setLandDetails({
-      ...landDetails,
-      [e.target.name]: e.target.value,
+    props?.setSelectedRow((prev) => {
+      return {
+        ...prev,
+        Boundaries: {
+          ...prev.Boundaries,
+          landDetails: {
+            ...prev?.Boundaries.landDetails,
+            [e.target.name]: e.target.value,
+          },
+        },
+      };
     });
   };
   const handleBuildingChange = (e) => {
-    setBuildingDetails({
-      ...buildingDetails,
-      [e.target.name]: e.target.value,
+    props?.setSelectedRow((prev) => {
+      return {
+        ...prev,
+        Boundaries: {
+          ...prev.Boundaries,
+          buildingDetails: {
+            ...prev?.Boundaries.buildingDetails,
+            [e.target.name]: e.target.value,
+          },
+        },
+      };
     });
   };
   const handleMachineChange = (e) => {
-    setMachineryDetails({
-      ...machineryDetails,
-      [e.target.name]: e.target.value,
+    props?.setSelectedRow((prev) => {
+      return {
+        ...prev,
+        Boundaries: {
+          ...prev.Boundaries,
+          machineryDetails: {
+            ...prev?.Boundaries.machineryDetails,
+            [e.target.name]: e.target.value,
+          },
+        },
+      };
     });
   };
   const handleOthersChange = (e) => {
-    setOthersDetails({
-      ...othersDetails,
-      [e.target.name]: e.target.value,
+    props?.setSelectedRow((prev) => {
+      return {
+        ...prev,
+        Boundaries: {
+          ...prev.Boundaries,
+          othersDetails: {
+            ...prev?.Boundaries.othersDetails,
+            [e.target.name]: e.target.value,
+          },
+        },
+      };
     });
   };
 
@@ -203,6 +239,34 @@ export default function RPTview(props) {
   const propertyDate = dayjs(props.row?.DATE);
 
   console.log(props.row);
+
+  const totalMarketValue = props?.row?.classification?.reduce(
+    (total, property) => {
+      return total + parseFloat(property?.marketValue); // Accumulate the marketval
+    },
+    0
+  );
+
+  const assessedValueTotal = props?.row?.classification?.reduce(
+    (total, property) => {
+      return total + parseFloat(property?.assessedValue); // Accumulate the marketval
+    },
+    0
+  );
+  const areaTotal = props?.row?.classification?.reduce((total, property) => {
+    return total + parseFloat(property?.area); // Accumulate the marketval
+  }, 0);
+
+  const handleCheckboxChange = (e) =>
+    props.setSelectedRow((prev) => {
+      return {
+        ...prev,
+        Boundaries: {
+          ...prev.Boundaries,
+          [e.target.name]: e.target.checked,
+        },
+      };
+    });
 
   return (
     <>
@@ -241,6 +305,11 @@ export default function RPTview(props) {
               name="arp"
               value={props.row?.ArpNo}
               onChange={handleFormChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
 
             <TextField
@@ -250,6 +319,11 @@ export default function RPTview(props) {
               name="pid"
               value={props?.row?.PID}
               onChange={handleFormChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
           </Box>
 
@@ -263,6 +337,11 @@ export default function RPTview(props) {
                 name="fname"
                 value={props?.row?.fname}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -273,6 +352,11 @@ export default function RPTview(props) {
                 name="lname"
                 value={props?.row?.lname}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -284,6 +368,11 @@ export default function RPTview(props) {
                 name="mname"
                 value={props?.row?.mname}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
             <Stack direction="row" gap={1}>
@@ -296,6 +385,11 @@ export default function RPTview(props) {
                 name="Address"
                 value={props?.row?.Address}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -306,6 +400,11 @@ export default function RPTview(props) {
                 name="tin"
                 value={props?.row?.TIN}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -316,6 +415,11 @@ export default function RPTview(props) {
                 name="tel"
                 value={props.row?.Telephone}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
           </Fieldset>
@@ -330,6 +434,11 @@ export default function RPTview(props) {
                 name="afname"
                 value={props?.row?.AdminFname}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -339,6 +448,11 @@ export default function RPTview(props) {
                 name="alname"
                 value={props?.row?.AdminLname}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -348,6 +462,11 @@ export default function RPTview(props) {
                 name="amname"
                 value={props?.row?.AdminMname}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
             <Stack direction="row" gap={1}>
@@ -359,6 +478,11 @@ export default function RPTview(props) {
                 name="aAdd"
                 value={props?.row?.AdminAddress}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -368,6 +492,11 @@ export default function RPTview(props) {
                 name="atin"
                 value={props?.row?.AdminTIN}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -377,6 +506,11 @@ export default function RPTview(props) {
                 name="atel"
                 value={props?.row?.AdminTel}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
           </Fieldset>
@@ -391,6 +525,11 @@ export default function RPTview(props) {
                 name="noSt"
                 value={props?.row?.noAndSt}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -400,6 +539,11 @@ export default function RPTview(props) {
                 name="brgy"
                 value={props?.row?.Brgy}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -407,6 +551,11 @@ export default function RPTview(props) {
                 label="Municipality & Province/City"
                 variant="outlined"
                 value={"San Pablo"}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
             <Stack direction="row" gap={1}>
@@ -418,6 +567,11 @@ export default function RPTview(props) {
                 name="oct"
                 value={props?.row?.oct}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -427,6 +581,11 @@ export default function RPTview(props) {
                 name="survey"
                 value={props?.row?.Survey}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
             <Stack direction="row" gap={1}>
@@ -438,6 +597,11 @@ export default function RPTview(props) {
                 name="cct"
                 value={props?.row?.cct}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
@@ -447,6 +611,11 @@ export default function RPTview(props) {
                 name="lot"
                 value={props?.row?.LOT}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
             <Stack direction="row" gap={1}>
@@ -463,6 +632,11 @@ export default function RPTview(props) {
                 name="block"
                 value={props?.row?.BLOCK}
                 onChange={handleFormChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
           </Fieldset>
@@ -473,329 +647,70 @@ export default function RPTview(props) {
                 control={<Checkbox />}
                 label="LAND"
                 checked={props?.row?.Boundaries?.land}
-                onChange={(e) =>
-                  props.setSelectedRow((prev) => {
-                    return {
-                      ...prev,
-                      Boundaries: {
-                        ...prev.Boundaries,
-                        land: e.target.checked,
-                      },
-                    };
-                  })
-                }
+                name="land"
+                onChange={handleCheckboxChange}
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="BUILDING"
                 checked={props?.row?.Boundaries?.building}
-                onChange={(e) =>
-                  props.setSelectedRow((prev) => {
-                    return {
-                      ...prev,
-                      Boundaries: {
-                        ...prev.Boundaries,
-                        building: e.target.checked,
-                      },
-                    };
-                  })
-                }
+                name="building"
+                onChange={handleCheckboxChange}
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="MACHINERY"
                 checked={props?.row?.Boundaries?.machinery}
-                onChange={(e) => setMachineryActive(e.target.checked)}
+                name="machinery"
+                onChange={handleCheckboxChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <FormControlLabel
                 control={<Checkbox />}
                 label="OTHERS"
                 checked={props?.row?.Boundaries?.others}
-                onChange={(e) => setOthersActive(e.target.checked)}
+                name="others"
+                onChange={handleCheckboxChange}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
 
-            <Collapse in={props?.row?.Boundaries?.land}>
-              <Fieldset title="LAND">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                    name="northBoundary"
-                    value={landDetails.northBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                    name="southBoundary"
-                    value={landDetails.southBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                    name="EastBoundary"
-                    value={landDetails.EastBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                    name="westBoundary"
-                    value={landDetails.westBoundary}
-                    onChange={handleLandChange}
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                    name="NEboundary"
-                    value={landDetails.NEboundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                    name="SWBoundary"
-                    value={landDetails.SWBoundary}
-                    onChange={handleLandChange}
-                  />
-
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                    name="SEBoundary"
-                    value={landDetails.SEBoundary}
-                    onChange={handleLandChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                    name="NWBoundary"
-                    value={landDetails.NWBoundary}
-                    onChange={handleLandChange}
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
-
-            <Collapse in={props?.row?.Boundaries?.building}>
-              <Fieldset title="BUILDING">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
-
-            <Collapse in={props?.row?.Boundaries?.machinery}>
-              <Fieldset title="MACHINERY">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
-
-            <Collapse in={props?.row?.Boundaries?.others}>
-              <Fieldset title="OTHERS">
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="North"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="South"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="East"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="West"
-                    variant="outlined"
-                  />
-                </Stack>
-                <Stack direction="row" gap={1}>
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SW"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="SE"
-                    variant="outlined"
-                  />
-                  <TextField
-                    margin="dense"
-                    fullWidth
-                    label="NW"
-                    variant="outlined"
-                  />
-                </Stack>
-                <TextField
-                  margin="dense"
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                />
-              </Fieldset>
-            </Collapse>
+            <BoundariesCollapsible
+              handleLandChange={handleLandChange}
+              handleBuildingChange={handleBuildingChange}
+              handleMachineChange={handleMachineChange}
+              handleOthersChange={handleOthersChange}
+              landIsActive={props?.row?.Boundaries?.land}
+              buildingIsActive={props?.row?.Boundaries?.building}
+              machineryIsActive={props?.row?.Boundaries?.machinery}
+              othersIsActive={props?.row?.Boundaries?.others}
+              landDetails={props?.row?.Boundaries?.landDetails}
+              buildingDetails={props?.row?.Boundaries?.buildingDetails}
+              machineryDetails={props?.row?.Boundaries?.machineryDetails}
+              othersDetails={props?.row?.Boundaries?.othersDetails}
+              readOnly={readOnly}
+            />
           </Fieldset>
 
           <Fieldset title="TAXABILITY">
-            <FormControlLabel control={<Checkbox />} label="TAXABLE" />
-            <FormControlLabel control={<Checkbox />} label="EXEMPT" />
+            <FormControlLabel
+              control={<Checkbox />}
+              label="TAXABLE"
+              checked={props?.row?.TAXABILITY == "TAXABILITY"}
+            />
+            <FormControlLabel
+              control={<Checkbox />}
+              label="EXEMPT"
+              checked={props?.row?.TAXABILITY == "exempted"}
+            />
           </Fieldset>
 
           <Fieldset title="Effectively of Assessment/Reassessment">
@@ -806,6 +721,11 @@ export default function RPTview(props) {
                 label="QTR"
                 variant="outlined"
                 value={props.row?.qtr}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               {/* <TextField
                 margin="dense"
@@ -821,7 +741,7 @@ export default function RPTview(props) {
                     label="Year"
                     value={year}
                     format="YYYY"
-                    readOnly
+                    readOnly={readOnly}
                     // onChange={(date) =>
                     //   setFranchiseDetails((prev) => ({ ...prev, date: date }))
                     // }
@@ -846,20 +766,17 @@ export default function RPTview(props) {
             <Button
               variant="contained"
               sx={{ display: "block", ml: "auto", mb: 1 }}
-              onClick={() => setOpenClassificationModal(true)}
+              // onClick={() => setOpenClassificationModal(true)}
             >
               Add Classification
             </Button>
 
-            <DataGrid
+            {/* <DataGrid
               onCellEditStart={(e, n) => {
                 console.log(e);
               }}
-              onCellKeyDown={(e, n) => {
-                console.log(n.target.value);
-              }}
-              hideFooter
-              rows={[]}
+              onCellKeyDown={handleCellKeyDown}
+              rows={props?.row?.classification}
               columns={CLASSIFICATION_COLUMN}
               initialState={{
                 pagination: {
@@ -888,6 +805,24 @@ export default function RPTview(props) {
                   },
                 },
               }}
+              slots={{
+                footer: () => (
+                  <ClassificationCustomFooter
+                    totalMarketValue={totalMarketValueTotal}
+                    assessedValueTotal={assessedValueTotal}
+                    areaTotal={areaTotal}
+                  />
+                ),
+              }}
+            /> */}
+
+            <ClassificationTable
+              classification={props?.row?.classification}
+              // rows={formData?.classification}
+              setFormData={props?.setSelectedRow}
+              totalMarketValue={totalMarketValue}
+              assessedValueTotal={assessedValueTotal}
+              areaTotal={areaTotal}
             />
           </Fieldset>
           <Fieldset title="Cancels">
@@ -898,12 +833,22 @@ export default function RPTview(props) {
                 label="Cancels T.D. No."
                 variant="outlined"
                 value={props.row?.oldArp}
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
                 fullWidth
                 label="Owner"
                 variant="outlined"
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
             <Stack direction="row" gap={1}>
@@ -912,12 +857,22 @@ export default function RPTview(props) {
                 fullWidth
                 label="Previous A.V. Php"
                 variant="outlined"
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
               <TextField
                 margin="dense"
                 fullWidth
                 label="Property Index Number"
                 variant="outlined"
+                slotProps={{
+                  input: {
+                    readOnly: readOnly,
+                  },
+                }}
               />
             </Stack>
             <TextField margin="dense" multiline fullWidth label="Memoranda" />
@@ -957,6 +912,11 @@ export default function RPTview(props) {
               name="classification"
               value={classificationData.classification}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
             <TextField
               margin="dense"
@@ -966,6 +926,11 @@ export default function RPTview(props) {
               name="area"
               value={classificationData.area}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
             <TextField
               margin="dense"
@@ -975,6 +940,11 @@ export default function RPTview(props) {
               name="marketValue"
               value={classificationData.marketValue}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
           </Stack>
           <Stack direction="row" gap={1}>
@@ -986,6 +956,11 @@ export default function RPTview(props) {
               name="actualUse"
               value={classificationData.actualUse}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
             <TextField
               margin="dense"
@@ -995,6 +970,11 @@ export default function RPTview(props) {
               name="level"
               value={classificationData.level}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
             <TextField
               margin="dense"
@@ -1004,6 +984,11 @@ export default function RPTview(props) {
               name="assessedValue"
               value={classificationData.assessedValue}
               onChange={handleChange}
+              slotProps={{
+                input: {
+                  readOnly: readOnly,
+                },
+              }}
             />
           </Stack>
         </DialogContent>
