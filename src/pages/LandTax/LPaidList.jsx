@@ -54,8 +54,6 @@ function LPaidList() {
 
   return (
     <>
-      <Tab links={LANDTAX_TAB_LINKS} />
-
       <Box sx={{ p: 2, boxSizing: "border-box" }}>
         <Box
           sx={{

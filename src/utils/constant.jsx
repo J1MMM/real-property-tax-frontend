@@ -4,8 +4,8 @@ import { io } from "socket.io-client";
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
-// export const BASE_URL = "http://192.168.68.107:4000";
-export const BASE_URL = "http://192.168.68.107:4000";
+export const BASE_URL = "http://192.168.68.118:4000";
+// export const BASE_URL = "http://localhost:4000";
 export const SOCKET = io(BASE_URL);
 // Role IDs following a pattern for different categories
 const ROLES_LIST = {
@@ -355,11 +355,11 @@ export const CLASSIFICATION_DEFAULT = {
 
 export const ASSESSOR_TAB_LINKS = [
   {
-    to: "/",
+    to: "",
     label: "Assessment Roll",
   },
   {
-    to: "/cancels",
+    to: "cancels",
     label: "Canscels",
   },
 ];
@@ -430,26 +430,26 @@ export const COMPUTED_COLUMN = [
 
 export const LANDTAX_TAB_LINKS = [
   {
-    to: "/landtax-division",
+    to: "",
     label: "Assessment Roll",
   },
   {
-    to: "/computed",
+    to: "computed",
     label: "Computed",
   },
   {
-    to: "/lpaidlist",
+    to: "paidlist",
     label: "Paid List",
   },
 ];
 
 export const CASH_TAB_LINKS = [
   {
-    to: "/cash-division",
+    to: "",
     label: "Pending",
   },
   {
-    to: "/paidlist",
+    to: "paidlist",
     label: "Paid List",
   },
 ];

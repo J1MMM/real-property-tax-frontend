@@ -12,6 +12,7 @@ import {
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 import { useQuery } from "react-query";
+import useData from "../../hooks/useData";
 
 const rows = [
   {
@@ -440,6 +441,7 @@ function LAssesssmentRoll() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openComputation, setOpenComputation] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
+  const { data, isLoading } = useData();
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
@@ -452,8 +454,6 @@ function LAssesssmentRoll() {
 
   return (
     <>
-      <Tab links={LANDTAX_TAB_LINKS} />
-
       <Box sx={{ p: 2, boxSizing: "border-box" }}>
         <Box
           sx={{
@@ -477,18 +477,19 @@ function LAssesssmentRoll() {
 
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
-            rows={rows}
+            loading={isLoading}
+            rows={data}
             columns={ASSESSMENT_ROLL_COLUMN}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 10,
+                  pageSize: 100,
                 },
               },
             }}
-            pageSizeOptions={[10]}
+            pageSizeOptions={[10, 50, 100]}
             disableRowSelectionOnClick
-            onCellDoubleClick={handleCellDoubleClick}
+            onCellDoubleClick={handleCellDoubleClick} // Add the onCellDoubleClick event
             sx={{
               ".data-grid-header": {
                 bgcolor: "primary.main",
@@ -498,12 +499,15 @@ function LAssesssmentRoll() {
                 fontWeight: "bold", // Make header title bold
               },
               "& .MuiDataGrid-cell": {
-                borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
+                // borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
               },
               "& .MuiDataGrid-row": {
                 "&:last-child .MuiDataGrid-cell": {
                   borderBottom: "none", // Remove bottom border from last row
                 },
+              },
+              ".MuiDataGrid-columnHeaderTitleContainer": {
+                bgcolor: "primary.main",
               },
             }}
           />

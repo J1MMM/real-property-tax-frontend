@@ -29,7 +29,7 @@ export default function NavDrawer(props) {
       }}
     >
       <Stack>
-        <NavLink to="/" className="nav-link">
+        <NavLink to="/assessor" className="nav-link">
           <Stack direction={"row"} alignItems="center" gap={2}>
             <ListAltRounded sx={{ fontSize: 32 }} />
             <Typography display={props.open ? "inline" : "none"} minWidth={300}>

@@ -24,7 +24,7 @@ const Tab = (props) => {
     >
       {props?.links.map((obj, index) => {
         return (
-          <NavLink key={index} to={obj.to} className="tab-link">
+          <NavLink key={index} to={obj.to} className="tab-link" end>
             <Typography> {obj.label}</Typography>
           </NavLink>
         );

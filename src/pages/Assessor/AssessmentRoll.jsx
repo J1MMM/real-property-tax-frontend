@@ -79,8 +79,6 @@ function AssessmentRoll() {
 
   return (
     <>
-      <Tab links={ASSESSOR_TAB_LINKS} />
-
       <Box sx={{ p: 2, boxSizing: "border-box" }}>
         <Box
           sx={{
