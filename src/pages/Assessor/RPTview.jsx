@@ -27,6 +27,7 @@ import dayjs from "dayjs";
 import ClassificationCustomFooter from "../../components/ClassificationCustomFooter";
 import { ClassificationTable } from "../../components/ClassificationTable";
 import { BoundariesCollapsible } from "../../components/BoundariesCollapsible";
+import { v4 } from "uuid";
 const boxStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -130,7 +131,6 @@ const FORM_INITIAL_DATA = {
 };
 export default function RPTview(props) {
   const [open, setOpen] = useState(false);
-  const [readOnly, setReadOnly] = useState(true);
 
   const [landIsActive, setLandIsActive] = useState(false);
   const [buildingIsActive, setBuildingActive] = useState(false);
@@ -156,7 +156,7 @@ export default function RPTview(props) {
         Boundaries: {
           ...prev.Boundaries,
           landDetails: {
-            ...prev?.Boundaries.landDetails,
+            ...prev?.Boundaries?.landDetails,
             [e.target.name]: e.target.value,
           },
         },
@@ -219,7 +219,7 @@ export default function RPTview(props) {
   const [formData, setFormData] = useState(FORM_INITIAL_DATA);
 
   const handleFormChange = (e) => {
-    setprops?.row({
+    props?.setSelectedRow({
       ...props?.row,
       [e.target.name]: e.target.value,
     });
@@ -232,30 +232,10 @@ export default function RPTview(props) {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(props.row?.year);
 
   const year = dayjs(props.row?.year);
   const dateEffectivity = dayjs(props.row?.dateOfEffectivity);
   const propertyDate = dayjs(props.row?.DATE);
-
-  console.log(props.row);
-
-  const totalMarketValue = props?.row?.classification?.reduce(
-    (total, property) => {
-      return total + parseFloat(property?.marketValue); // Accumulate the marketval
-    },
-    0
-  );
-
-  const assessedValueTotal = props?.row?.classification?.reduce(
-    (total, property) => {
-      return total + parseFloat(property?.assessedValue); // Accumulate the marketval
-    },
-    0
-  );
-  const areaTotal = props?.row?.classification?.reduce((total, property) => {
-    return total + parseFloat(property?.area); // Accumulate the marketval
-  }, 0);
 
   const handleCheckboxChange = (e) =>
     props.setSelectedRow((prev) => {
@@ -268,13 +248,40 @@ export default function RPTview(props) {
       };
     });
 
+  const handleAddClassification = () => {
+    if (classificationData.classification != "") {
+      const id = v4();
+
+      props.setSelectedRow((prev) => {
+        return {
+          ...prev,
+          classification: [
+            ...prev.classification,
+            { ...classificationData, id: id },
+          ],
+        };
+      });
+
+      setClassificationData(CLASSIFICATION_DEFAULT);
+      setOpenClassificationModal(false);
+    }
+  };
+
   return (
     <>
       <Dialog
         maxWidth="md"
         open={props.open}
-        onClose={props.handleClose}
+        onClose={() => {
+          props?.handleClose();
+          props?.setReadOnly(true);
+        }}
         fullWidth
+        component={"form"}
+        onSubmit={(e) => {
+          e.preventDefault();
+          props?.setConfirmationOpen(true);
+        }}
       >
         <DialogTitle
           sx={{
@@ -299,29 +306,31 @@ export default function RPTview(props) {
             }}
           >
             <TextField
+              required
               label="T.D. No."
               variant="outlined"
               sx={{ width: "45%" }}
-              name="arp"
+              name="ArpNo"
               value={props.row?.ArpNo}
               onChange={handleFormChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
 
             <TextField
+              required
               label="Property Identification No."
               variant="outlined"
               sx={{ width: "45%" }}
-              name="pid"
+              name="PID"
               value={props?.row?.PID}
               onChange={handleFormChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
@@ -339,7 +348,7 @@ export default function RPTview(props) {
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -354,7 +363,7 @@ export default function RPTview(props) {
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -370,7 +379,7 @@ export default function RPTview(props) {
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -387,7 +396,7 @@ export default function RPTview(props) {
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -397,12 +406,12 @@ export default function RPTview(props) {
                 id="outlined-basic"
                 label="TIN No."
                 variant="outlined"
-                name="tin"
+                name="TIN"
                 value={props?.row?.TIN}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -412,12 +421,12 @@ export default function RPTview(props) {
                 variant="outlined"
                 id="outlined-basic"
                 label="Telephone No."
-                name="tel"
+                name="Telephone"
                 value={props.row?.Telephone}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -431,12 +440,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="First Name"
                 variant="outlined"
-                name="afname"
+                name="AdminFname"
                 value={props?.row?.AdminFname}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -445,12 +454,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="last Name"
                 variant="outlined"
-                name="alname"
+                name="AdminLname"
                 value={props?.row?.AdminLname}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -459,12 +468,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Middle Name"
                 variant="outlined"
-                name="amname"
+                name="AdminMname"
                 value={props?.row?.AdminMname}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -475,12 +484,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Address"
                 variant="outlined"
-                name="aAdd"
+                name="AdminAddress"
                 value={props?.row?.AdminAddress}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -489,12 +498,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="TIN No."
                 variant="outlined"
-                name="atin"
+                name="AdminTIN"
                 value={props?.row?.AdminTIN}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -503,12 +512,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Telephone No."
                 variant="outlined"
-                name="atel"
+                name="AdminTel"
                 value={props?.row?.AdminTel}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -522,12 +531,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Number and Street"
                 variant="outlined"
-                name="noSt"
+                name="noAndSt"
                 value={props?.row?.noAndSt}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -536,12 +545,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Barangay/District"
                 variant="outlined"
-                name="brgy"
+                name="Brgy"
                 value={props?.row?.Brgy}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -553,7 +562,7 @@ export default function RPTview(props) {
                 value={"San Pablo"}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -569,7 +578,7 @@ export default function RPTview(props) {
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -578,12 +587,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Survey No."
                 variant="outlined"
-                name="survey"
+                name="Survey"
                 value={props?.row?.Survey}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -599,7 +608,7 @@ export default function RPTview(props) {
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -608,12 +617,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Lot No"
                 variant="outlined"
-                name="lot"
+                name="LOT"
                 value={props?.row?.LOT}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -621,7 +630,20 @@ export default function RPTview(props) {
             <Stack direction="row" gap={1}>
               <FormControl margin="dense" fullWidth>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker label="Date" value={propertyDate} readOnly />
+                  <DatePicker
+                    label="Date"
+                    value={
+                      props?.row?.DATE == null ? null : dayjs(props?.row?.DATE)
+                    }
+                    readOnly={props.readOnly}
+                    onChange={(newVal) =>
+                      props?.setSelectedRow((prev) => ({
+                        ...prev,
+                        DATE: newVal,
+                      }))
+                    }
+                    slotProps={{ textField: { required: true } }}
+                  />
                 </LocalizationProvider>
               </FormControl>
               <TextField
@@ -629,12 +651,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Block No."
                 variant="outlined"
-                name="block"
+                name="BLOCK"
                 value={props?.row?.BLOCK}
                 onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -649,6 +671,7 @@ export default function RPTview(props) {
                 checked={props?.row?.Boundaries?.land}
                 name="land"
                 onChange={handleCheckboxChange}
+                disabled={props?.readOnly}
               />
               <FormControlLabel
                 control={<Checkbox />}
@@ -656,6 +679,7 @@ export default function RPTview(props) {
                 checked={props?.row?.Boundaries?.building}
                 name="building"
                 onChange={handleCheckboxChange}
+                disabled={props?.readOnly}
               />
               <FormControlLabel
                 control={<Checkbox />}
@@ -663,11 +687,7 @@ export default function RPTview(props) {
                 checked={props?.row?.Boundaries?.machinery}
                 name="machinery"
                 onChange={handleCheckboxChange}
-                slotProps={{
-                  input: {
-                    readOnly: readOnly,
-                  },
-                }}
+                disabled={props?.readOnly}
               />
               <FormControlLabel
                 control={<Checkbox />}
@@ -675,11 +695,7 @@ export default function RPTview(props) {
                 checked={props?.row?.Boundaries?.others}
                 name="others"
                 onChange={handleCheckboxChange}
-                slotProps={{
-                  input: {
-                    readOnly: readOnly,
-                  },
-                }}
+                disabled={props?.readOnly}
               />
             </Stack>
 
@@ -696,7 +712,7 @@ export default function RPTview(props) {
               buildingDetails={props?.row?.Boundaries?.buildingDetails}
               machineryDetails={props?.row?.Boundaries?.machineryDetails}
               othersDetails={props?.row?.Boundaries?.othersDetails}
-              readOnly={readOnly}
+              readOnly={props.readOnly}
             />
           </Fieldset>
 
@@ -705,11 +721,25 @@ export default function RPTview(props) {
               control={<Checkbox />}
               label="TAXABLE"
               checked={props?.row?.TAXABILITY == "TAXABILITY"}
+              onClick={() =>
+                props?.setSelectedRow((prev) => ({
+                  ...prev,
+                  TAXABILITY: "TAXABILITY",
+                }))
+              }
+              disabled={props?.readOnly}
             />
             <FormControlLabel
               control={<Checkbox />}
               label="EXEMPT"
               checked={props?.row?.TAXABILITY == "exempted"}
+              onClick={() =>
+                props?.setSelectedRow((prev) => ({
+                  ...prev,
+                  TAXABILITY: "exempted",
+                }))
+              }
+              disabled={props?.readOnly}
             />
           </Fieldset>
 
@@ -720,10 +750,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="QTR"
                 variant="outlined"
+                name="qtr"
                 value={props.row?.qtr}
+                onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -739,13 +771,18 @@ export default function RPTview(props) {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Year"
-                    value={year}
+                    value={
+                      props?.row?.year == null ? null : dayjs(props?.row?.year)
+                    }
                     format="YYYY"
-                    readOnly={readOnly}
-                    // onChange={(date) =>
-                    //   setFranchiseDetails((prev) => ({ ...prev, date: date }))
-                    // }
-                    // slotProps={{ textField: { required: true } }}
+                    readOnly={props.readOnly}
+                    onChange={(newVal) =>
+                      props?.setSelectedRow((prev) => ({
+                        ...prev,
+                        year: newVal,
+                      }))
+                    }
+                    slotProps={{ textField: { required: true } }}
                   />
                 </LocalizationProvider>
               </FormControl>
@@ -754,8 +791,19 @@ export default function RPTview(props) {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Date of Effectivity"
-                    value={dateEffectivity}
-                    readOnly
+                    value={
+                      props?.row?.dateEffectivity == null
+                        ? null
+                        : dayjs(props?.row?.dateEffectivity)
+                    }
+                    readOnly={props.readOnly}
+                    onChange={(newVal) =>
+                      props?.setSelectedRow((prev) => ({
+                        ...prev,
+                        dateOfEffectivity: newVal,
+                      }))
+                    }
+                    slotProps={{ textField: { required: true } }}
                   />
                 </LocalizationProvider>
               </FormControl>
@@ -766,63 +814,19 @@ export default function RPTview(props) {
             <Button
               variant="contained"
               sx={{ display: "block", ml: "auto", mb: 1 }}
-              // onClick={() => setOpenClassificationModal(true)}
+              onClick={() => setOpenClassificationModal(true)}
+              disabled={props?.readOnly}
             >
               Add Classification
             </Button>
-
-            {/* <DataGrid
-              onCellEditStart={(e, n) => {
-                console.log(e);
-              }}
-              onCellKeyDown={handleCellKeyDown}
-              rows={props?.row?.classification}
-              columns={CLASSIFICATION_COLUMN}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
-                  },
-                },
-              }}
-              pageSizeOptions={[10]}
-              autoHeight
-              disableRowSelectionOnClick
-              sx={{
-                ".data-grid-header": {
-                  bgcolor: "primary.main",
-                  color: "#fff",
-                },
-                "& .MuiDataGrid-columnHeaderTitle": {
-                  fontWeight: "bold", // Make header title bold
-                },
-                "& .MuiDataGrid-cell": {
-                  borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
-                },
-                "& .MuiDataGrid-row": {
-                  "&:last-child .MuiDataGrid-cell": {
-                    borderBottom: "none", // Remove bottom border from last row
-                  },
-                },
-              }}
-              slots={{
-                footer: () => (
-                  <ClassificationCustomFooter
-                    totalMarketValue={totalMarketValueTotal}
-                    assessedValueTotal={assessedValueTotal}
-                    areaTotal={areaTotal}
-                  />
-                ),
-              }}
-            /> */}
 
             <ClassificationTable
               classification={props?.row?.classification}
               // rows={formData?.classification}
               setFormData={props?.setSelectedRow}
-              totalMarketValue={totalMarketValue}
-              assessedValueTotal={assessedValueTotal}
-              areaTotal={areaTotal}
+              totalMarketValue={props?.totalMarketValue || 0}
+              assessedValueTotal={props?.assessedValueTotal || 0}
+              areaTotal={props?.areaTotal || 0}
             />
           </Fieldset>
           <Fieldset title="Cancels">
@@ -832,10 +836,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Cancels T.D. No."
                 variant="outlined"
+                name="oldArp"
                 value={props.row?.oldArp}
+                onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -844,9 +850,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Owner"
                 variant="outlined"
+                name="previousOwner"
+                value={props.row?.previousOwner}
+                onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -857,9 +866,12 @@ export default function RPTview(props) {
                 fullWidth
                 label="Previous A.V. Php"
                 variant="outlined"
+                name="previousAV"
+                value={props.row?.previousAV}
+                onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
@@ -868,14 +880,30 @@ export default function RPTview(props) {
                 fullWidth
                 label="Property Index Number"
                 variant="outlined"
+                name="previousPid"
+                value={props.row?.previousPid}
+                onChange={handleFormChange}
                 slotProps={{
                   input: {
-                    readOnly: readOnly,
+                    readOnly: props.readOnly,
                   },
                 }}
               />
             </Stack>
-            <TextField margin="dense" multiline fullWidth label="Memoranda" />
+            <TextField
+              margin="dense"
+              multiline
+              fullWidth
+              label="Memoranda"
+              name="memoranda"
+              value={props.row?.memoranda}
+              onChange={handleFormChange}
+              slotProps={{
+                input: {
+                  readOnly: props.readOnly,
+                },
+              }}
+            />
           </Fieldset>
         </DialogContent>
         <DialogActions>{props.actionButton}</DialogActions>
@@ -914,7 +942,7 @@ export default function RPTview(props) {
               onChange={handleChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
@@ -928,7 +956,7 @@ export default function RPTview(props) {
               onChange={handleChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
@@ -942,7 +970,7 @@ export default function RPTview(props) {
               onChange={handleChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
@@ -958,10 +986,11 @@ export default function RPTview(props) {
               onChange={handleChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
+
             <TextField
               margin="dense"
               fullWidth
@@ -972,10 +1001,11 @@ export default function RPTview(props) {
               onChange={handleChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
+
             <TextField
               margin="dense"
               fullWidth
@@ -986,7 +1016,7 @@ export default function RPTview(props) {
               onChange={handleChange}
               slotProps={{
                 input: {
-                  readOnly: readOnly,
+                  readOnly: props.readOnly,
                 },
               }}
             />
@@ -1005,7 +1035,7 @@ export default function RPTview(props) {
           <Button
             variant="contained"
             size="small"
-            // onClick={handleAddClassification}
+            onClick={handleAddClassification}
           >
             Add
           </Button>
