@@ -23,6 +23,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import {
   ALERT_SEV,
   ASSESSMENT_ROLL_COLUMN,
+  BOUNDARIES_DETAILS_INITIAL,
   BRGY_LIST,
   CLASSIFICATION_COLUMN,
   CLASSIFICATION_DEFAULT,
@@ -42,20 +43,6 @@ import ConfirmationDialog from "./ConfirmationDialog";
 import SnackBar from "./SnackBar";
 import { useQueryClient } from "react-query";
 import { ClassificationTable } from "./ClassificationTable";
-
-const BOUNDARIES_DETAILS_INITIAL = {
-  boundaryType: "",
-  active: "",
-  description: "",
-  NEboundary: "",
-  northBoundary: "",
-  EastBoundary: "",
-  SEBoundary: "",
-  southBoundary: "",
-  SWBoundary: "",
-  westBoundary: "",
-  NWBoundary: "",
-};
 
 export default function AddTaxDecModal(props) {
   const queryClient = useQueryClient();
@@ -770,6 +757,9 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Owner"
                 variant="outlined"
+                name="previousOwner"
+                value={formData.previousOwner}
+                onChange={handleFormChange}
               />
             </Stack>
             <Stack direction="row" gap={1}>
@@ -778,12 +768,18 @@ export default function AddTaxDecModal(props) {
                 fullWidth
                 label="Previous A.V. Php"
                 variant="outlined"
+                name="previousAV"
+                value={formData.previousAV}
+                onChange={handleFormChange}
               />
               <TextField
                 margin="dense"
                 fullWidth
                 label="Property Index Number"
                 variant="outlined"
+                name="previousPid"
+                value={formData.previousPid}
+                onChange={handleFormChange}
               />
             </Stack>
             <TextField

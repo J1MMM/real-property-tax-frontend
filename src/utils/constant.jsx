@@ -567,4 +567,23 @@ export const INITIAL_FORM_DATA = {
   classification: [],
   oldArp: "",
   memoranda: "",
+  previousOwner: "",
+  previousOwner: "",
+  previousAV: "",
+  previousPid: "",
+  memoranda: "",
+};
+
+export const BOUNDARIES_DETAILS_INITIAL = {
+  boundaryType: "",
+  active: "",
+  description: "",
+  NEboundary: "",
+  northBoundary: "",
+  EastBoundary: "",
+  SEBoundary: "",
+  southBoundary: "",
+  SWBoundary: "",
+  westBoundary: "",
+  NWBoundary: "",
 };

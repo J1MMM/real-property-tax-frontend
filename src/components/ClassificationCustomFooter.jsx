@@ -38,7 +38,8 @@ const ClassificationCustomFooter = (props) => {
         }}
         variant="body2"
       >
-        <span>{props?.areaTotal}</span> {/* Replace with your actual value */}
+        <span>{props?.areaTotal || 0}</span>{" "}
+        {/* Replace with your actual value */}
         <Box component="span" sx={{ marginLeft: "8px" }}>
           m²
         </Box>
@@ -52,7 +53,7 @@ const ClassificationCustomFooter = (props) => {
         }}
         variant="body2"
       >
-        {props?.totalMarketValue}
+        {props?.totalMarketValue || 0}
       </Typography>
 
       <Typography
@@ -80,7 +81,7 @@ const ClassificationCustomFooter = (props) => {
         }}
         variant="body2"
       >
-        {props?.assessedValueTotal}
+        {props?.assessedValueTotal || 0}
       </Typography>
     </Box>
   );

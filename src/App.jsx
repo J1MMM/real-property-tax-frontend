@@ -18,32 +18,33 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<PersistLogin />}>
-          <Route path="/login" element={<LoginPage />} />
+        {/* <Route element={<PersistLogin />}> */}
+        <Route path="/login" element={<LoginPage />} />
 
-          {/* <Route element={<RequireAuth />}> */}
-          <Route path="/" element={<Layout />}>
-            <Route path="/" element={<Navigate to="/assessor" />} />
-            <Route>
-              {/* <Route path="" element={<AssessmentRoll />} /> */}
-              <Route path="assessor" element={<AssessorLayout />}>
-                <Route index element={<AssessmentRoll />} />
-                <Route path="cancels" element={<Cancels />} />
-              </Route>
-            </Route>
-
-            <Route path="landtax-division" element={<LandTaxLayout />}>
-              <Route path="" element={<LAssesssmentRoll />} />
-              <Route path="computed" element={<Computed />} />
-              <Route path="paidlist" element={<LPaidList />} />
-            </Route>
-
-            <Route path="cash-division" element={<CashLayout />}>
-              <Route path="" element={<PendingList />} />
-              <Route path="paidlist" element={<PaidList />} />
+        {/* <Route element={<RequireAuth />}> */}
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<Navigate to="/assessor" />} />
+          <Route>
+            {/* <Route path="" element={<AssessmentRoll />} /> */}
+            <Route path="assessor" element={<AssessorLayout />}>
+              <Route index element={<AssessmentRoll />} />
+              <Route path="cancels" element={<Cancels />} />
             </Route>
           </Route>
+
+          <Route path="landtax-division" element={<LandTaxLayout />}>
+            <Route path="" element={<LAssesssmentRoll />} />
+            <Route path="computed" element={<Computed />} />
+            <Route path="paidlist" element={<LPaidList />} />
+          </Route>
+
+          <Route path="cash-division" element={<CashLayout />}>
+            <Route path="" element={<PendingList />} />
+            <Route path="paidlist" element={<PaidList />} />
+          </Route>
         </Route>
+        {/* </Route> */}
+        {/* </Route> */}
         <Route path="*" element={<Missing />} />
       </Routes>
     </BrowserRouter>
