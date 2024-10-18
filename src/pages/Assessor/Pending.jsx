@@ -43,13 +43,13 @@ const rows = [
   },
 ];
 
-function Cancels() {
+function Pending() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openRPTview, setOpenRPTview] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
   const [readOnly, setReadOnly] = useState(true); // State to hold clicked row data
 
-  const { cancelsData, isCancelsLoading } = useData();
+  const { pendingData, isPendingData } = useData();
 
   const handleButtonClick = () => {};
 
@@ -148,8 +148,8 @@ function Cancels() {
 
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
-            rows={cancelsData}
-            loading={isCancelsLoading}
+            rows={pendingData}
+            loading={isPendingData}
             columns={CENCELS_TABLE_COLUMN}
             initialState={{
               pagination: {
@@ -207,4 +207,4 @@ function Cancels() {
   );
 }
 
-export default Cancels;
+export default Pending;

@@ -13,6 +13,7 @@ import { AssessorLayout } from "./pages/Assessor/AssessorLayout.jsx";
 import { LandTaxLayout } from "./pages/LandTax/LandTaxLayout.jsx";
 import { CashLayout } from "./pages/Cash/CashLayout.jsx";
 import { Missing } from "./pages/404.jsx";
+import Pending from "./pages/Assessor/Pending.jsx";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             {/* <Route path="" element={<AssessmentRoll />} /> */}
             <Route path="assessor" element={<AssessorLayout />}>
               <Route index element={<AssessmentRoll />} />
+              <Route path="pending" element={<Pending />} />
               <Route path="cancels" element={<Cancels />} />
             </Route>
           </Route>

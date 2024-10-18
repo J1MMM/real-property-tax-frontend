@@ -482,6 +482,7 @@ export default function AddTaxDecModal(props) {
                   labelId="Barangay/District"
                   id="demo-simple-select"
                   value={formData.Brgy}
+                  required
                   name="Brgy"
                   label="Barangay/District"
                   onChange={handleFormChange}

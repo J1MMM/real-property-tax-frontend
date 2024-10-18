@@ -10,10 +10,11 @@ import {
   ASSESSOR_TAB_LINKS,
   BOUNDARIES_DETAILS_INITIAL,
   INITIAL_FORM_DATA,
+  SUBDIVIDE_INITIAL_DATA,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 import { useQuery, useQueryClient } from "react-query";
-import { fetchInitialData } from "../../api/assessorAPI";
+import { fetchInitialData, submitSubdivide } from "../../api/assessorAPI";
 import RPTview from "./RPTview";
 import AddTaxDecModal from "../../components/AddTaxDecModal";
 import { v4 } from "uuid";
@@ -22,6 +23,7 @@ import axios from "../../api/axios";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import SnackBar from "../../components/SnackBar";
 import dayjs from "dayjs";
+import { SubdivideModal } from "../../components/SubdivideModal";
 
 function AssessmentRoll() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
@@ -37,9 +39,12 @@ function AssessmentRoll() {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [formMsg, setFormMsg] = useState("");
 
+  const [subdivideForm, setSubdivideForm] = useState(SUBDIVIDE_INITIAL_DATA);
+  const [subdivideModalOpen, setSubdivideModalOpen] = useState(false);
+
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useData();
+  const { assessorData, isAssessorLoading } = useData();
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
@@ -193,6 +198,36 @@ function AssessmentRoll() {
     setConfirmationOpen(false);
   };
 
+  const handleSubdivideClick = () => {
+    console.log("click");
+    setSubdivideModalOpen(true);
+    setSubdivideForm((prev) => ({ ...prev, ArpNo: selectedRow?.ArpNo }));
+  };
+
+  const handleSubdivideSubmit = async () => {
+    setIsDisable(true);
+    try {
+      const res = await submitSubdivide(subdivideForm);
+      console.log(res);
+      if (res?.message == "auto rollback of transaction") {
+        setAlertSeverity(ALERT_SEV.error);
+      }
+      setAlertSeverity(ALERT_SEV.success);
+      setFormMsg(res?.message);
+      queryClient.setQueryData("assessorData", (oldData) =>
+        oldData.filter((item) => item.id != selectedRowID)
+      );
+      setOpenRPTview(false);
+    } catch (error) {
+      console.log(error);
+      setAlertSeverity(ALERT_SEV.error);
+      setFormMsg(error?.message);
+    }
+    setAlertShown(true);
+    setIsDisable(false);
+    setSubdivideModalOpen(false);
+  };
+
   return (
     <>
       <Box sx={{ p: 2, boxSizing: "border-box" }}>
@@ -236,8 +271,8 @@ function AssessmentRoll() {
         <Box height={`calc(100vh - ${246}px)`} width="100%">
           <DataGrid
             checkboxSelection
-            loading={isLoading}
-            rows={data}
+            loading={isAssessorLoading}
+            rows={assessorData}
             columns={ASSESSMENT_ROLL_COLUMN}
             initialState={{
               pagination: {
@@ -300,7 +335,9 @@ function AssessmentRoll() {
                 >
                   TRANSFER
                 </Button>
-                <Button variant="contained">SUBDIVIDE</Button>
+                <Button variant="contained" onClick={handleSubdivideClick}>
+                  SUBDIVIDE
+                </Button>
                 <Button variant="outlined">GENERATE FORM</Button>
               </Stack>
             </Collapse>
@@ -327,6 +364,16 @@ function AssessmentRoll() {
         open={taxdecModalOpen}
         setOpen={setTaxdecModalOpen}
         handleClose={() => setTaxdecModalOpen(false)}
+      />
+
+      <SubdivideModal
+        open={subdivideModalOpen}
+        setOpen={setSubdivideModalOpen}
+        Brgy={selectedRow?.Brgy || null}
+        subdivideForm={subdivideForm}
+        setSubdivideForm={setSubdivideForm}
+        handleSubmit={handleSubdivideSubmit}
+        disabled={isDisable}
       />
 
       <ConfirmationDialog

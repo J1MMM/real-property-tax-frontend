@@ -163,6 +163,8 @@ export const CENCELS_TABLE_COLUMN = [
     editable: false,
     flex: 1,
     headerClassName: "data-grid-header",
+    headerAlign: "center",
+    align: "center",
   },
   {
     field: "fname",
@@ -222,19 +224,14 @@ export const CENCELS_TABLE_COLUMN = [
       return (
         <span>
           {boundaries?.map((obj, i) => {
-            return (
-              <span key={i}>
-                {obj?.active && obj?.boundaryType}{" "}
-                {boundaries?.length > 0 ? "/" : ""}
-              </span>
-            );
+            return <span key={i}>{obj?.active && obj?.boundaryType} </span>;
           })}
         </span>
       );
     },
   },
   {
-    field: "Class",
+    field: "classification",
     headerName: "CLASS",
     width: 200,
     editable: false,
@@ -242,7 +239,8 @@ export const CENCELS_TABLE_COLUMN = [
     headerAlign: "center",
     headerClassName: "data-grid-header",
     renderCell: (params, i) => {
-      const classification = params.row?.classification;
+      const classification = params.row?.classification || [];
+
       return <span>{classification[0]?.actualUse}</span>;
     },
     flex: 1,
@@ -272,7 +270,7 @@ export const CENCELS_TABLE_COLUMN = [
     editable: false,
     headerClassName: "data-grid-header",
     renderCell: (params, i) => {
-      const classification = params.row?.classification;
+      const classification = params.row?.classification || [];
       return <span>{classification[0]?.assessedValue}</span>;
     },
     flex: 1,
@@ -288,7 +286,7 @@ export const CENCELS_TABLE_COLUMN = [
     flex: 1,
   },
   {
-    field: "Effectivity",
+    field: "dateOfEffectivity",
     headerName: "EFFECTIVITY",
     width: 200,
     editable: false,
@@ -357,6 +355,10 @@ export const ASSESSOR_TAB_LINKS = [
   {
     to: "",
     label: "Assessment Roll",
+  },
+  {
+    to: "pending",
+    label: "Pending",
   },
   {
     to: "cancels",
@@ -586,4 +588,11 @@ export const BOUNDARIES_DETAILS_INITIAL = {
   SWBoundary: "",
   westBoundary: "",
   NWBoundary: "",
+};
+
+export const SUBDIVIDE_INITIAL_DATA = {
+  ArpNo: "",
+  latestArp: "",
+  count: 0,
+  startArpNo: "",
 };
