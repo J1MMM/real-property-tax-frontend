@@ -12,14 +12,19 @@ import {
   Collapse,
   Checkbox,
   FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import Fieldset from "../../components/Fieldset";
 import { Stack } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import PropTypes from "prop-types"; // Import prop-types for prop validation
 import {
+  BRGY_LIST,
   CLASSIFICATION_COLUMN,
   CLASSIFICATION_DEFAULT,
+  SUBDIVIDE_INITIAL_DATA,
 } from "../../utils/constant";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -28,6 +33,7 @@ import ClassificationCustomFooter from "../../components/ClassificationCustomFoo
 import { ClassificationTable } from "../../components/ClassificationTable";
 import { BoundariesCollapsible } from "../../components/BoundariesCollapsible";
 import { v4 } from "uuid";
+import { submitSubdivide } from "../../api/assessorAPI";
 const boxStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -130,13 +136,6 @@ const FORM_INITIAL_DATA = {
   memoranda: "article 112312312",
 };
 export default function RPTview(props) {
-  const [open, setOpen] = useState(false);
-
-  const [landIsActive, setLandIsActive] = useState(false);
-  const [buildingIsActive, setBuildingActive] = useState(false);
-  const [machineryIsActive, setMachineryActive] = useState(false);
-  const [othersIsActive, setOthersActive] = useState(false);
-
   const [openClassificationModal, setOpenClassificationModal] = useState(false);
   const [classificationData, setClassificationData] = useState(
     CLASSIFICATION_DEFAULT
@@ -206,36 +205,12 @@ export default function RPTview(props) {
     });
   };
 
-  const [landDetails, setLandDetails] = useState(BOUNDARIES_DETAILS_INITIAL);
-  const [buildingDetails, setBuildingDetails] = useState(
-    BOUNDARIES_DETAILS_INITIAL
-  );
-  const [machineryDetails, setMachineryDetails] = useState(
-    BOUNDARIES_DETAILS_INITIAL
-  );
-  const [othersDetails, setOthersDetails] = useState(
-    BOUNDARIES_DETAILS_INITIAL
-  );
-  const [formData, setFormData] = useState(FORM_INITIAL_DATA);
-
   const handleFormChange = (e) => {
     props?.setSelectedRow({
       ...props?.row,
       [e.target.name]: e.target.value,
     });
   };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const year = dayjs(props.row?.year);
-  const dateEffectivity = dayjs(props.row?.dateOfEffectivity);
-  const propertyDate = dayjs(props.row?.DATE);
 
   const handleCheckboxChange = (e) =>
     props.setSelectedRow((prev) => {
@@ -273,8 +248,8 @@ export default function RPTview(props) {
         maxWidth="md"
         open={props.open}
         onClose={() => {
-          props?.handleClose();
           props?.setReadOnly(true);
+          props?.handleClose();
         }}
         fullWidth
         component={"form"}
@@ -540,7 +515,8 @@ export default function RPTview(props) {
                   },
                 }}
               />
-              <TextField
+              {/* <TextField
+                required
                 margin="dense"
                 fullWidth
                 label="Barangay/District"
@@ -553,7 +529,29 @@ export default function RPTview(props) {
                     readOnly: props.readOnly,
                   },
                 }}
-              />
+              /> */}
+
+              <FormControl fullWidth margin="dense">
+                <InputLabel id="Barangay/District">
+                  Barangay/District
+                </InputLabel>
+                <Select
+                  labelId="Barangay/District"
+                  id="demo-simple-select"
+                  value={props?.row?.Brgy}
+                  required
+                  name="Brgy"
+                  label="Barangay/District"
+                  onChange={handleFormChange}
+                >
+                  {BRGY_LIST.map((val, index) => (
+                    <MenuItem key={index} value={val}>
+                      {val}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
               <TextField
                 margin="dense"
                 fullWidth
