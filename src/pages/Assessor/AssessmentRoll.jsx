@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import { Collapse, Stack } from "@mui/material";
@@ -14,21 +14,25 @@ import {
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 import { useQueryClient } from "react-query";
-import AddTaxDecModal from "../../components/form/AddTaxDecModal";
+import AddTaxDecModal from "../../components/form/modal/AddTaxDecModal";
 import { v4 } from "uuid";
 import useData from "../../hooks/useData";
 import axios from "../../api/axios";
 import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
 import SnackBar from "../../components/shared/SnackBar";
 import dayjs from "dayjs";
-import { SubdivideModal } from "../../components/form/SubdivideModal";
+import { SubdivideModal } from "../../components/form/modal/SubdivideModal";
 import { useRowFormatter } from "../../hooks/useRowFormatter";
 import { formatFullname, sumFieldInArray } from "../../utils/helper";
 import { PageContainer } from "../../components/layout/PageContainer";
-import TaxDecModal from "../../components/form/TaxDecModal";
+import TaxDecModal from "../../components/form/modal/TaxDecModal";
+import { useReactToPrint } from "react-to-print";
+import { AssessorFormPrintable } from "../../components/printable/assessor-form/AssessorFormPrintable";
+import { PrintableFormModal } from "../../components/form/modal/PrintableFormModal";
 
 function AssessmentRoll() {
   const queryClient = useQueryClient();
+
   const { assessorData, isAssessorLoading } = useData();
 
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
@@ -49,6 +53,7 @@ function AssessmentRoll() {
   const [subdivideModalOpen, setSubdivideModalOpen] = useState(false);
 
   const [formDataNew, setFormDataNew] = useState(INITIAL_FORM_DATA);
+  const [printableFormOpen, setPrintableFormOpen] = useState(false);
 
   const handleCellDoubleClick = (params) => {
     setSelectedRowID(params?.row?.id);
@@ -246,7 +251,15 @@ function AssessmentRoll() {
             <Button variant="contained" onClick={handleSubdivideClick}>
               SUBDIVIDE
             </Button>
-            <Button variant="outlined">GENERATE FORM</Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setOpenRPTview(false);
+                setPrintableFormOpen(true);
+              }}
+            >
+              GENERATE FORM
+            </Button>
           </Stack>
         </Collapse>
         <Collapse
@@ -357,6 +370,13 @@ function AssessmentRoll() {
         onClose={setAlertShown}
         severity={alertSeverity}
         msg={formMsg}
+      />
+
+      {/* <AssessorFormPrintable ref={contentRef} /> */}
+      <PrintableFormModal
+        open={printableFormOpen}
+        onClose={() => setPrintableFormOpen(false)}
+        row={selectedRow}
       />
     </>
   );

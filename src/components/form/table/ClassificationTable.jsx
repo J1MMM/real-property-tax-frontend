@@ -5,9 +5,9 @@ import {
   DATA_GRID_INITIAL_STATE,
   DATA_GRID_STYLE,
   PAGE_SIZE_OPTION,
-} from "../../utils/constant";
-import ClassificationCustomFooter from "./ClassificationCustomFooter";
-import { sumFieldInArray } from "../../utils/helper";
+} from "../../../utils/constant";
+import ClassificationCustomFooter from "../custom/ClassificationCustomFooter";
+import { sumFieldInArray } from "../../../utils/helper";
 
 export const ClassificationTable = ({ props, classification, setFormData }) => {
   const handleCellEdit = (id, field, value) => {

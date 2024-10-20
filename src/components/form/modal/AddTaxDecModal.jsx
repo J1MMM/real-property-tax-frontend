@@ -1,18 +1,18 @@
 import Button from "@mui/material/Button";
 
-import { CLASSIFICATION_DEFAULT } from "../../utils/constant";
+import { CLASSIFICATION_DEFAULT } from "../../../utils/constant";
 import { useState } from "react";
 import { v4 } from "uuid";
-import { ContainerModal } from "../shared/ContainerModal";
-import { TaxNumberFields } from "./TaxNumberFields";
-import { OwnerInfoFields } from "./OwnerInfoFields";
-import { BenificialFields } from "./BenificialFields";
-import { PropertyInfoFields } from "./PropertyInfoFields";
-import { BoundariesFields } from "./BoundariesFields";
-import { TaxabilityFields } from "./TaxabilityFields";
-import { EOAFields } from "./EOAFields";
-import { ClassificationFields } from "./ClassificationFields";
-import { CancelsFields } from "./CancelsFields";
+import { ContainerModal } from "../../shared/ContainerModal";
+import { TaxNumberFields } from "../fieldset/TaxNumberFields";
+import { OwnerInfoFields } from "../fieldset/OwnerInfoFields";
+import { BenificialFields } from "../fieldset/BenificialFields";
+import { PropertyInfoFields } from "../fieldset/PropertyInfoFields";
+import { BoundariesFields } from "../fieldset/BoundariesFields";
+import { TaxabilityFields } from "../fieldset/TaxabilityFields";
+import { EOAFields } from "../fieldset/EOAFields";
+import { ClassificationFields } from "../fieldset/ClassificationFields";
+import { CancelsFields } from "../fieldset/CancelsFields";
 
 export default function AddTaxDecModal(props) {
   const [openClassificationModal, setOpenClassificationModal] = useState(false);

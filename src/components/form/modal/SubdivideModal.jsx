@@ -14,9 +14,9 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getLatestArp } from "../../api/assessorAPI";
-import { SUBDIVIDE_INITIAL_DATA } from "../../utils/constant";
-import { ContainerModal } from "../shared/ContainerModal";
+import { getLatestArp } from "../../../api/assessorAPI";
+import { SUBDIVIDE_INITIAL_DATA } from "../../../utils/constant";
+import { ContainerModal } from "../../shared/ContainerModal";
 
 export const SubdivideModal = ({
   open,

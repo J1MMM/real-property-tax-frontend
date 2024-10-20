@@ -1,5 +1,5 @@
 import React from "react";
-import Fieldset from "../shared/Fieldset";
+import Fieldset from "../../shared/Fieldset";
 import {
   FormControl,
   InputLabel,
@@ -8,7 +8,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { BRGY_LIST } from "../../utils/constant";
+import { BRGY_LIST } from "../../../utils/constant";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";

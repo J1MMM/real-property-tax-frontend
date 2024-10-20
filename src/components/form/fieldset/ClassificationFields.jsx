@@ -1,9 +1,9 @@
 import React from "react";
-import Fieldset from "../shared/Fieldset";
+import Fieldset from "../../shared/Fieldset";
 import { Button } from "@mui/material";
-import { ClassificationTable } from "./ClassificationTable";
-import { AddClassificationModal } from "./AddClassificationModal";
-import { sumFieldInArray } from "../../utils/helper";
+import { ClassificationTable } from "../table/ClassificationTable";
+import { AddClassificationModal } from "../modal/AddClassificationModal";
+import { sumFieldInArray } from "../../../utils/helper";
 
 export const ClassificationFields = ({
   props,

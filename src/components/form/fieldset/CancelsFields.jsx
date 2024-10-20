@@ -1,5 +1,5 @@
 import React from "react";
-import Fieldset from "../shared/Fieldset";
+import Fieldset from "../../shared/Fieldset";
 import { Stack, TextField } from "@mui/material";
 
 export const CancelsFields = ({ props, handleFormChange }) => {

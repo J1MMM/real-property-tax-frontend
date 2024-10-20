@@ -1,5 +1,5 @@
 import React from "react";
-import Fieldset from "../shared/Fieldset";
+import Fieldset from "../../shared/Fieldset";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
 export const TaxabilityFields = (props) => {

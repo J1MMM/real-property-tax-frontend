@@ -1,19 +1,16 @@
 import { useState } from "react";
-
-import PropTypes from "prop-types"; // Import prop-types for prop validation
-import { CLASSIFICATION_DEFAULT } from "../../utils/constant";
-
+import { CLASSIFICATION_DEFAULT } from "../../../utils/constant";
 import { v4 } from "uuid";
-import { ContainerModal } from "../shared/ContainerModal";
-import { OwnerInfoFields } from "./OwnerInfoFields";
-import { BenificialFields } from "./BenificialFields";
-import { PropertyInfoFields } from "./PropertyInfoFields";
-import { TaxabilityFields } from "./TaxabilityFields";
-import { EOAFields } from "./EOAFields";
-import { ClassificationFields } from "./ClassificationFields";
-import { TaxNumberFields } from "./TaxNumberFields";
-import { CancelsFields } from "./CancelsFields";
-import { BoundariesFields } from "./BoundariesFields";
+import { ContainerModal } from "../../shared/ContainerModal";
+import { OwnerInfoFields } from "../fieldset/OwnerInfoFields";
+import { BenificialFields } from "../fieldset/BenificialFields";
+import { PropertyInfoFields } from "../fieldset/PropertyInfoFields";
+import { TaxabilityFields } from "../fieldset/TaxabilityFields";
+import { EOAFields } from "../fieldset/EOAFields";
+import { ClassificationFields } from "../fieldset/ClassificationFields";
+import { TaxNumberFields } from "../fieldset/TaxNumberFields";
+import { CancelsFields } from "../fieldset/CancelsFields";
+import { BoundariesFields } from "../fieldset/BoundariesFields";
 
 const TaxDecModal = (props) => {
   const [openClassificationModal, setOpenClassificationModal] = useState(false);

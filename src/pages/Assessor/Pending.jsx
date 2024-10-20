@@ -8,7 +8,7 @@ import {
   PAGE_SIZE_OPTION,
 } from "../../utils/constant";
 import useData from "../../hooks/useData";
-import TaxDecModal from "../../components/form/TaxDecModal";
+import TaxDecModal from "../../components/form/modal/TaxDecModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { useRowFormatter } from "../../hooks/useRowFormatter";
 import { Collapse, Stack } from "@mui/material";

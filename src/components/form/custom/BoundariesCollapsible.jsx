@@ -1,6 +1,6 @@
 import { Collapse, Stack, TextField } from "@mui/material";
 import React from "react";
-import Fieldset from "../shared/Fieldset";
+import Fieldset from "../../shared/Fieldset";
 
 export const BoundariesCollapsible = ({
   props,

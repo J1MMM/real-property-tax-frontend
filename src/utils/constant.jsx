@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import dayjs from "dayjs";
 import { io } from "socket.io-client";
 
 export const HEADER_HEIGHT = "80px";
@@ -29,8 +30,8 @@ export const ASSESSMENT_ROLL_COLUMN = [
     field: "fname",
     headerName: "PROPERTY OWNER",
     editable: false,
-    flex: 1,
     headerClassName: "data-grid-header",
+    width: 200,
     renderCell: (params, i) => {
       const fname = params.row?.fname;
       const mname = params.row?.mname;
@@ -48,7 +49,6 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
   },
   {
     field: "ArpNo",
@@ -56,7 +56,6 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
   },
   {
     field: "Address",
@@ -64,7 +63,6 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
   },
   {
     field: "",
@@ -74,7 +72,6 @@ export const ASSESSMENT_ROLL_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
-    flex: 1,
     renderCell: (params, i) => {
       const boundaries = Array.isArray(params.row?.Boundaries)
         ? params.row?.Boundaries
@@ -102,7 +99,6 @@ export const ASSESSMENT_ROLL_COLUMN = [
 
       return <span>{classification[0]?.actualUse}</span>;
     },
-    flex: 1,
   },
   {
     field: "LocationOfProperty",
@@ -110,7 +106,6 @@ export const ASSESSMENT_ROLL_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
 
     renderCell: (params, i) => {
       const block = params.row?.BLOCK;
@@ -132,7 +127,6 @@ export const ASSESSMENT_ROLL_COLUMN = [
       const classification = params.row?.classification || [];
       return <span>{classification[0]?.assessedValue}</span>;
     },
-    flex: 1,
   },
   {
     field: "TAXABILITY",
@@ -142,7 +136,11 @@ export const ASSESSMENT_ROLL_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
-    flex: 1,
+
+    renderCell: (params, i) => {
+      const TAXABILITY = params.row?.TAXABILITY;
+      return <span>{TAXABILITY?.toUpperCase()}</span>;
+    },
   },
   {
     field: "dateOfEffectivity",
@@ -152,7 +150,10 @@ export const ASSESSMENT_ROLL_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
-    flex: 1,
+    renderCell: (params, i) => {
+      const dateOfEffectivity = dayjs(params.row?.dateOfEffectivity);
+      return <span>{dateOfEffectivity.format("MM/DD/YYYY")}</span>;
+    },
   },
 ];
 
@@ -161,7 +162,6 @@ export const CENCELS_TABLE_COLUMN = [
     field: "status",
     headerName: "STATUS",
     editable: false,
-    flex: 1,
     headerClassName: "data-grid-header",
     headerAlign: "center",
     align: "center",
@@ -170,8 +170,8 @@ export const CENCELS_TABLE_COLUMN = [
     field: "fname",
     headerName: "PROPERTY OWNER",
     editable: false,
-    flex: 1,
     headerClassName: "data-grid-header",
+    width: 200,
     renderCell: (params, i) => {
       const fname = params.row?.fname;
       const mname = params.row?.mname;
@@ -189,7 +189,6 @@ export const CENCELS_TABLE_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
   },
   {
     field: "ArpNo",
@@ -197,7 +196,6 @@ export const CENCELS_TABLE_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
   },
   {
     field: "Address",
@@ -205,7 +203,6 @@ export const CENCELS_TABLE_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
   },
   {
     field: "",
@@ -215,7 +212,6 @@ export const CENCELS_TABLE_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
-    flex: 1,
     renderCell: (params, i) => {
       const boundaries = Array.isArray(params.row?.Boundaries)
         ? params.row?.Boundaries
@@ -243,7 +239,6 @@ export const CENCELS_TABLE_COLUMN = [
 
       return <span>{classification[0]?.actualUse}</span>;
     },
-    flex: 1,
   },
   {
     field: "LocationOfProperty",
@@ -251,7 +246,6 @@ export const CENCELS_TABLE_COLUMN = [
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
-    flex: 1,
 
     renderCell: (params, i) => {
       const block = params.row?.BLOCK;
@@ -273,7 +267,6 @@ export const CENCELS_TABLE_COLUMN = [
       const classification = params.row?.classification || [];
       return <span>{classification[0]?.assessedValue}</span>;
     },
-    flex: 1,
   },
   {
     field: "TAXABILITY",
@@ -283,7 +276,11 @@ export const CENCELS_TABLE_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
-    flex: 1,
+
+    renderCell: (params, i) => {
+      const TAXABILITY = params.row?.TAXABILITY;
+      return <span>{TAXABILITY?.toUpperCase()}</span>;
+    },
   },
   {
     field: "dateOfEffectivity",
@@ -293,7 +290,10 @@ export const CENCELS_TABLE_COLUMN = [
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
-    flex: 1,
+    renderCell: (params, i) => {
+      const dateOfEffectivity = dayjs(params.row?.dateOfEffectivity);
+      return <span>{dateOfEffectivity.format("MM/DD/YYYY")}</span>;
+    },
   },
 ];
 
@@ -609,16 +609,6 @@ export const SUBDIVIDE_INITIAL_DATA = {
 };
 
 export const DATA_GRID_STYLE = {
-  ".data-grid-header": {
-    bgcolor: "primary.main",
-    color: "#fff",
-  },
-  "& .MuiDataGrid-columnHeaderTitle": {
-    fontWeight: "bold", // Make header title bold
-  },
-  "& .MuiDataGrid-cell": {
-    // borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
-  },
   "& .MuiDataGrid-row": {
     "&:last-child .MuiDataGrid-cell": {
       borderBottom: "none", // Remove bottom border from last row
@@ -627,6 +617,22 @@ export const DATA_GRID_STYLE = {
   ".MuiDataGrid-columnHeaderTitleContainer": {
     bgcolor: "primary.main",
   },
+
+  ".data-grid-header": {
+    bgcolor: "#1A237E",
+    color: "#FFF",
+    ".MuiDataGrid-columnHeaderTitle": {
+      fontWeight: "bold",
+    },
+    "&.MuiDataGrid-root": {
+      border: "none",
+      color: "#FFF",
+    },
+    ".MuiIconButton-sizeSmall": {
+      color: "#FFF",
+    },
+  },
+  border: "none",
 };
 
 export const PAGE_SIZE_OPTION = [10, 50, 100];

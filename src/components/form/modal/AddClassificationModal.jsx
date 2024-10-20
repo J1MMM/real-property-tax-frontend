@@ -1,5 +1,5 @@
 import React from "react";
-import { ContainerModal } from "../shared/ContainerModal";
+import { ContainerModal } from "../../shared/ContainerModal";
 import { Button, InputAdornment, Stack, TextField } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 

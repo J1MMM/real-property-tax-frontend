@@ -7,8 +7,8 @@ import "./styles/global.scss";
 import LoginPage from "./pages/LoginPage/";
 import PersistLogin from "./components/auth/PersistLogin.jsx";
 import RequireAuth from "./components/auth/RequireAuth.jsx";
-import { LAssesssmentRoll, Computed, LPaidList } from "./pages/LandTax";
-import { PendingList, PaidList } from "./pages/Cash";
+import { LandTaxAR, LandTaxPaidList, LandTaxComputed } from "./pages/LandTax";
+import { CashPendingList, CashPaidList } from "./pages/Cash";
 import { AssessorLayout } from "./components/layout/AssessorLayout.jsx";
 import { Missing } from "./pages/404.jsx";
 import { LandTaxLayout } from "./components/layout/LandTaxLayout.jsx";
@@ -34,14 +34,14 @@ function App() {
           </Route>
 
           <Route path="landtax-division" element={<LandTaxLayout />}>
-            <Route path="" element={<LAssesssmentRoll />} />
-            <Route path="computed" element={<Computed />} />
-            <Route path="paidlist" element={<LPaidList />} />
+            <Route path="" element={<LandTaxAR />} />
+            <Route path="computed" element={<LandTaxComputed />} />
+            <Route path="paidlist" element={<LandTaxPaidList />} />
           </Route>
 
           <Route path="cash-division" element={<CashLayout />}>
-            <Route path="" element={<PendingList />} />
-            <Route path="paidlist" element={<PaidList />} />
+            <Route path="" element={<CashPendingList />} />
+            <Route path="paidlist" element={<CashPaidList />} />
           </Route>
         </Route>
         {/* </Route> */}

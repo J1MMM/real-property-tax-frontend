@@ -1,2 +1,2 @@
-export { default as PendingList } from "./PendingList"
-export { default as PaidList } from "./PaidList"
+export { default as CashPendingList } from "./CashPendingList";
+export { default as CashPaidList } from "./CashPaidList";

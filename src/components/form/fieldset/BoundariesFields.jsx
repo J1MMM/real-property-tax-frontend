@@ -1,7 +1,7 @@
 import React from "react";
-import Fieldset from "../shared/Fieldset";
-import { BoundariesCheckboxes } from "./BoundariesCheckboxes";
-import { BoundariesCollapsible } from "./BoundariesCollapsible";
+import Fieldset from "../../shared/Fieldset";
+import { BoundariesCheckboxes } from "../custom/BoundariesCheckboxes";
+import { BoundariesCollapsible } from "../custom/BoundariesCollapsible";
 
 export const BoundariesFields = ({
   props,

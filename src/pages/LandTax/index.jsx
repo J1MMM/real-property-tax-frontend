@@ -1,3 +1,3 @@
-export { default as LAssesssmentRoll } from "./LAssessmentRoll";
-export { default as Computed } from "./Computed";
-export { default as LPaidList } from "./LPaidList";
+export { default as LandTaxAR } from "./LandTaxAR";
+export { default as LandTaxComputed } from "./LandTaxComputed";
+export { default as LandTaxPaidList } from "./LandTaxPaidList";
