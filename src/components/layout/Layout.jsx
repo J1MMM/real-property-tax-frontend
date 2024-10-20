@@ -8,10 +8,10 @@ import {
   DRAWER_WIDTH_CLOSED,
   DRAWER_WIDTH_OPEN,
   HEADER_HEIGHT,
-} from "../utils/constant";
-import useAuth from "../hooks/useAuth";
+} from "../../utils/constant";
+import useAuth from "../../hooks/useAuth";
 import { useQuery, useQueryClient } from "react-query";
-import { fetchInitialData } from "../api/assessorAPI";
+import { fetchInitialData } from "../../api/assessorAPI";
 
 const styleLayout = {
   position: "relative",

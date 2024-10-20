@@ -6,8 +6,8 @@ import {
   LinearProgress,
   Typography,
 } from "@mui/material";
-import UseRefreshToken from "../hooks/useRefreshToken";
-import useAuth from "../hooks/useAuth";
+import UseRefreshToken from "../../hooks/useRefreshToken";
+import useAuth from "../../hooks/useAuth";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);

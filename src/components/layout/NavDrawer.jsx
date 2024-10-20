@@ -9,7 +9,7 @@ import {
   DRAWER_WIDTH_CLOSED,
   DRAWER_WIDTH_OPEN,
   HEADER_HEIGHT,
-} from "../utils/constant";
+} from "../../utils/constant";
 
 export default function NavDrawer(props) {
   return (

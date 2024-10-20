@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Button,
   Dialog,
@@ -10,18 +10,17 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-} from '@mui/material';
-import Fieldset from "../../components/Fieldset";
+} from "@mui/material";
+import Fieldset from "../../components/shared/Fieldset";
 import { Stack } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import PropTypes from 'prop-types'; // Import prop-types for prop validation
+import PropTypes from "prop-types"; // Import prop-types for prop validation
 
 const boxStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    mb: "10px",
-  };
-  
+  display: "flex",
+  justifyContent: "space-between",
+  mb: "10px",
+};
 
 export default function Payment(props) {
   const [open, setOpen] = React.useState(false);
@@ -58,7 +57,7 @@ export default function Payment(props) {
           dividers
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
-                      <Fieldset title="Payment Details">
+          <Fieldset title="Payment Details">
             <Stack direction="row" gap={1}>
               <TextField
                 margin="dense"
@@ -102,7 +101,6 @@ export default function Payment(props) {
                 id="outlined-basic"
                 label="PIN No."
                 variant="outlined"
-                
               />
               <TextField
                 margin="dense"
@@ -141,7 +139,7 @@ export default function Payment(props) {
                 label="GARBAGE FEE"
                 variant="outlined"
               />
-                            <TextField
+              <TextField
                 margin="dense"
                 fullWidth
                 label="TOTAL"
@@ -149,12 +147,9 @@ export default function Payment(props) {
               />
             </Stack>
           </Fieldset>
-
         </DialogContent>
 
-        <DialogActions>
-            {props.actionButton}
-        </DialogActions>
+        <DialogActions>{props.actionButton}</DialogActions>
       </Dialog>
     </>
   );
@@ -162,7 +157,7 @@ export default function Payment(props) {
 
 // Define PropTypes for the component
 Payment.propTypes = {
-  open: PropTypes.bool.isRequired,       // `open` must be a boolean and is required
+  open: PropTypes.bool.isRequired, // `open` must be a boolean and is required
   handleClose: PropTypes.func.isRequired, // `handleClose` must be a function and is required
-  row: PropTypes.object                   // `row` is an object that contains the data for the selected property
+  row: PropTypes.object, // `row` is an object that contains the data for the selected property
 };

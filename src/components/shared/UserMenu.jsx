@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import backgroundImage from "../assets/images/header-bg.jpg";
+import backgroundImage from "../../assets/images/header-bg.jpg";
 import { Logout } from "@mui/icons-material";
 import Cookies from "js-cookie";
 import { Navigate, useNavigate } from "react-router-dom";

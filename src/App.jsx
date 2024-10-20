@@ -1,19 +1,18 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import { AssessmentRoll, Cancels } from "./pages/Assessor";
-import Layout from "./components/Layout.jsx";
+import { AssessmentRoll, Pending, Cancels } from "./pages/Assessor";
+import Layout from "./components/layout/Layout.jsx";
 import theme from "./styles/theme.jsx";
 import "./styles/global.scss";
 import LoginPage from "./pages/LoginPage/";
-import PersistLogin from "./components/PersistLogin.jsx";
-import RequireAuth from "./components/RequireAuth.jsx";
+import PersistLogin from "./components/auth/PersistLogin.jsx";
+import RequireAuth from "./components/auth/RequireAuth.jsx";
 import { LAssesssmentRoll, Computed, LPaidList } from "./pages/LandTax";
 import { PendingList, PaidList } from "./pages/Cash";
-import { AssessorLayout } from "./pages/Assessor/AssessorLayout.jsx";
-import { LandTaxLayout } from "./pages/LandTax/LandTaxLayout.jsx";
-import { CashLayout } from "./pages/Cash/CashLayout.jsx";
+import { AssessorLayout } from "./components/layout/AssessorLayout.jsx";
 import { Missing } from "./pages/404.jsx";
-import Pending from "./pages/Assessor/Pending.jsx";
+import { LandTaxLayout } from "./components/layout/LandTaxLayout.jsx";
+import { CashLayout } from "./components/layout/CashLayout.jsx";
 
 function App() {
   return (

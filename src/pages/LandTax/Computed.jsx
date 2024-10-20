@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import Tab from "../../components/Tab";
+import Tab from "../../components/layout/Tab";
 import Button from "@mui/material/Button";
 import { Stack, Typography } from "@mui/material";
 import Computation from "./Computation";

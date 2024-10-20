@@ -1,11 +1,17 @@
 import { Collapse, Stack, TextField } from "@mui/material";
 import React from "react";
-import Fieldset from "./Fieldset";
+import Fieldset from "../shared/Fieldset";
 
-export const BoundariesCollapsible = (props) => {
+export const BoundariesCollapsible = ({
+  props,
+  handleLandChange,
+  handleBuildingChange,
+  handleMachineChange,
+  handleOthersChange,
+}) => {
   return (
     <>
-      <Collapse in={props?.landIsActive}>
+      <Collapse in={props?.row?.Boundaries?.land}>
         <Fieldset title="LAND">
           <Stack direction="row" gap={1}>
             <TextField
@@ -14,8 +20,8 @@ export const BoundariesCollapsible = (props) => {
               label="North"
               variant="outlined"
               name="northBoundary"
-              value={props?.landDetails?.northBoundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.northBoundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -28,8 +34,8 @@ export const BoundariesCollapsible = (props) => {
               label="South"
               variant="outlined"
               name="southBoundary"
-              value={props?.landDetails?.southBoundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.southBoundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -42,8 +48,8 @@ export const BoundariesCollapsible = (props) => {
               label="East"
               variant="outlined"
               name="EastBoundary"
-              value={props?.landDetails?.EastBoundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.EastBoundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -56,8 +62,8 @@ export const BoundariesCollapsible = (props) => {
               label="West"
               variant="outlined"
               name="westBoundary"
-              value={props?.landDetails?.westBoundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.westBoundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -72,8 +78,8 @@ export const BoundariesCollapsible = (props) => {
               label="NE"
               variant="outlined"
               name="NEboundary"
-              value={props?.landDetails?.NEboundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.NEboundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -86,8 +92,8 @@ export const BoundariesCollapsible = (props) => {
               label="SW"
               variant="outlined"
               name="SWBoundary"
-              value={props?.landDetails?.SWBoundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.SWBoundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -101,8 +107,8 @@ export const BoundariesCollapsible = (props) => {
               label="SE"
               variant="outlined"
               name="SEBoundary"
-              value={props?.landDetails?.SEBoundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.SEBoundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -115,8 +121,8 @@ export const BoundariesCollapsible = (props) => {
               label="NW"
               variant="outlined"
               name="NWBoundary"
-              value={props?.landDetails?.NWBoundary}
-              onChange={props?.handleLandChange}
+              value={props?.row?.Boundaries?.landDetails?.NWBoundary}
+              onChange={handleLandChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -130,8 +136,8 @@ export const BoundariesCollapsible = (props) => {
             label="Description"
             variant="outlined"
             name="description"
-            value={props?.landDetails?.description}
-            onChange={props?.handleLandChange}
+            value={props?.row?.Boundaries?.landDetails?.description}
+            onChange={handleLandChange}
             slotProps={{
               input: {
                 readOnly: props?.readOnly,
@@ -141,7 +147,7 @@ export const BoundariesCollapsible = (props) => {
         </Fieldset>
       </Collapse>
 
-      <Collapse in={props?.buildingIsActive}>
+      <Collapse in={props?.row?.Boundaries?.building}>
         <Fieldset title="BUILDING">
           <Stack direction="row" gap={1}>
             <TextField
@@ -150,8 +156,8 @@ export const BoundariesCollapsible = (props) => {
               label="North"
               variant="outlined"
               name="northBoundary"
-              value={props?.buildingDetails?.northBoundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.northBoundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -164,8 +170,8 @@ export const BoundariesCollapsible = (props) => {
               label="South"
               variant="outlined"
               name="southBoundary"
-              value={props?.buildingDetails?.southBoundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.southBoundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -178,8 +184,8 @@ export const BoundariesCollapsible = (props) => {
               label="East"
               variant="outlined"
               name="EastBoundary"
-              value={props?.buildingDetails?.EastBoundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.EastBoundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -192,8 +198,8 @@ export const BoundariesCollapsible = (props) => {
               label="West"
               variant="outlined"
               name="westBoundary"
-              value={props?.buildingDetails?.westBoundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.westBoundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -208,8 +214,8 @@ export const BoundariesCollapsible = (props) => {
               label="NE"
               variant="outlined"
               name="NEboundary"
-              value={props?.buildingDetails?.NEboundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.NEboundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -222,8 +228,8 @@ export const BoundariesCollapsible = (props) => {
               label="SW"
               variant="outlined"
               name="SWBoundary"
-              value={props?.buildingDetails?.SWBoundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.SWBoundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -236,8 +242,8 @@ export const BoundariesCollapsible = (props) => {
               label="SE"
               variant="outlined"
               name="SEBoundary"
-              value={props?.buildingDetails?.SEBoundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.SEBoundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -250,8 +256,8 @@ export const BoundariesCollapsible = (props) => {
               label="NW"
               variant="outlined"
               name="NWBoundary"
-              value={props?.buildingDetails?.NWBoundary}
-              onChange={props?.handleBuildingChange}
+              value={props?.row?.Boundaries?.buildingDetails?.NWBoundary}
+              onChange={handleBuildingChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -265,8 +271,8 @@ export const BoundariesCollapsible = (props) => {
             label="Description"
             variant="outlined"
             name="description"
-            value={props?.buildingDetails?.description}
-            onChange={props?.handleBuildingChange}
+            value={props?.row?.Boundaries?.buildingDetails?.description}
+            onChange={handleBuildingChange}
             slotProps={{
               input: {
                 readOnly: props?.readOnly,
@@ -276,7 +282,7 @@ export const BoundariesCollapsible = (props) => {
         </Fieldset>
       </Collapse>
 
-      <Collapse in={props?.machineryIsActive}>
+      <Collapse in={props?.row?.Boundaries?.machinery}>
         <Fieldset title="MACHINERY">
           <Stack direction="row" gap={1}>
             <TextField
@@ -285,8 +291,8 @@ export const BoundariesCollapsible = (props) => {
               label="North"
               variant="outlined"
               name="northBoundary"
-              value={props?.machineryDetails?.northBoundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.northBoundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -299,8 +305,8 @@ export const BoundariesCollapsible = (props) => {
               label="South"
               variant="outlined"
               name="southBoundary"
-              value={props?.machineryDetails?.southBoundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.southBoundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -313,8 +319,8 @@ export const BoundariesCollapsible = (props) => {
               label="East"
               variant="outlined"
               name="EastBoundary"
-              value={props?.machineryDetails?.EastBoundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.EastBoundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -327,8 +333,8 @@ export const BoundariesCollapsible = (props) => {
               label="West"
               variant="outlined"
               name="westBoundary"
-              value={props?.machineryDetails?.westBoundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.westBoundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -343,8 +349,8 @@ export const BoundariesCollapsible = (props) => {
               label="NE"
               variant="outlined"
               name="NEboundary"
-              value={props?.machineryDetails?.NEboundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.NEboundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -357,8 +363,8 @@ export const BoundariesCollapsible = (props) => {
               label="SW"
               variant="outlined"
               name="SWboundary"
-              value={props?.machineryDetails?.SWboundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.SWboundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -371,8 +377,8 @@ export const BoundariesCollapsible = (props) => {
               label="SE"
               variant="outlined"
               name="SEboundary"
-              value={props?.machineryDetails?.SEboundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.SEboundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -385,8 +391,8 @@ export const BoundariesCollapsible = (props) => {
               label="NW"
               variant="outlined"
               name="NWboundary"
-              value={props?.machineryDetails?.NWboundary}
-              onChange={props?.handleMachineChange}
+              value={props?.row?.Boundaries?.machineryDetails?.NWboundary}
+              onChange={handleMachineChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -400,8 +406,8 @@ export const BoundariesCollapsible = (props) => {
             label="Description"
             variant="outlined"
             name="description"
-            value={props?.machineryDetails?.description}
-            onChange={props?.handleMachineChange}
+            value={props?.row?.Boundaries?.machineryDetails?.description}
+            onChange={handleMachineChange}
             slotProps={{
               input: {
                 readOnly: props?.readOnly,
@@ -411,7 +417,7 @@ export const BoundariesCollapsible = (props) => {
         </Fieldset>
       </Collapse>
 
-      <Collapse in={props?.othersIsActive}>
+      <Collapse in={props?.row?.Boundaries?.others}>
         <Fieldset title="OTHERS">
           <Stack direction="row" gap={1}>
             <TextField
@@ -420,8 +426,8 @@ export const BoundariesCollapsible = (props) => {
               label="North"
               variant="outlined"
               name="northBoundary"
-              value={props?.othersDetails?.northBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.northBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -434,8 +440,8 @@ export const BoundariesCollapsible = (props) => {
               label="South"
               variant="outlined"
               name="southBoundary"
-              value={props?.othersDetails?.southBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.southBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -448,8 +454,8 @@ export const BoundariesCollapsible = (props) => {
               label="East"
               variant="outlined"
               name="EastBoundary"
-              value={props?.othersDetails?.EastBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.EastBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -462,8 +468,8 @@ export const BoundariesCollapsible = (props) => {
               label="West"
               variant="outlined"
               name="westBoundary"
-              value={props?.othersDetails?.westBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.westBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -478,8 +484,8 @@ export const BoundariesCollapsible = (props) => {
               label="NE"
               variant="outlined"
               name="NEBoundary"
-              value={props?.othersDetails?.NEBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.NEBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -492,8 +498,8 @@ export const BoundariesCollapsible = (props) => {
               label="SW"
               variant="outlined"
               name="SWBoundary"
-              value={props?.othersDetails?.SWBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.SWBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -506,8 +512,8 @@ export const BoundariesCollapsible = (props) => {
               label="SE"
               variant="outlined"
               name="SEBoundary"
-              value={props?.othersDetails?.SEBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.SEBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -520,8 +526,8 @@ export const BoundariesCollapsible = (props) => {
               label="NW"
               variant="outlined"
               name="NWBoundary"
-              value={props?.othersDetails?.NWBoundary}
-              onChange={props?.handleOthersChange}
+              value={props?.row?.Boundaries?.othersDetails?.NWBoundary}
+              onChange={handleOthersChange}
               slotProps={{
                 input: {
                   readOnly: props?.readOnly,
@@ -535,8 +541,8 @@ export const BoundariesCollapsible = (props) => {
             label="Description"
             variant="outlined"
             name="description"
-            value={props?.othersDetails?.description}
-            onChange={props?.handleOthersChange}
+            value={props?.row?.Boundaries?.othersDetails?.description}
+            onChange={handleOthersChange}
             slotProps={{
               input: {
                 readOnly: props?.readOnly,

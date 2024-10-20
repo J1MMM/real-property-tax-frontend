@@ -1,162 +1,140 @@
-import { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
+import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import Tab from "../../components/Tab";
 import Button from "@mui/material/Button";
-import { Collapse, Slide, Stack, Typography } from "@mui/material";
+import { Collapse, Stack } from "@mui/material";
 import {
   ALERT_SEV,
   ASSESSMENT_ROLL_COLUMN,
-  ASSESSOR_TAB_LINKS,
-  BOUNDARIES_DETAILS_INITIAL,
+  BOUNDARIES_INITIAL_STATE,
+  DATA_GRID_INITIAL_STATE,
+  DATA_GRID_STYLE,
   INITIAL_FORM_DATA,
+  PAGE_SIZE_OPTION,
   SUBDIVIDE_INITIAL_DATA,
 } from "../../utils/constant";
 import { CreateNewFolderOutlined } from "@mui/icons-material";
-import { useQuery, useQueryClient } from "react-query";
-import { fetchInitialData, submitSubdivide } from "../../api/assessorAPI";
-import RPTview from "./RPTview";
-import AddTaxDecModal from "../../components/AddTaxDecModal";
+import { useQueryClient } from "react-query";
+import AddTaxDecModal from "../../components/form/AddTaxDecModal";
 import { v4 } from "uuid";
 import useData from "../../hooks/useData";
 import axios from "../../api/axios";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
-import SnackBar from "../../components/SnackBar";
+import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
+import SnackBar from "../../components/shared/SnackBar";
 import dayjs from "dayjs";
-import { SubdivideModal } from "../../components/SubdivideModal";
+import { SubdivideModal } from "../../components/form/SubdivideModal";
+import { useRowFormatter } from "../../hooks/useRowFormatter";
+import { formatFullname, sumFieldInArray } from "../../utils/helper";
+import { PageContainer } from "../../components/layout/PageContainer";
+import TaxDecModal from "../../components/form/TaxDecModal";
 
 function AssessmentRoll() {
+  const queryClient = useQueryClient();
+  const { assessorData, isAssessorLoading } = useData();
+
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openRPTview, setOpenRPTview] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
-  const [selectedRowID, setSelectedRowID] = useState(null); // State to hold clicked row data
-  const [prevSelected, setPrevSelected] = useState(null); // State to hold clicked row data
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRowID, setSelectedRowID] = useState(null);
+  const [prevSelected, setPrevSelected] = useState(null);
   const [readOnly, setReadOnly] = useState(true);
 
   const [isDisable, setIsDisable] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState(ALERT_SEV.info);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [addTaxConfirmation, setAddTaxConfirmation] = useState(false);
   const [formMsg, setFormMsg] = useState("");
 
   const [subdivideForm, setSubdivideForm] = useState(SUBDIVIDE_INITIAL_DATA);
   const [subdivideModalOpen, setSubdivideModalOpen] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  const { assessorData, isAssessorLoading } = useData();
-
-  const handleButtonClick = () => {
-    setTaxdecModalOpen(true);
-  };
+  const [formDataNew, setFormDataNew] = useState(INITIAL_FORM_DATA);
 
   const handleCellDoubleClick = (params) => {
     setSelectedRowID(params?.row?.id);
-    // format boundaries
-    let Boundaries = null;
-    const boundaries_initial_format = {
-      land: false,
-      landDetails: {},
-      building: false,
-      buildingDetails: {},
-      machinery: false,
-      machineryDetails: {},
-      others: false,
-      othersDetails: {},
-    };
 
-    if (Array.isArray(params?.row?.Boundaries)) {
-      params?.row?.Boundaries?.map((obj) => {
-        if (obj?.boundaryType == "land" && obj?.active == "true") {
-          boundaries_initial_format.land = true;
-          boundaries_initial_format.landDetails = obj;
-        }
-        if (obj?.boundaryType == "building" && obj?.active == "true") {
-          boundaries_initial_format.building = true;
-          boundaries_initial_format.buildingDetails = obj;
-        }
-        if (obj?.boundaryType == "machinery" && obj?.active == "true") {
-          boundaries_initial_format.machinery = true;
-          boundaries_initial_format.machineryDetails = obj;
-        }
-        if (obj?.boundaryType == "others" && obj?.active == "true") {
-          boundaries_initial_format.others = true;
-          boundaries_initial_format.othersDetails = obj;
-        }
-      });
+    const formattedRow = useRowFormatter(params);
 
-      Boundaries = boundaries_initial_format;
-    } else {
-      Boundaries = params?.row?.Boundaries;
-    }
-    // format classification
-    const classification = [];
-    params?.row?.classification?.map((obj) => {
-      const id = v4();
-
-      classification.push({ ...obj, id });
-    });
-
-    console.log("doouble click");
-    console.log(params?.row);
-
-    setSelectedRow({ ...params.row, Boundaries, classification });
-    setPrevSelected({ ...params.row, Boundaries, classification });
+    setSelectedRow(formattedRow);
+    setPrevSelected(formattedRow);
     setOpenRPTview(true);
   };
 
   const handleTransferClick = (e) => {
-    const Boundaries = {
-      land: false,
-      landDetails: BOUNDARIES_DETAILS_INITIAL,
-      building: false,
-      buildingDetails: BOUNDARIES_DETAILS_INITIAL,
-      machinery: false,
-      machineryDetails: BOUNDARIES_DETAILS_INITIAL,
-      others: false,
-      othersDetails: BOUNDARIES_DETAILS_INITIAL,
-    };
+    const Boundaries = BOUNDARIES_INITIAL_STATE;
 
-    const NEW_DATA = {
+    const assessedValueTotal = sumFieldInArray(
+      selectedRow?.classification || [],
+      "assessedValue"
+    );
+
+    const new_data = {
       ...INITIAL_FORM_DATA,
       oldArp: selectedRow?.ArpNo,
-      previousOwner: `${selectedRow?.fname} ${selectedRow?.mname} ${selectedRow?.lname}`,
+      previousOwner: formatFullname(selectedRow),
       previousAV: assessedValueTotal || 0,
       previousPid: selectedRow?.PID,
       Boundaries,
     };
 
-    setSelectedRow(NEW_DATA);
+    setSelectedRow(new_data);
     setReadOnly(false);
   };
-  const handleCancelClick = () => {
+
+  const handleCancelTransferClick = () => {
     setReadOnly(true);
     setSelectedRow(prevSelected);
   };
 
-  const totalMarketValue = selectedRow?.classification?.reduce(
-    (total, property) => {
-      return total + parseFloat(property?.marketValue || 0); // Accumulate the marketval
-    },
-    0
-  );
+  const handleAddTaxSubmit = async (e) => {
+    setIsDisable(true);
 
-  const assessedValueTotal = selectedRow?.classification?.reduce(
-    (total, property) => {
-      return total + parseFloat(property?.assessedValue || 0); // Accumulate the marketval
-    },
-    0
-  );
-  const areaTotal = selectedRow?.classification?.reduce((total, property) => {
-    return total + parseFloat(property?.area || 0); // Accumulate the marketval
-  }, 0);
+    try {
+      const id = v4();
+      console.log("submit add");
+      console.log(formDataNew);
 
-  const handleSubmit = async () => {
+      const newFormData = {
+        ...formDataNew,
+        id: id,
+
+        DATE: dayjs(formDataNew.DATE).toISOString(),
+        year: dayjs(formDataNew.year).toISOString(),
+        dateOfEffectivity: dayjs(formDataNew.dateOfEffectivity).toISOString(),
+      };
+
+      const response = await axios.post("/api/assessor/createTax", newFormData);
+      console.log(response.data);
+
+      queryClient.setQueryData("assessorData", (oldData) => [
+        ...oldData,
+        newFormData,
+      ]);
+
+      setAlertShown(true);
+      setAlertSeverity(ALERT_SEV.success);
+      setFormMsg("Tax Created Successfully");
+      setTaxdecModalOpen(false);
+
+      setFormDataNew(INITIAL_FORM_DATA);
+    } catch (error) {
+      console.log(error);
+      setAlertShown(true);
+      setAlertSeverity(ALERT_SEV.error);
+      setFormMsg(error?.message);
+
+      if (error.status == 409) {
+        setFormMsg("ARP Already Exist");
+      }
+    }
+
+    setAddTaxConfirmation(false);
+    setIsDisable(false);
+  };
+
+  const handleTransferSubmit = async () => {
     setIsDisable(true);
     const id = v4();
-    console.log("submit");
-
-    console.log(selectedRow);
 
     try {
       const formatedArr = {
@@ -168,14 +146,14 @@ function AssessmentRoll() {
         year: dayjs(selectedRow?.year).toISOString(),
       };
 
-      console.log(formatedArr);
       const response = await axios.post("/api/assessor/cancel", formatedArr);
       console.log(response);
 
-      queryClient.setQueryData("assessorData", (oldData) => [
+      await queryClient.setQueryData("assessorData", (oldData) => [
         ...oldData.filter((item) => item.id != selectedRowID),
         { ...formatedArr, id },
       ]);
+      await queryClient.invalidateQueries("cancelsData");
 
       setAlertShown(true);
       setAlertSeverity(ALERT_SEV.success);
@@ -199,24 +177,44 @@ function AssessmentRoll() {
   };
 
   const handleSubdivideClick = () => {
-    console.log("click");
     setSubdivideModalOpen(true);
     setSubdivideForm((prev) => ({ ...prev, ArpNo: selectedRow?.ArpNo }));
   };
 
+  const handleTaxModalClose = () => {
+    setReadOnly(true);
+    setOpenRPTview(false);
+  };
   const handleSubdivideSubmit = async () => {
     setIsDisable(true);
     try {
-      const res = await submitSubdivide(subdivideForm);
-      console.log(res);
-      if (res?.message == "auto rollback of transaction") {
-        setAlertSeverity(ALERT_SEV.error);
-      }
+      const formatedData = {
+        ...subdivideForm,
+        count: parseInt(subdivideForm?.count),
+        startArpNo: parseInt(subdivideForm?.startArpNo),
+      };
+
+      const response = await axios.post(
+        "/api/assessor/subdivide",
+        formatedData
+      );
+      console.log("response");
+      console.log(response);
+
       setAlertSeverity(ALERT_SEV.success);
-      setFormMsg(res?.message);
-      queryClient.setQueryData("assessorData", (oldData) =>
+      if (response.data?.message == "auto rollback of transaction") {
+        setFormMsg(response.data?.error);
+        setAlertSeverity(ALERT_SEV.error);
+        setAlertShown(true);
+        setIsDisable(false);
+        return;
+      }
+      setFormMsg(response.data?.message);
+      await queryClient.setQueryData("assessorData", (oldData) =>
         oldData.filter((item) => item.id != selectedRowID)
       );
+      await queryClient.invalidateQueries("pendingData");
+      await queryClient.invalidateQueries("cancelsData");
       setOpenRPTview(false);
     } catch (error) {
       console.log(error);
@@ -228,142 +226,102 @@ function AssessmentRoll() {
     setSubdivideModalOpen(false);
   };
 
-  return (
-    <>
-      <Box sx={{ p: 2, boxSizing: "border-box" }}>
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-            boxSizing: "border-box",
-            mb: 2,
-          }}
+  const TaxdecModalButtons = () => {
+    return (
+      <>
+        <Collapse
+          in={readOnly}
+          mountOnEnter
+          unmountOnExit
+          timeout={readOnly ? 200 : 0}
         >
-          <Stack>
-            <Typography variant="h6" fontWeight={600}>
-              ASSESSOR OFFICE
-            </Typography>
-            <Typography variant="body2">
-              Office of the Property Appraiser
-            </Typography>
-          </Stack>
           <Stack direction="row" gap={1}>
             <Button
-              // onClick={handleButtonClick}
-              variant="outlined"
-              // startIcon={<CreateNewFolderOutlined />}
-              // disabled
-            >
-              consolidate
-            </Button>
-            <Button
-              onClick={handleButtonClick}
               variant="contained"
-              startIcon={<CreateNewFolderOutlined />}
+              className="transfer"
+              onClick={handleTransferClick}
             >
-              Add Taxdec
+              TRANSFER
+            </Button>
+            <Button variant="contained" onClick={handleSubdivideClick}>
+              SUBDIVIDE
+            </Button>
+            <Button variant="outlined">GENERATE FORM</Button>
+          </Stack>
+        </Collapse>
+        <Collapse
+          in={!readOnly}
+          mountOnEnter
+          unmountOnExit
+          timeout={!readOnly ? 200 : 0}
+        >
+          <Stack direction="row" gap={1}>
+            <Button variant="outlined" onClick={handleCancelTransferClick}>
+              cancel
+            </Button>
+            <Button variant="contained" type="submit">
+              submit
             </Button>
           </Stack>
-        </Box>
+        </Collapse>
+      </>
+    );
+  };
 
-        <Box height={`calc(100vh - ${246}px)`} width="100%">
-          <DataGrid
-            checkboxSelection
-            loading={isAssessorLoading}
-            rows={assessorData}
-            columns={ASSESSMENT_ROLL_COLUMN}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 100,
-                },
-              },
-            }}
-            pageSizeOptions={[10, 50, 100]}
-            disableRowSelectionOnClick
-            onCellDoubleClick={handleCellDoubleClick} // Add the onCellDoubleClick event
-            sx={{
-              ".data-grid-header": {
-                bgcolor: "primary.main",
-                color: "#fff",
-              },
-              "& .MuiDataGrid-columnHeaderTitle": {
-                fontWeight: "bold", // Make header title bold
-              },
-              "& .MuiDataGrid-cell": {
-                // borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
-              },
-              "& .MuiDataGrid-row": {
-                "&:last-child .MuiDataGrid-cell": {
-                  borderBottom: "none", // Remove bottom border from last row
-                },
-              },
-              ".MuiDataGrid-columnHeaderTitleContainer": {
-                bgcolor: "primary.main",
-              },
-            }}
-          />
-        </Box>
-      </Box>
+  const PageButton = () => {
+    return (
+      <Stack direction="row" gap={1}>
+        <Button variant="outlined">consolidate</Button>
+        <Button
+          onClick={() => setTaxdecModalOpen(true)}
+          variant="contained"
+          startIcon={<CreateNewFolderOutlined />}
+        >
+          Add Taxdec
+        </Button>
+      </Stack>
+    );
+  };
 
-      <RPTview
-        open={openRPTview} // Ensure this state is passed as the open prop
-        handleClose={() => setOpenRPTview(false)}
+  return (
+    <>
+      <PageContainer
+        titleText="ASSESSOR OFFICE"
+        subText="Office of the Property Appraiser"
+        actionButtons={<PageButton />}
+      >
+        <DataGrid
+          checkboxSelection
+          loading={isAssessorLoading}
+          rows={assessorData}
+          columns={ASSESSMENT_ROLL_COLUMN}
+          initialState={DATA_GRID_INITIAL_STATE}
+          pageSizeOptions={PAGE_SIZE_OPTION}
+          disableRowSelectionOnClick
+          onCellDoubleClick={handleCellDoubleClick}
+          sx={DATA_GRID_STYLE}
+        />
+      </PageContainer>
+
+      <TaxDecModal
+        open={openRPTview}
+        handleClose={handleTaxModalClose}
         row={selectedRow}
         setSelectedRow={setSelectedRow}
         readOnly={readOnly}
-        totalMarketValue={totalMarketValue}
-        areaTotal={areaTotal}
-        assessedValueTotal={assessedValueTotal}
         setConfirmationOpen={setConfirmationOpen}
         setReadOnly={setReadOnly}
-        actionButton={
-          <>
-            <Collapse
-              in={readOnly}
-              mountOnEnter
-              unmountOnExit
-              timeout={readOnly ? 200 : 0}
-            >
-              <Stack direction="row" gap={1}>
-                <Button
-                  variant="contained"
-                  className="transfer"
-                  onClick={handleTransferClick}
-                >
-                  TRANSFER
-                </Button>
-                <Button variant="contained" onClick={handleSubdivideClick}>
-                  SUBDIVIDE
-                </Button>
-                <Button variant="outlined">GENERATE FORM</Button>
-              </Stack>
-            </Collapse>
-            <Collapse
-              in={!readOnly}
-              mountOnEnter
-              unmountOnExit
-              timeout={!readOnly ? 200 : 0}
-            >
-              <Stack direction="row" gap={1}>
-                <Button variant="outlined" onClick={handleCancelClick}>
-                  cancel
-                </Button>
-                <Button variant="contained" type="submit">
-                  submit
-                </Button>
-              </Stack>
-            </Collapse>
-          </>
-        }
+        actionButton={<TaxdecModalButtons />}
       />
 
       <AddTaxDecModal
         open={taxdecModalOpen}
-        setOpen={setTaxdecModalOpen}
         handleClose={() => setTaxdecModalOpen(false)}
+        row={formDataNew}
+        setSelectedRow={setFormDataNew}
+        setConfirmationOpen={setAddTaxConfirmation}
+        setReadOnly={setReadOnly}
+        // actionButton={<TaxdecModalButtons />}
       />
 
       <SubdivideModal
@@ -379,9 +337,18 @@ function AssessmentRoll() {
       <ConfirmationDialog
         open={confirmationOpen}
         setOpen={setConfirmationOpen}
-        confirm={handleSubmit}
+        confirm={handleTransferSubmit}
         title="Transfer Tax Dec Confirmation"
         content="Are you sure you want to transfer this data? Once confirmed, the new data will be added to the system, and the previous data will be moved to the canceled records."
+        disabled={isDisable}
+      />
+
+      <ConfirmationDialog
+        open={addTaxConfirmation}
+        setOpen={setAddTaxConfirmation}
+        confirm={handleAddTaxSubmit}
+        title="Add Tax Dec Confirmation"
+        content="Are you sure you want to add this data? Once confirmed, it will be permanently added to the system."
         disabled={isDisable}
       />
 

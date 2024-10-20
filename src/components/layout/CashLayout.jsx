@@ -1,5 +1,5 @@
 import React from "react";
-import Tab from "../../components/Tab";
+import Tab from "./Tab";
 import { CASH_TAB_LINKS } from "../../utils/constant";
 import { Outlet } from "react-router-dom";
 

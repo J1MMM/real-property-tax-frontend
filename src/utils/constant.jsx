@@ -4,8 +4,8 @@ import { io } from "socket.io-client";
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
-export const BASE_URL = "http://192.168.68.118:4000";
-// export const BASE_URL = "http://localhost:4000";
+// export const BASE_URL = "http://192.168.68.118:4000";
+export const BASE_URL = "http://localhost:4000";
 export const SOCKET = io(BASE_URL);
 // Role IDs following a pattern for different categories
 const ROLES_LIST = {
@@ -590,9 +590,51 @@ export const BOUNDARIES_DETAILS_INITIAL = {
   NWBoundary: "",
 };
 
+export const BOUNDARIES_INITIAL_STATE = {
+  land: false,
+  landDetails: BOUNDARIES_DETAILS_INITIAL,
+  building: false,
+  buildingDetails: BOUNDARIES_DETAILS_INITIAL,
+  machinery: false,
+  machineryDetails: BOUNDARIES_DETAILS_INITIAL,
+  others: false,
+  othersDetails: BOUNDARIES_DETAILS_INITIAL,
+};
+
 export const SUBDIVIDE_INITIAL_DATA = {
   ArpNo: "",
   latestArp: "",
   count: 0,
   startArpNo: "",
+};
+
+export const DATA_GRID_STYLE = {
+  ".data-grid-header": {
+    bgcolor: "primary.main",
+    color: "#fff",
+  },
+  "& .MuiDataGrid-columnHeaderTitle": {
+    fontWeight: "bold", // Make header title bold
+  },
+  "& .MuiDataGrid-cell": {
+    // borderRight: "1px solid rgba(224, 224, 224, 1)", // Right border for each cell
+  },
+  "& .MuiDataGrid-row": {
+    "&:last-child .MuiDataGrid-cell": {
+      borderBottom: "none", // Remove bottom border from last row
+    },
+  },
+  ".MuiDataGrid-columnHeaderTitleContainer": {
+    bgcolor: "primary.main",
+  },
+};
+
+export const PAGE_SIZE_OPTION = [10, 50, 100];
+export const DATA_GRID_INITIAL_STATE = {
+  pagination: {
+    paginationModel: {
+      pageSize: 100,
+      page: 0,
+    },
+  },
 };
