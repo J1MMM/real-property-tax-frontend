@@ -14,7 +14,7 @@ export const TaxNumberFields = ({ props, handleFormChange }) => {
         onChange={handleFormChange}
         slotProps={{
           input: {
-            readOnly: props?.readOnly,
+            readOnly: props?.readOnly || props?.pendingPage,
           },
         }}
       />

@@ -1,12 +1,12 @@
-import { Typography } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { io } from "socket.io-client";
 
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
-// export const BASE_URL = "http://192.168.68.118:4000";
-export const BASE_URL = "http://localhost:4000";
+export const BASE_URL = "http://192.168.68.111:4000";
+// export const BASE_URL = "http://localhost:4000";
 export const SOCKET = io(BASE_URL);
 // Role IDs following a pattern for different categories
 const ROLES_LIST = {
@@ -58,6 +58,13 @@ export const ASSESSMENT_ROLL_COLUMN = [
     headerClassName: "data-grid-header",
   },
   {
+    field: "oldArp",
+    headerName: "OLD ARP",
+    width: 200,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+  {
     field: "Address",
     headerName: "OWNED ADDRESS",
     width: 200,
@@ -65,24 +72,38 @@ export const ASSESSMENT_ROLL_COLUMN = [
     headerClassName: "data-grid-header",
   },
   {
-    field: "",
+    field: "kind",
     headerName: "KIND",
-    width: 200,
+    width: 250,
     editable: false,
     align: "center",
     headerAlign: "center",
     headerClassName: "data-grid-header",
     renderCell: (params, i) => {
-      const boundaries = Array.isArray(params.row?.Boundaries)
-        ? params.row?.Boundaries
-        : [];
-
       return (
-        <span>
-          {boundaries?.map((obj, i) => {
-            return <span key={i}>{obj?.active && obj?.boundaryType} </span>;
-          })}
-        </span>
+        <Stack flexDirection="row" gap={1}>
+          <span>
+            {" "}
+            {params?.row?.Boundaries?.land == true && (
+              <Chip size="small" label="LAND" />
+            )}
+          </span>
+          <span>
+            {params?.row?.Boundaries?.building == true && (
+              <Chip size="small" label="BUILDING" />
+            )}
+          </span>
+          <span>
+            {params?.row?.Boundaries?.machinery == true && (
+              <Chip size="small" label="MACHINERY" />
+            )}
+          </span>
+          <span>
+            {params?.row?.Boundaries?.others == true && (
+              <Chip size="small" label="OTHERS" />
+            )}
+          </span>
+        </Stack>
       );
     },
   },
@@ -95,9 +116,17 @@ export const ASSESSMENT_ROLL_COLUMN = [
     headerAlign: "center",
     headerClassName: "data-grid-header",
     renderCell: (params, i) => {
-      const classification = params.row?.classification || [];
+      const classification = Array.isArray(params.row?.classification)
+        ? params.row?.classification
+        : [];
 
-      return <span>{classification[0]?.actualUse}</span>;
+      return (
+        <Stack flexDirection="row" gap={1} alignItems="center" height="100%">
+          {classification?.map((obj, i) => (
+            <Chip key={i} label={obj?.classification} size="small" />
+          ))}
+        </Stack>
+      );
     },
   },
   {
@@ -190,9 +219,17 @@ export const CENCELS_TABLE_COLUMN = [
     editable: false,
     headerClassName: "data-grid-header",
   },
+
   {
     field: "ArpNo",
     headerName: "ARP NO.",
+    width: 200,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "oldArp",
+    headerName: "OLD ARP",
     width: 200,
     editable: false,
     headerClassName: "data-grid-header",
@@ -204,6 +241,7 @@ export const CENCELS_TABLE_COLUMN = [
     editable: false,
     headerClassName: "data-grid-header",
   },
+
   {
     field: "",
     headerName: "KIND",
@@ -213,16 +251,30 @@ export const CENCELS_TABLE_COLUMN = [
     headerAlign: "center",
     headerClassName: "data-grid-header",
     renderCell: (params, i) => {
-      const boundaries = Array.isArray(params.row?.Boundaries)
-        ? params.row?.Boundaries
-        : [];
-
       return (
-        <span>
-          {boundaries?.map((obj, i) => {
-            return <span key={i}>{obj?.active && obj?.boundaryType} </span>;
-          })}
-        </span>
+        <Stack flexDirection="row" gap={1}>
+          <span>
+            {" "}
+            {params?.row?.Boundaries?.land == true && (
+              <Chip size="small" label="LAND" />
+            )}
+          </span>
+          <span>
+            {params?.row?.Boundaries?.building == true && (
+              <Chip size="small" label="BUILDING" />
+            )}
+          </span>
+          <span>
+            {params?.row?.Boundaries?.machinery == true && (
+              <Chip size="small" label="MACHINERY" />
+            )}
+          </span>
+          <span>
+            {params?.row?.Boundaries?.others == true && (
+              <Chip size="small" label="OTHERS" />
+            )}
+          </span>
+        </Stack>
       );
     },
   },
@@ -235,9 +287,17 @@ export const CENCELS_TABLE_COLUMN = [
     headerAlign: "center",
     headerClassName: "data-grid-header",
     renderCell: (params, i) => {
-      const classification = params.row?.classification || [];
+      const classification = Array.isArray(params.row?.classification)
+        ? params.row?.classification
+        : [];
 
-      return <span>{classification[0]?.actualUse}</span>;
+      return (
+        <Stack flexDirection="row" gap={1} alignItems="center" height="100%">
+          {classification?.map((obj, i) => (
+            <Chip key={i} label={obj?.classification} size="small" />
+          ))}
+        </Stack>
+      );
     },
   },
   {
@@ -368,7 +428,7 @@ export const ASSESSOR_TAB_LINKS = [
 
 export const COMPUTED_COLUMN = [
   {
-    field: "ComputationDate",
+    field: "DATE",
     headerName: "DATE",
     width: 200,
     editable: false,
@@ -376,6 +436,11 @@ export const COMPUTED_COLUMN = [
     headerAlign: "center",
     editable: false,
     headerClassName: "data-grid-header",
+
+    renderCell: (params, i) => {
+      const date = dayjs(params.row?.DATE);
+      return <span>{date?.format("MMMM, DD YYYY")}</span>;
+    },
   },
   {
     field: "PropertyOwner",
@@ -383,25 +448,54 @@ export const COMPUTED_COLUMN = [
     width: 320,
     editable: false,
     headerClassName: "data-grid-header",
+
+    renderCell: (params, i) => {
+      const fname = params.row?.fname;
+      const mname = params.row?.mname;
+      const lname = params.row?.lname;
+      return (
+        <span>
+          {fname} {mname} {lname}
+        </span>
+      );
+    },
   },
   {
-    field: "LocationOfProperty",
+    field: "address",
     headerName: "LOCATION",
     width: 320,
     editable: false,
     headerClassName: "data-grid-header",
+
+    renderCell: (params, i) => {
+      const block = params.row?.BLOCK;
+      const brgy = params.row?.Brgy;
+      return (
+        <span>
+          {block} {brgy}
+        </span>
+      );
+    },
   },
   {
-    field: "PINno",
+    field: "PID",
     headerName: "PIN NUMBER",
     width: 220,
     editable: false,
     headerClassName: "data-grid-header",
   },
   {
-    field: "ARPno",
+    field: "ArpNo",
     headerName: "ARP No.",
     width: 270,
+    editable: false,
+    headerClassName: "data-grid-header",
+  },
+
+  {
+    field: "oldArp",
+    headerName: "OLD ARP",
+    width: 200,
     editable: false,
     headerClassName: "data-grid-header",
   },

@@ -57,7 +57,7 @@ function LandTaxComputed() {
         subText="Office of the Revenue Commissioner"
       >
         <DataGrid
-          rows={rows}
+          rows={assessorData}
           columns={COMPUTED_COLUMN}
           onCellDoubleClick={handleCellDoubleClick}
           initialState={DATA_GRID_INITIAL_STATE}
