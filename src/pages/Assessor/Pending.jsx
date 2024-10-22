@@ -1,7 +1,12 @@
 import { useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import {
+  ALERT_SEV,
   CENCELS_TABLE_COLUMN,
   DATA_GRID_INITIAL_STATE,
   DATA_GRID_STYLE,
@@ -13,17 +18,31 @@ import { PageContainer } from "../../components/layout/PageContainer";
 import { useRowFormatter } from "../../hooks/useRowFormatter";
 import { Collapse, Stack } from "@mui/material";
 import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
+import { useQueryClient } from "react-query";
+import { v4 } from "uuid";
+import dayjs from "dayjs";
+import axios from "../../api/axios";
+import SnackBar from "../../components/shared/SnackBar";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
 
 function Pending() {
+  const queryClient = useQueryClient();
   const { pendingData, isPendingData } = useData();
 
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRowID, setSelectedRowID] = useState(null);
   const [readOnly, setReadOnly] = useState(true);
   const [isDisable, setIsDisable] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
+  const [alertShown, setAlertShown] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState(ALERT_SEV.info);
+  const [formMsg, setFormMsg] = useState("");
+
   const handleCellDoubleClick = (params) => {
+    setSelectedRowID(params?.row?.id);
+
     const formattedRow = useRowFormatter(params);
     setSelectedRow(formattedRow);
     setTaxdecModalOpen(true);
@@ -34,12 +53,46 @@ function Pending() {
     setReadOnly(true);
   };
 
-  const handleEditSumit = () => {
+  const handleEditSumit = async () => {
     setIsDisable(true);
     try {
+      const id = v4();
+      console.log("submit add");
+      console.log(selectedRow);
+
+      const newFormData = {
+        ...selectedRow,
+        id: id,
+
+        DATE: dayjs(selectedRow.DATE).toISOString(),
+        year: dayjs(selectedRow.year).toISOString(),
+        dateOfEffectivity: dayjs(selectedRow.dateOfEffectivity).toISOString(),
+      };
+
+      const response = await axios.post(
+        "/api/assessor/updatePending",
+        newFormData
+      );
+      console.log("response.data");
+      console.log(response.data);
+
+      queryClient.setQueryData("assessorData", (oldData) => [
+        ...oldData,
+        newFormData,
+      ]);
+      queryClient.setQueryData("pendingData", (oldData) =>
+        oldData.filter((item) => item.id != selectedRowID)
+      );
+      setFormMsg(response?.data?.message);
+      setAlertSeverity(ALERT_SEV.success);
+      setTaxdecModalOpen(false);
     } catch (error) {
       console.log(error);
+      setAlertSeverity(ALERT_SEV.error);
+      setFormMsg(error?.message);
     }
+
+    setAlertShown(true);
     setIsDisable(false);
     setConfirmationOpen(false);
   };
@@ -83,10 +136,7 @@ function Pending() {
 
   return (
     <>
-      <PageContainer
-        titleText="PENDING  RECORDS"
-        subText="Records to be filled in after subdivision"
-      >
+      <PageContainer>
         <DataGrid
           rows={pendingData}
           loading={isPendingData}
@@ -96,6 +146,14 @@ function Pending() {
           disableRowSelectionOnClick
           onCellDoubleClick={handleCellDoubleClick}
           sx={DATA_GRID_STYLE}
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="PENDING  RECORDS"
+                subText="Records to be filled in after subdivision"
+              />
+            ),
+          }}
         />
       </PageContainer>
 
@@ -107,6 +165,7 @@ function Pending() {
         readOnly={readOnly}
         actionButton={<ActionButtons />}
         setConfirmationOpen={setConfirmationOpen}
+        pendingPage={true}
       />
 
       <ConfirmationDialog
@@ -116,6 +175,13 @@ function Pending() {
         title="Edit Tax Dec Confirmation"
         content="Are you sure you want to save this data? Once confirmed, the new data will be added to the system."
         disabled={isDisable}
+      />
+
+      <SnackBar
+        open={alertShown}
+        onClose={setAlertShown}
+        severity={alertSeverity}
+        msg={formMsg}
       />
     </>
   );

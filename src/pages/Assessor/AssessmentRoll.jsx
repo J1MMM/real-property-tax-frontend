@@ -29,6 +29,7 @@ import TaxDecModal from "../../components/form/modal/TaxDecModal";
 import { useReactToPrint } from "react-to-print";
 import { AssessorFormPrintable } from "../../components/printable/assessor-form/AssessorFormPrintable";
 import { PrintableFormModal } from "../../components/form/modal/PrintableFormModal";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
 
 function AssessmentRoll() {
   const queryClient = useQueryClient();
@@ -38,6 +39,7 @@ function AssessmentRoll() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openRPTview, setOpenRPTview] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedArpNos, setSelectedArpNos] = useState([]);
   const [selectedRowID, setSelectedRowID] = useState(null);
   const [prevSelected, setPrevSelected] = useState(null);
   const [readOnly, setReadOnly] = useState(true);
@@ -45,9 +47,9 @@ function AssessmentRoll() {
   const [isDisable, setIsDisable] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState(ALERT_SEV.info);
+  const [formMsg, setFormMsg] = useState("");
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [addTaxConfirmation, setAddTaxConfirmation] = useState(false);
-  const [formMsg, setFormMsg] = useState("");
 
   const [subdivideForm, setSubdivideForm] = useState(SUBDIVIDE_INITIAL_DATA);
   const [subdivideModalOpen, setSubdivideModalOpen] = useState(false);
@@ -231,6 +233,15 @@ function AssessmentRoll() {
     setSubdivideModalOpen(false);
   };
 
+  const handleSelectionChange = (newSelection) => {
+    // Get only the ArpNo field for the selected IDs
+    const selectedArpNosData = newSelection?.map((id) => {
+      const selectedRow = assessorData?.find((row) => row.id === id);
+      return selectedRow ? selectedRow?.ArpNo : null; // Return only the ArpNo
+    });
+    setSelectedArpNos(selectedArpNosData);
+  };
+
   const TaxdecModalButtons = () => {
     return (
       <>
@@ -298,11 +309,7 @@ function AssessmentRoll() {
 
   return (
     <>
-      <PageContainer
-        titleText="ASSESSOR OFFICE"
-        subText="Office of the Property Appraiser"
-        actionButtons={<PageButton />}
-      >
+      <PageContainer>
         <DataGrid
           checkboxSelection
           loading={isAssessorLoading}
@@ -312,7 +319,17 @@ function AssessmentRoll() {
           pageSizeOptions={PAGE_SIZE_OPTION}
           disableRowSelectionOnClick
           onCellDoubleClick={handleCellDoubleClick}
+          onRowSelectionModelChange={handleSelectionChange}
           sx={DATA_GRID_STYLE}
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="ASSESSOR OFFICE"
+                subText="Office of the Property Appraiser"
+                actionBtn={<PageButton />}
+              />
+            ),
+          }}
         />
       </PageContainer>
 

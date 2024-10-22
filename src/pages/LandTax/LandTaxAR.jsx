@@ -43,6 +43,7 @@ function LandTaxAR() {
         open={openComputation}
         handleClose={() => setOpenComputation(false)}
         row={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </>
   );
