@@ -4,7 +4,7 @@ import {
   GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import React from "react";
-import { TableFilterBtn } from "./TableFilterBtn";
+import TableFilterBtn from "./TableFilterBtn";
 
 export const TableToolbar = ({ titleText, subText, actionBtn }) => {
   return (
@@ -21,7 +21,7 @@ export const TableToolbar = ({ titleText, subText, actionBtn }) => {
         </Typography>
         <Typography variant="body2">{subText}</Typography>
       </Stack>
-      <Stack direction="row" gap={1}>
+      <Stack direction="row" gap={1} alignItems="center">
         <TableFilterBtn />
         {actionBtn}
       </Stack>

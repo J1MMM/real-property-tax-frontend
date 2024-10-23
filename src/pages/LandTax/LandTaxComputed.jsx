@@ -9,6 +9,7 @@ import {
 import ComputationModal from "../../components/form/modal/ComputationModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import useData from "../../hooks/useData";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
 
 function LandTaxComputed() {
   const { assessorData, isAssessorLoading } = useData();
@@ -52,10 +53,7 @@ function LandTaxComputed() {
 
   return (
     <>
-      <PageContainer
-        titleText="LANDTAX OFFICE"
-        subText="Office of the Revenue Commissioner"
-      >
+      <PageContainer>
         <DataGrid
           rows={assessorData}
           columns={COMPUTED_COLUMN}
@@ -64,6 +62,14 @@ function LandTaxComputed() {
           pageSizeOptions={PAGE_SIZE_OPTION}
           sx={DATA_GRID_STYLE}
           disableRowSelectionOnClick
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="LANDTAX OFFICE"
+                subText="Office of the Revenue Commissioner"
+              />
+            ),
+          }}
         />
 
         <ComputationModal

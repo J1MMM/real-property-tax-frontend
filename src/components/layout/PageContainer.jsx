@@ -9,7 +9,7 @@ export const PageContainer = ({
 }) => {
   return (
     <Box sx={{ p: 2, boxSizing: "border-box" }}>
-      <Box height={`calc(100vh - ${246}px)`} width="100%">
+      <Box height={`calc(100vh - ${160}px)`} width="100%">
         {children}
       </Box>
     </Box>

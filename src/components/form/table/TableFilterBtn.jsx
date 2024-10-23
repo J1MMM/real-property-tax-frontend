@@ -1,19 +1,25 @@
 import {
   GridToolbarContainer,
+  GridToolbarExport,
   GridToolbarFilterButton,
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import React from "react";
 
-export const TableFilterBtn = () => {
+export default function TableFilterBtn() {
   return (
     <GridToolbarContainer>
       <GridToolbarFilterButton
-        sx={{
-          px: 2,
-          py: 1,
-          border: "1px solid #1A237E",
+        slotProps={{
+          button: {
+            style: {
+              marginTop: "-3px",
+              padding: "5.5px 20px",
+              border: "1px solid #414780",
+            },
+          },
         }}
       />
     </GridToolbarContainer>
   );
-};
+}

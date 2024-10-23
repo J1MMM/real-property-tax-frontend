@@ -13,6 +13,7 @@ import { CreateNewFolderOutlined } from "@mui/icons-material";
 import PaymentModal from "../../components/form/modal/PaymentModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import useData from "../../hooks/useData";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
 
 const rows = [
   {
@@ -61,10 +62,7 @@ function LandTaxPaidList() {
 
   return (
     <>
-      <PageContainer
-        titleText="LANDTAX OFFICE"
-        subText="Office of the Revenue Commissioner"
-      >
+      <PageContainer>
         <DataGrid
           rows={rows}
           columns={COMPUTED_COLUMN}
@@ -73,6 +71,14 @@ function LandTaxPaidList() {
           disableRowSelectionOnClick
           onCellDoubleClick={handleCellDoubleClick}
           sx={DATA_GRID_STYLE}
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="LANDTAX OFFICE"
+                subText="Office of the Revenue Commissioner"
+              />
+            ),
+          }}
         />
       </PageContainer>
 
