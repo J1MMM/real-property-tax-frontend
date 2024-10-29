@@ -37,12 +37,12 @@ export const PropertyInfoFields = ({ props, handleFormChange }) => {
           <Select
             labelId="Barangay/District"
             id="demo-simple-select"
-            value={props?.row?.Brgy}
+            value={props?.row?.Brgy || ""}
             required
             name="Brgy"
             label="Barangay/District"
             onChange={handleFormChange}
-            readOnly={props?.readOnly}
+            readOnly={props?.readOnly || props?.pendingPage}
           >
             {BRGY_LIST.map((val, index) => (
               <MenuItem key={index} value={val}>

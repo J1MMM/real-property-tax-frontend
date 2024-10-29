@@ -11,6 +11,7 @@ import useData from "../../hooks/useData";
 import TaxDecModal from "../../components/form/modal/TaxDecModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { useRowFormatter } from "../../hooks/useRowFormatter";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
 
 function Cancels() {
   const { cancelsData, isCancelsLoading } = useData();
@@ -27,10 +28,7 @@ function Cancels() {
 
   return (
     <>
-      <PageContainer
-        titleText="ARCHIVED RECORDS"
-        subText="All Cancelled Records"
-      >
+      <PageContainer>
         <DataGrid
           rows={cancelsData}
           loading={isCancelsLoading}
@@ -40,6 +38,14 @@ function Cancels() {
           disableRowSelectionOnClick
           onCellDoubleClick={handleCellDoubleClick}
           sx={DATA_GRID_STYLE}
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="ARCHIVED RECORDS"
+                subText="All Cancelled Records"
+              />
+            ),
+          }}
         />
       </PageContainer>
 

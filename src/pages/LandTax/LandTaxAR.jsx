@@ -9,6 +9,7 @@ import {
   DATA_GRID_STYLE,
   PAGE_SIZE_OPTION,
 } from "../../utils/constant";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
 
 function LandTaxAR() {
   const { assessorData, isAssessorLoading } = useData();
@@ -23,10 +24,7 @@ function LandTaxAR() {
 
   return (
     <>
-      <PageContainer
-        titleText="LANDTAX OFFICE"
-        subText="Office of the Revenue Commissioner"
-      >
+      <PageContainer>
         <DataGrid
           loading={isAssessorLoading}
           rows={assessorData}
@@ -36,6 +34,14 @@ function LandTaxAR() {
           pageSizeOptions={PAGE_SIZE_OPTION}
           sx={DATA_GRID_STYLE}
           disableRowSelectionOnClick
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="LANDTAX OFFICE"
+                subText="Office of the Revenue Commissioner"
+              />
+            ),
+          }}
         />
       </PageContainer>
 
@@ -43,6 +49,7 @@ function LandTaxAR() {
         open={openComputation}
         handleClose={() => setOpenComputation(false)}
         row={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </>
   );

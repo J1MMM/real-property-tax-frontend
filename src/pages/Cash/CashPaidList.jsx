@@ -15,6 +15,7 @@ import {
 import { CreateNewFolderOutlined } from "@mui/icons-material";
 import PaymentModal from "../../components/form/modal/PaymentModal";
 import { PageContainer } from "../../components/layout/PageContainer";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
 
 const rows = [
   {
@@ -61,10 +62,7 @@ function CashPaidList() {
 
   return (
     <>
-      <PageContainer
-        titleText="CASH OFFICE"
-        subText="Office of the City Treasury"
-      >
+      <PageContainer>
         <DataGrid
           rows={rows}
           columns={COMPUTED_COLUMN}
@@ -73,6 +71,14 @@ function CashPaidList() {
           pageSizeOptions={PAGE_SIZE_OPTION}
           sx={DATA_GRID_STYLE}
           disableRowSelectionOnClick
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="CASH OFFICE"
+                subText="Office of the City Treasury"
+              />
+            ),
+          }}
         />
       </PageContainer>
 

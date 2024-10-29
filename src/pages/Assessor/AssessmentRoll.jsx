@@ -29,6 +29,8 @@ import TaxDecModal from "../../components/form/modal/TaxDecModal";
 import { useReactToPrint } from "react-to-print";
 import { AssessorFormPrintable } from "../../components/printable/assessor-form/AssessorFormPrintable";
 import { PrintableFormModal } from "../../components/form/modal/PrintableFormModal";
+import { TableToolbar } from "../../components/form/table/TableToolbar";
+import { ConsolidateModal } from "../../components/form/modal/ConsolidateModal";
 
 function AssessmentRoll() {
   const queryClient = useQueryClient();
@@ -38,6 +40,7 @@ function AssessmentRoll() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openRPTview, setOpenRPTview] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedArpNos, setSelectedArpNos] = useState([]);
   const [selectedRowID, setSelectedRowID] = useState(null);
   const [prevSelected, setPrevSelected] = useState(null);
   const [readOnly, setReadOnly] = useState(true);
@@ -45,15 +48,20 @@ function AssessmentRoll() {
   const [isDisable, setIsDisable] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState(ALERT_SEV.info);
+  const [formMsg, setFormMsg] = useState("");
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [addTaxConfirmation, setAddTaxConfirmation] = useState(false);
-  const [formMsg, setFormMsg] = useState("");
+  const [consolidateConfirmation, setConsolidateConfirmation] = useState(false);
 
   const [subdivideForm, setSubdivideForm] = useState(SUBDIVIDE_INITIAL_DATA);
   const [subdivideModalOpen, setSubdivideModalOpen] = useState(false);
 
   const [formDataNew, setFormDataNew] = useState(INITIAL_FORM_DATA);
+  const [consolidateFormData, setconsolidateFormData] =
+    useState(INITIAL_FORM_DATA);
   const [printableFormOpen, setPrintableFormOpen] = useState(false);
+
+  const [consolidateActive, setConsolidateActive] = useState(false);
 
   const handleCellDoubleClick = (params) => {
     setSelectedRowID(params?.row?.id);
@@ -181,6 +189,67 @@ function AssessmentRoll() {
     setConfirmationOpen(false);
   };
 
+  const handleConsolidateSubmit = async () => {
+    setIsDisable(true);
+
+    try {
+      const id = v4();
+      console.log("submit conso");
+      // console.log(consolidateFormData);
+
+      const newFormData = {
+        ...consolidateFormData,
+        id: id,
+        ArpNo: selectedArpNos,
+        NewArp: consolidateFormData.ArpNo,
+        DATE: dayjs(consolidateFormData.DATE).toISOString(),
+        year: dayjs(consolidateFormData.year).toISOString(),
+        dateOfEffectivity: dayjs(
+          consolidateFormData.dateOfEffectivity
+        ).toISOString(),
+      };
+
+      console.log(newFormData);
+
+      const response = await axios.post(
+        "/api/assessor/consolidate",
+        newFormData
+      );
+      console.log(response.data);
+
+      await queryClient.setQueryData("assessorData", (oldData) => {
+        // Filter out any data entries that have ArpNos to be removed
+        const filteredData =
+          oldData?.filter((item) => !selectedArpNos.includes(item.ArpNo)) || [];
+
+        // Return the filtered data with the new data added
+        return [...filteredData, newFormData];
+      });
+
+      await queryClient.invalidateQueries("cancelsData");
+
+      setSelectedArpNos([]);
+      setAlertShown(true);
+      setAlertSeverity(ALERT_SEV.success);
+      setFormMsg("Tax Created Successfully");
+      setConsolidateActive(false);
+
+      setconsolidateFormData(INITIAL_FORM_DATA);
+    } catch (error) {
+      console.log(error);
+      setAlertShown(true);
+      setAlertSeverity(ALERT_SEV.error);
+      setFormMsg(error?.message);
+
+      if (error.status == 409) {
+        setFormMsg("ARP Already Exist");
+      }
+    }
+
+    setConsolidateConfirmation(false);
+    setIsDisable(false);
+  };
+
   const handleSubdivideClick = () => {
     setSubdivideModalOpen(true);
     setSubdivideForm((prev) => ({ ...prev, ArpNo: selectedRow?.ArpNo }));
@@ -189,6 +258,7 @@ function AssessmentRoll() {
   const handleTaxModalClose = () => {
     setReadOnly(true);
     setOpenRPTview(false);
+    setConsolidateActive(false);
   };
   const handleSubdivideSubmit = async () => {
     setIsDisable(true);
@@ -229,6 +299,15 @@ function AssessmentRoll() {
     setAlertShown(true);
     setIsDisable(false);
     setSubdivideModalOpen(false);
+  };
+
+  const handleSelectionChange = (newSelection) => {
+    // Get only the ArpNo field for the selected IDs
+    const selectedArpNosData = newSelection?.map((id) => {
+      const selectedRow = assessorData?.find((row) => row.id === id);
+      return selectedRow ? selectedRow?.ArpNo : null; // Return only the ArpNo
+    });
+    setSelectedArpNos(selectedArpNosData);
   };
 
   const TaxdecModalButtons = () => {
@@ -284,7 +363,13 @@ function AssessmentRoll() {
   const PageButton = () => {
     return (
       <Stack direction="row" gap={1}>
-        <Button variant="outlined">consolidate</Button>
+        <Button
+          disabled={Boolean(selectedArpNos.length == 0)}
+          variant="outlined"
+          onClick={() => setConsolidateActive(true)}
+        >
+          consolidate
+        </Button>
         <Button
           onClick={() => setTaxdecModalOpen(true)}
           variant="contained"
@@ -298,11 +383,7 @@ function AssessmentRoll() {
 
   return (
     <>
-      <PageContainer
-        titleText="ASSESSOR OFFICE"
-        subText="Office of the Property Appraiser"
-        actionButtons={<PageButton />}
-      >
+      <PageContainer>
         <DataGrid
           checkboxSelection
           loading={isAssessorLoading}
@@ -312,7 +393,17 @@ function AssessmentRoll() {
           pageSizeOptions={PAGE_SIZE_OPTION}
           disableRowSelectionOnClick
           onCellDoubleClick={handleCellDoubleClick}
+          onRowSelectionModelChange={handleSelectionChange}
           sx={DATA_GRID_STYLE}
+          slots={{
+            toolbar: () => (
+              <TableToolbar
+                titleText="ASSESSOR OFFICE"
+                subText="Office of the Property Appraiser"
+                actionBtn={<PageButton />}
+              />
+            ),
+          }}
         />
       </PageContainer>
 
@@ -347,6 +438,14 @@ function AssessmentRoll() {
         disabled={isDisable}
       />
 
+      <ConsolidateModal
+        open={consolidateActive}
+        handleClose={() => setConsolidateActive(false)}
+        row={consolidateFormData}
+        setSelectedRow={setconsolidateFormData}
+        setConfirmationOpen={setConsolidateConfirmation}
+      />
+
       <ConfirmationDialog
         open={confirmationOpen}
         setOpen={setConfirmationOpen}
@@ -362,6 +461,15 @@ function AssessmentRoll() {
         confirm={handleAddTaxSubmit}
         title="Add Tax Dec Confirmation"
         content="Are you sure you want to add this data? Once confirmed, it will be permanently added to the system."
+        disabled={isDisable}
+      />
+
+      <ConfirmationDialog
+        open={consolidateConfirmation}
+        setOpen={setConsolidateConfirmation}
+        confirm={handleConsolidateSubmit}
+        title="Consolidate Tax dec Confirmation"
+        content="Are you sure you want to consolidate this tax declaration? Once confirmed, the data will be merged and permanently recorded in the system, and this action cannot be undone."
         disabled={isDisable}
       />
 
