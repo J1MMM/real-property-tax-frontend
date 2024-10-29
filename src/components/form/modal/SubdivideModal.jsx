@@ -90,7 +90,7 @@ export const SubdivideModal = ({
       maxWidth="sm"
       open={open}
       onClose={handleClose}
-      title="Subdivide Modal"
+      title="Subdivide Tax Declaration"
       onSubmit={handleOnSubmit}
       actionButton={<ActionButtons />}
     >
