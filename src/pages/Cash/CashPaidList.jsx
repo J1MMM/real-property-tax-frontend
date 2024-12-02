@@ -16,6 +16,9 @@ import { CreateNewFolderOutlined } from "@mui/icons-material";
 import PaymentModal from "../../components/form/modal/PaymentModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
+import TaxDecModal from "../../components/form/modal/TaxDecModal";
+import { Receipt51reactToPrint } from "../../components/form/modal/reactToPrint/receipts/Receipt51reactToPrint";
+import { Receipt56reactToPrint } from "../../components/form/modal/reactToPrint/receipts/Receipt56reactToPrint";
 
 const rows = [
   {
@@ -50,6 +53,20 @@ function CashPaidList() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
+
+  const [Receipt51Open, setReceipt51Open] = useState(false);
+  const [Receipt56Open, setReceipt56Open] = useState(false);
+  const [currentFormType, setCurrentFormType] = useState();
+  const [openRPTview, setOpenRPTview] = useState(false);
+
+  const openReceipt51Open = (formType) => {
+    setCurrentFormType(formType);
+    setReceipt51Open(true);
+  };
+  const openReceipt56Open = (formType) => {
+    setCurrentFormType(formType);
+    setReceipt56Open(true);
+  };
 
   const handleButtonClick = () => {
     setTaxdecModalOpen(true);
@@ -86,7 +103,53 @@ function CashPaidList() {
         open={openPayment} // Ensure this state is passed as the open prop
         handleClose={() => setOpenPayment(false)}
         row={selectedRow}
-        actionButton={<Button variant="outlined">View Receipt</Button>}
+        actionButton={
+          <>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setOpenRPTview(false); // Close RPTview
+                openReceipt51Open(); // Open BookbindForm
+              }}
+            >
+              Garbage Fee Receipt
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setOpenRPTview(false); // Close RPTview
+                openReceipt56Open(); // Open BookbindForm
+              }}
+            >
+              Property Fee Receipt
+            </Button>
+          </>
+        }
+      />
+
+      <TaxDecModal
+        open={openRPTview}
+        // handleClose={handleTaxModalClose}
+        // row={selectedRow}
+        // setSelectedRow={setSelectedRow}
+        // readOnly={readOnly}
+        // setConfirmationOpen={setConfirmationOpen}
+        // setReadOnly={setReadOnly}
+        // actionButton={<TaxdecModalButtons />}
+      />
+
+      <Receipt51reactToPrint
+        open={Receipt51Open}
+        onClose={() => setReceipt51Open(false)}
+        row={selectedRow} // Ensure `selectedRow` is defined in your component
+        formType={currentFormType}
+      />
+
+      <Receipt56reactToPrint
+        open={Receipt56Open}
+        onClose={() => setReceipt56Open(false)}
+        row={selectedRow} // Ensure `selectedRow` is defined in your component
+        formType={currentFormType}
       />
     </>
   );

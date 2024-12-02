@@ -27,10 +27,11 @@ import { formatFullname, sumFieldInArray } from "../../utils/helper";
 import { PageContainer } from "../../components/layout/PageContainer";
 import TaxDecModal from "../../components/form/modal/TaxDecModal";
 import { useReactToPrint } from "react-to-print";
-import { AssessorFormPrintable } from "../../components/printable/assessor-form/AssessorFormPrintable";
-import { PrintableFormModal } from "../../components/form/modal/PrintableFormModal";
+import { ClientFormCopy } from "../../components/printable/assessor-form/ClientFormCopy";
+import { TaxdecPrintableFormModal } from "../../components/form/modal/reactToPrint/TaxdecPrintableFormModal";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
 import { ConsolidateModal } from "../../components/form/modal/ConsolidateModal";
+import AssessorTaxdecForms from "../../components/printable/assessor-form/TaxdecFormsPopover";
 
 function AssessmentRoll() {
   const queryClient = useQueryClient();
@@ -60,8 +61,14 @@ function AssessmentRoll() {
   const [consolidateFormData, setconsolidateFormData] =
     useState(INITIAL_FORM_DATA);
   const [printableFormOpen, setPrintableFormOpen] = useState(false);
+  const [currentFormType, setCurrentFormType] = useState("ClientForm");
 
   const [consolidateActive, setConsolidateActive] = useState(false);
+
+  const openPrintableForm = (formType) => {
+    setCurrentFormType(formType);
+    setPrintableFormOpen(true);
+  };
 
   const handleCellDoubleClick = (params) => {
     setSelectedRowID(params?.row?.id);
@@ -330,15 +337,42 @@ function AssessmentRoll() {
             <Button variant="contained" onClick={handleSubdivideClick}>
               SUBDIVIDE
             </Button>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setOpenRPTview(false);
-                setPrintableFormOpen(true);
-              }}
-            >
-              GENERATE FORM
-            </Button>
+            <AssessorTaxdecForms
+              actionBttn={
+                <>
+                  <Stack gap={0.5} p={1}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setOpenRPTview(false);
+                        openPrintableForm("ClientForm");
+                      }}
+                      sx={{ width: "15vw" }}
+                    >
+                      CLIENT COPY
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setOpenRPTview(false);
+                        openPrintableForm("AssessorForm");
+                      }}
+                    >
+                      ASSESSOR COPY
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setOpenRPTview(false); // Close RPTview
+                        openPrintableForm("BookbindForm"); // Open BookbindForm
+                      }}
+                    >
+                      BOOKBIND COPY
+                    </Button>
+                  </Stack>
+                </>
+              }
+            />
           </Stack>
         </Collapse>
         <Collapse
@@ -480,11 +514,11 @@ function AssessmentRoll() {
         msg={formMsg}
       />
 
-      {/* <AssessorFormPrintable ref={contentRef} /> */}
-      <PrintableFormModal
+      <TaxdecPrintableFormModal
         open={printableFormOpen}
         onClose={() => setPrintableFormOpen(false)}
-        row={selectedRow}
+        row={selectedRow} // Ensure `selectedRow` is defined in your component
+        formType={currentFormType}
       />
     </>
   );
