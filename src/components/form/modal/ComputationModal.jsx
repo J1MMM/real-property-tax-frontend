@@ -25,7 +25,7 @@ export default function ComputationModal(props) {
   return (
     <>
       <ContainerModal
-        title="REAL PROPERTY TAX ORDER `OF PAYMENT"
+        title="REAL PROPERTY TAX ORDER OF PAYMENT"
         open={props?.open}
         onClose={props?.handleClose}
         actionButton={<Button variant="contained">submit</Button>}
@@ -47,7 +47,7 @@ export default function ComputationModal(props) {
               fullWidth
               label="Location"
               variant="outlined"
-              value={props.row?.Address}
+              value={props.row?.Brgy}
               slotProps={{
                 input: { readOnly: true },
               }}

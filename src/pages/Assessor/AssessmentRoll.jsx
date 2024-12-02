@@ -398,7 +398,7 @@ function AssessmentRoll() {
     return (
       <Stack direction="row" gap={1}>
         <Button
-          disabled={Boolean(selectedArpNos.length == 0)}
+          disabled={Boolean(selectedArpNos.length < 2)}
           variant="outlined"
           onClick={() => setConsolidateActive(true)}
         >

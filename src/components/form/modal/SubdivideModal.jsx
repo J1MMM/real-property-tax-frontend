@@ -29,10 +29,12 @@ export const SubdivideModal = ({
 }) => {
   const [isDisable, setIsDisable] = useState(false);
   const handleFormChange = (e) => {
-    setSubdivideForm({
-      ...subdivideForm,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setSubdivideForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSearchClick = async () => {
@@ -67,7 +69,6 @@ export const SubdivideModal = ({
           Cancel
         </Button>
         <Button
-          autoFocus
           disabled={!!disabled}
           variant="contained"
           size="small"
@@ -102,7 +103,7 @@ export const SubdivideModal = ({
         label="Input Count"
         variant="outlined"
         name="count"
-        value={subdivideForm.count}
+        value={subdivideForm?.count}
         onChange={handleFormChange}
         type="number"
         inputProps={{ min: 2, max: 499 }} // Set the min and max values
