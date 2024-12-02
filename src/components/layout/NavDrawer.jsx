@@ -33,7 +33,7 @@ export default function NavDrawer(props) {
           <Stack direction={"row"} alignItems="center" gap={2}>
             <ListAltRounded sx={{ fontSize: 32 }} />
             <Typography display={props.open ? "inline" : "none"} minWidth={300}>
-              Assesor Office
+              Assessor Office
             </Typography>
           </Stack>
         </NavLink>

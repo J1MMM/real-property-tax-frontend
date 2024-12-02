@@ -31,6 +31,17 @@ function App() {
               <Route path="pending" element={<Pending />} />
               <Route path="cancels" element={<Cancels />} />
             </Route>
+
+            <Route path="landtax-division" element={<LandTaxLayout />}>
+              <Route path="" element={<LandTaxAR />} />
+              <Route path="computed" element={<LandTaxComputed />} />
+              <Route path="paidlist" element={<LandTaxPaidList />} />
+            </Route>
+
+            <Route path="cash-division" element={<CashLayout />}>
+              <Route path="" element={<CashPendingList />} />
+              <Route path="paidlist" element={<CashPaidList />} />
+            </Route>
           </Route>
 
           <Route path="landtax-division" element={<LandTaxLayout />}>

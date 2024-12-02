@@ -1,8 +1,7 @@
 import React, { forwardRef } from "react";
 import "./style.scss";
-import logo1 from "../../../assets/images/seal.png";
-import logo2 from "../../../assets/images/trylogo.png";
 import {
+  Box,
   colors,
   Divider,
   Paper,
@@ -122,14 +121,11 @@ const rows = [
   // createData("RES.LAND", 5, 521, "RES", 63, 1212),
 ];
 
-export const AssessorFormPrintable = forwardRef((props, ref) => {
+export const AssessorFormCopy = forwardRef((props, ref) => {
   return (
     <div ref={ref} className="paper">
-      <div className="header space-between">
-        {/* display image  */}
-        <img className="logo logo-1" src={logo1} alt="logo1" />
-        <h3>TAX DECLARATION OF REAL PROPERTY</h3>
-        <img className="logo logo-2" src={logo2} alt="logo1" />
+      <div className="header center">
+        <h3>ASSESSOR TAX DECLARATION OF REAL PROPERTY</h3>
       </div>
       {/* how to access selected data */}
       {/* ARP */}
@@ -199,7 +195,7 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
       <div className="stack space-between space locProp">
         <body1></body1>
         <body1>Number and Street</body1>
-        <body1>Barangay/district</body1>
+        <body1>Barangay/District</body1>
         <body1>Municipal & Province/City</body1>
       </div>
 
@@ -267,8 +263,10 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
       <div className="stack space-between">
         <div className="kind1">
           <input type="checkbox" id="land" name="land" value="land"></input>
-          <label for="land">LAND</label>
-          <br></br>
+          <label htmlFor="land" style={{ fontSize: "11px" }}>
+            LAND
+          </label>
+          <br />
         </div>
         <div className="kind1">
           <input
@@ -277,8 +275,10 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
             name="machinery"
             value="machinery"
           ></input>
-          <label for="machinery"> MACHINERY</label>
-          <br></br>
+          <label for="machinery" style={{ fontSize: "11px" }}>
+            MACHINERY
+          </label>
+          <br />
         </div>
       </div>
       <div className="stack space-between space">
@@ -289,8 +289,10 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
             name="building"
             value="building"
           ></input>
-          <label for="building"> BUILDING</label>
-          <br></br>
+          <label for="building" style={{ fontSize: "11px" }}>
+            BUILDING
+          </label>
+          <br />
         </div>
         <div className="kind1">
           <input
@@ -299,8 +301,10 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
             name="others"
             value="others"
           ></input>
-          <label for="others"> OTHERS</label>
-          <br></br>
+          <label for="others" style={{ fontSize: "11px" }}>
+            OTHERS
+          </label>
+          <br />
         </div>
       </div>
 
@@ -478,7 +482,7 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
           <body1>O.I.C. -City Assessor</body1>
         </div>
         <div className="stack flexgrow">
-          <h4>FILADELPO T. BARLETA</h4>
+          <h4>BLESILDA A. ALINEA</h4>
           <body1>LAOO IV</body1>
         </div>
         <div className="stack">
@@ -527,7 +531,7 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
             </div>
             <div className="spacer"></div>
             <div className="stack flexgrow">
-              <h4>FILADELPO T. BARLETA</h4>
+              <h4>BLESILDA A. ALINEA</h4>
               <body1>LAOO IV</body1>
             </div>
           </div>
@@ -545,6 +549,23 @@ export const AssessorFormPrintable = forwardRef((props, ref) => {
           ownership or legal to the property.
         </body2>
       </div>
+
+      {/* SIGNs */}
+      {/* <div className="stack space-between ">
+        <div className="initials">
+          <div className="stack flexgrow">
+            <h5>Yman Mangaring</h5>
+            <body1>Printed By:</body1>
+          </div>
+          <div className="stack flexgrow">
+            <h5>Yman Mangaring</h5>
+            <body1>Encoded By:</body1>
+          </div>
+        </div>
+        <div className="Stamp">
+          <h4>Documentary Stamp</h4>
+        </div>
+      </div> */}
     </div>
   );
 });

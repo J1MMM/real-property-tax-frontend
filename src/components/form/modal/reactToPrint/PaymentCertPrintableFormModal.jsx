@@ -1,15 +1,22 @@
 import React, { useRef } from "react";
-import { ContainerModal } from "../../shared/ContainerModal";
-import { AssessorFormPrintable } from "../../printable/assessor-form/AssessorFormPrintable";
+import { ContainerModal } from "../../../shared/ContainerModal";
 import { Button } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
+import { PaymentCertForm } from "../../../printable/landtax-form/PaymentCertForm";
 
-export const PrintableFormModal = ({ open, onClose, row }) => {
+export const PaymentCertPrintableFormModal = ({
+  open,
+  onClose,
+  row,
+  disable,
+  formType,
+}) => {
   const contentRef = useRef(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <ContainerModal
-      title="Assessor  Form"
+      title="CERTIFICATE OF PAYMENT FORM"
       open={open}
       onClose={onClose}
       actionButton={
@@ -17,13 +24,17 @@ export const PrintableFormModal = ({ open, onClose, row }) => {
           <Button variant="outlined" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={reactToPrintFn}>
+          <Button
+            variant="contained"
+            onClick={reactToPrintFn}
+            disabled={disable}
+          >
             Print
           </Button>
         </>
       }
     >
-      <AssessorFormPrintable ref={contentRef} row={row} />
+      <PaymentCertForm ref={contentRef} row={row} />
     </ContainerModal>
   );
 };

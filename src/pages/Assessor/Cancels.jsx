@@ -12,12 +12,22 @@ import TaxDecModal from "../../components/form/modal/TaxDecModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { useRowFormatter } from "../../hooks/useRowFormatter";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
+import { TaxdecPrintableFormModal } from "../../components/form/modal/reactToPrint/TaxdecPrintableFormModal";
 
 function Cancels() {
   const { cancelsData, isCancelsLoading } = useData();
 
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+
+  const [openRPTview, setOpenRPTview] = useState(false);
+  const [printableFormOpen, setPrintableFormOpen] = useState(false);
+  const [currentFormType, setCurrentFormType] = useState("ClientForm");
+
+  const openPrintableForm = (formType) => {
+    setCurrentFormType(formType);
+    setPrintableFormOpen(true);
+  };
 
   const handleCellDoubleClick = (params) => {
     const formattedRow = useRowFormatter(params);
@@ -55,7 +65,37 @@ function Cancels() {
         row={selectedRow}
         setSelectedRow={setSelectedRow}
         readOnly={true}
-        actionButton={<Button variant="outlined">GENERATE FORM</Button>}
+        actionButton={
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setOpenRPTview(false);
+              openPrintableForm("ClientForm");
+            }}
+          >
+            GENERATE FORM
+          </Button>
+        }
+      />
+
+      <TaxDecModal
+        open={openRPTview}
+        // handleClose={handleTaxModalClose}
+        // row={selectedRow}
+        // setSelectedRow={setSelectedRow}
+        // readOnly={readOnly}
+        // setConfirmationOpen={setConfirmationOpen}
+        // setReadOnly={setReadOnly}
+        // actionButton={<TaxdecModalButtons />}
+      />
+
+      {/* <ClientFormCopy ref={contentRef} /> */}
+      <TaxdecPrintableFormModal
+        open={printableFormOpen}
+        onClose={() => setPrintableFormOpen(false)}
+        row={selectedRow} // Ensure `selectedRow` is defined in your component
+        formType={currentFormType}
+        disable={true}
       />
     </>
   );

@@ -14,6 +14,8 @@ import PaymentModal from "../../components/form/modal/PaymentModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import useData from "../../hooks/useData";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
+import TaxDecModal from "../../components/form/modal/TaxDecModal";
+import { PaymentCertPrintableFormModal } from "../../components/form/modal/reactToPrint/PaymentCertPrintableFormModal";
 
 const rows = [
   {
@@ -48,6 +50,15 @@ function LandTaxPaidList() {
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
+
+  const [openRPTview, setOpenRPTview] = useState(false);
+  const [printableFormOpen, setPrintableFormOpen] = useState(false);
+  const [currentFormType, setCurrentFormType] = useState("ClientForm");
+
+  const openPrintableForm = (formType) => {
+    setCurrentFormType(formType);
+    setPrintableFormOpen(true);
+  };
 
   const { assessorData } = useData();
 
@@ -86,7 +97,34 @@ function LandTaxPaidList() {
         open={openPayment} // Ensure this state is passed as the open prop
         handleClose={() => setOpenPayment(false)}
         row={selectedRow}
-        actionButton={<Button variant="outlined">View Receipt</Button>}
+        actionButton={
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setOpenRPTview(false); // Close RPTview
+              openPrintableForm("PaymentCert"); // Open BookbindForm
+            }}
+          >
+            GENERATE CERTIFICATE OF PAYMENT
+          </Button>
+        }
+      />
+      <TaxDecModal
+        open={openRPTview}
+        // handleClose={handleTaxModalClose}
+        // row={selectedRow}
+        // setSelectedRow={setSelectedRow}
+        // readOnly={readOnly}
+        // setConfirmationOpen={setConfirmationOpen}
+        // setReadOnly={setReadOnly}
+        // actionButton={<TaxdecModalButtons />}
+      />
+
+      <PaymentCertPrintableFormModal
+        open={printableFormOpen}
+        onClose={() => setPrintableFormOpen(false)}
+        row={selectedRow} // Ensure `selectedRow` is defined in your component
+        formType={currentFormType}
       />
     </>
   );
