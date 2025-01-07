@@ -6,7 +6,7 @@ import { ContainerModal } from "../../shared/ContainerModal";
 import { sumFieldInArray } from "../../../utils/helper";
 import { Close } from "@mui/icons-material";
 
-export default function ComputationModal(props) {
+export default function PaymentModalPreview(props) {
   const handleFormChange = (e) => {
     props?.setSelectedRow((prev) => ({
       ...prev,

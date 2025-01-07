@@ -10,16 +10,141 @@ import {
   PAGE_SIZE_OPTION,
 } from "../../utils/constant";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
+import AddPaymentModal from "../../components/form/modal/AddPaymentModal";
+import axios from "../../api/axios";
+import { Button } from "@mui/material";
+import PaymentModalPreview from "../../components/form/modal/PaymentModalPreview";
+import AddPaymentItemModal from "../../components/form/modal/AddPaymentItemModal";
+
+const formDataDefault = {
+  id: "",
+  arpNo: "",
+  assessedValue: "",
+  formattedAssessedValue: "",
+  taxDue: null,
+  basicTax: "",
+  penalty: "",
+  total: "",
+  period: "",
+};
+
+const penaltyTable2024 = {
+  1986: [9.14, 9.16, 9.18, 9.2, 9.22, 9.24, 9.26, 9.28, 9.3, 9.32, 9.34, 9.36],
+  1987: [8.9, 8.92, 8.94, 8.96, 8.98, 9.0, 9.02, 9.04, 9.06, 9.08, 9.1, 9.12],
+  1988: [8.66, 8.68, 8.7, 8.72, 8.74, 8.76, 8.78, 8.8, 8.82, 8.84, 8.86, 8.88],
+  1989: [8.42, 8.44, 8.46, 8.48, 8.5, 8.52, 8.54, 8.56, 8.58, 8.6, 8.62, 8.64],
+  1990: [8.18, 8.2, 8.22, 8.24, 8.26, 8.28, 8.3, 8.32, 8.34, 8.36, 8.38, 8.4],
+  1991: [7.94, 7.96, 7.98, 8.0, 8.02, 8.04, 8.06, 8.08, 8.1, 8.12, 8.14, 8.16],
+};
+
+const _3YearsPentaltyConstant = [
+  [0.5, 0.52, 0.54, 0.56, 0.58, 0.6, 0.62, 0.64, 0.66, 0.68, 0.7, 0.72],
+  [0.26, 0.28, 0.3, 0.32, 0.34, 0.36, 0.38, 0.4, 0.42, 0.44, 0.46, 0.48],
+  [0, 0, 0, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24],
+];
+
+const computeTotal = (assessedValue, taxDue, period) => {
+  console.log(assessedValue);
+
+  let penalty = 0;
+  let basicTax = assessedValue * 0.02;
+  const dateNow = new Date();
+  const yearNow = dateNow.getFullYear();
+  const passedThreeYears = yearNow - 2;
+  const monthNow = dateNow.getMonth();
+  let totalPenalty = 0;
+  let total = 0;
+
+  if (
+    period == "1st qtr" ||
+    period == "2nd qtr" ||
+    period == "3rd qtr" ||
+    period == "4th qtr"
+  ) {
+    basicTax = basicTax * 0.25;
+  }
+
+  if (period == "1st half" || period == "2nd half") {
+    basicTax = basicTax * 0.5;
+  }
+
+  if (taxDue <= 1985) {
+    penalty = 0.24;
+  } else if (taxDue >= 1992 && taxDue <= yearNow - 3) {
+    penalty = 0.72;
+  } else if (taxDue >= 1986 && taxDue <= 1991) {
+    penalty = penaltyTable2024[taxDue][monthNow];
+    const yearDiff = yearNow - 2024;
+    const increase = yearDiff * 0.24;
+    penalty += increase;
+  } else if (taxDue <= yearNow && taxDue >= passedThreeYears) {
+    let currentPassed3YearsPenalty = {};
+    for (let i = 0; i < 3; i++) {
+      const yearTodecrease = 2 - i;
+
+      currentPassed3YearsPenalty = {
+        ...currentPassed3YearsPenalty,
+        [yearNow - yearTodecrease]: _3YearsPentaltyConstant[i],
+      };
+    }
+    penalty = currentPassed3YearsPenalty[taxDue][monthNow];
+  }
+
+  totalPenalty = basicTax * penalty;
+  total = basicTax + totalPenalty;
+
+  return { total, penalty };
+};
 
 function LandTaxAR() {
   const { assessorData, isAssessorLoading } = useData();
 
   const [openComputation, setOpenComputation] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [paymentModalActive, setPaymentModalActive] = useState(false);
+  const [addPaymentActive, setAddPaymentActive] = useState(false);
+  const [addPaymentItemActive, setAddPaymentItemActive] = useState(false);
+
+  const [formData, setFormData] = useState(formDataDefault);
 
   const handleCellDoubleClick = (params) => {
-    setSelectedRow(params.row); // Capture the double-clicked row data
-    setOpenComputation(true); // Open RPTview when a cell is double-clicked
+    setSelectedRow({ ...params.row, paymentList: [] });
+    setOpenComputation(true);
+  };
+
+  const handleSubmitPayment = async () => {
+    try {
+      const response = await axios.post("/api/cashier/addOrder", {
+        arpNo: "6511-5611-2131",
+        dayOfPayment: "2024",
+        amountPaid: 5000,
+        payor: "MrPayor",
+        paymentOrder: [
+          {
+            assessedValue: 20000,
+            taxDue: "2024",
+            baseTax: 2000,
+            penalty: -200,
+            total: 1800,
+          },
+          {
+            assessedValue: 50000,
+            taxDue: "2023",
+            baseTax: 500,
+            penalty: 300,
+            total: 800,
+          },
+        ],
+        total: 2600,
+        cityTreasurer: "MrTreasurer",
+        deputy: "MrDeputy",
+        balance: 0,
+        status: "pending",
+        yearAdded: "2024",
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -39,17 +164,55 @@ function LandTaxAR() {
               <TableToolbar
                 titleText="LANDTAX OFFICE"
                 subText="Office of the Revenue Commissioner"
+                actionBtn={
+                  <Button
+                    variant="contained"
+                    onClick={() => setAddPaymentActive(true)}
+                  >
+                    Add Payment Order
+                  </Button>
+                }
               />
             ),
+          }}
+          slotProps={{
+            panel: {
+              placement: "bottom-end",
+            },
           }}
         />
       </PageContainer>
 
-      <ComputationModal
+      <AddPaymentModal
+        open={addPaymentActive}
+        handleClose={() => setAddPaymentActive(false)}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
+        setFormData={setFormData}
+        formData={formData}
+        setAddPaymentItemActive={setAddPaymentItemActive}
+        computeTotal={computeTotal}
+      />
+
+      <AddPaymentItemModal
+        open={addPaymentItemActive}
+        handleClose={() => {
+          setAddPaymentItemActive(false);
+          setFormData(formDataDefault);
+        }}
+        setSelectedRow={setSelectedRow}
+        selectedRow={selectedRow}
+        setFormData={setFormData}
+        formData={formData}
+        computeTotal={computeTotal}
+      />
+
+      <PaymentModalPreview
         open={openComputation}
         handleClose={() => setOpenComputation(false)}
         row={selectedRow}
         setSelectedRow={setSelectedRow}
+        setPaymentModalActive={setPaymentModalActive}
       />
     </>
   );

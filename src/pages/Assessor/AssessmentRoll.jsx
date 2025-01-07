@@ -438,6 +438,11 @@ function AssessmentRoll() {
               />
             ),
           }}
+          slotProps={{
+            panel: {
+              placement: "bottom-end",
+            },
+          }}
         />
       </PageContainer>
 
