@@ -24,8 +24,14 @@ const formDataDefault = {
   taxDue: null,
   basicTax: "",
   penalty: "",
-  total: "",
-  period: "",
+  formattedTotal: "",
+  total: 0,
+  selectedQuarters: {
+    first: false,
+    second: false,
+    third: false,
+    fourth: false,
+  },
 };
 
 const penaltyTable2024 = {
@@ -43,8 +49,9 @@ const _3YearsPentaltyConstant = [
   [0, 0, 0, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24],
 ];
 
-const computeTotal = (assessedValue, taxDue, period) => {
-  console.log(assessedValue);
+const computeTotal = (assessedValue, taxDue, selectedQuarters) => {
+  if (!assessedValue || !taxDue || !selectedQuarters)
+    return { total: 0, penalty: 0 };
 
   let penalty = 0;
   let basicTax = assessedValue * 0.02;
@@ -55,17 +62,18 @@ const computeTotal = (assessedValue, taxDue, period) => {
   let totalPenalty = 0;
   let total = 0;
 
-  if (
-    period == "1st qtr" ||
-    period == "2nd qtr" ||
-    period == "3rd qtr" ||
-    period == "4th qtr"
-  ) {
-    basicTax = basicTax * 0.25;
-  }
+  const numberOfQuarter = Object.values(selectedQuarters).filter(
+    (value) => value
+  ).length;
 
-  if (period == "1st half" || period == "2nd half") {
-    basicTax = basicTax * 0.5;
+  if (numberOfQuarter == 1) {
+    basicTax *= 0.25;
+  } else if (numberOfQuarter == 2) {
+    basicTax *= 0.5;
+  } else if (numberOfQuarter == 3) {
+    basicTax *= 0.75;
+  } else {
+    basicTax *= 1;
   }
 
   if (taxDue <= 1985) {
@@ -106,13 +114,32 @@ function LandTaxAR() {
   const [addPaymentItemActive, setAddPaymentItemActive] = useState(false);
 
   const [formData, setFormData] = useState(formDataDefault);
+  const [paymentList, setPaymentList] = useState([]);
+
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setFormData((prev) => ({
+      ...prev,
+      selectedQuarters: {
+        ...prev.selectedQuarters,
+        [event.target.name]: event.target.checked,
+      },
+    }));
+  };
 
   const handleCellDoubleClick = (params) => {
     setSelectedRow({ ...params.row, paymentList: [] });
     setOpenComputation(true);
   };
 
+  const handleClickSubmit = () => {
+    setConfirmationOpen(true);
+  };
+
   const handleSubmitPayment = async () => {
+    if (paymentList.length === 0) return;
+
     try {
       const response = await axios.post("/api/cashier/addOrder", {
         arpNo: "6511-5611-2131",
@@ -152,7 +179,7 @@ function LandTaxAR() {
       <PageContainer>
         <DataGrid
           loading={isAssessorLoading}
-          rows={assessorData}
+          rows={[]}
           columns={ASSESSMENT_ROLL_COLUMN}
           onCellDoubleClick={handleCellDoubleClick}
           initialState={DATA_GRID_INITIAL_STATE}
@@ -192,6 +219,9 @@ function LandTaxAR() {
         formData={formData}
         setAddPaymentItemActive={setAddPaymentItemActive}
         computeTotal={computeTotal}
+        paymentList={paymentList}
+        handleClickSubmit={handleClickSubmit}
+        setPaymentList={setPaymentList}
       />
 
       <AddPaymentItemModal
@@ -205,6 +235,9 @@ function LandTaxAR() {
         setFormData={setFormData}
         formData={formData}
         computeTotal={computeTotal}
+        handleCheckboxChange={handleCheckboxChange}
+        paymentList={paymentList}
+        setPaymentList={setPaymentList}
       />
 
       <PaymentModalPreview

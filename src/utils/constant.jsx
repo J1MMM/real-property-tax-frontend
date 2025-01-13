@@ -349,6 +349,87 @@ export const CENCELS_TABLE_COLUMN = [
   },
 ];
 
+const quarter_labels = {
+  first: "1st Quarter",
+  second: "2nd Quarter",
+  third: "3rd Quarter",
+  fourth: "4th Quarter",
+};
+
+export const PAYMENT_ORDER_TABLE_COLUMN = [
+  {
+    field: "arpNo",
+    headerName: "ARP NO.",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "pin",
+    headerName: "PIN",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "formattedAssessedValue",
+    headerName: "Assessed Value",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "taxDue",
+    headerName: "Tax Due",
+    flex: 1,
+    headerClassName: "data-grid-header",
+    renderCell: (params) => {
+      const taxDue = params.row?.taxDue;
+      return taxDue?.year();
+    },
+  },
+  {
+    field: "basicTax",
+    headerName: "basic Tax",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "quarter",
+    headerName: "Quarter",
+    flex: 1,
+    headerClassName: "data-grid-header",
+    renderCell: (params) => {
+      const obj = params.row?.selectedQuarters;
+
+      if (!obj) return "No quarters selected";
+
+      const labels = {
+        first: "1st",
+        second: "2nd",
+        third: "3rd",
+        fourth: "4th",
+      };
+
+      const selectedQuarters = Object.keys(obj)
+        .filter((key) => obj[key])
+        .map((key) => labels[key])
+        .join(", ");
+
+      return selectedQuarters || "No quarters selected";
+    },
+  },
+  {
+    field: "penalty",
+    headerName: "Penalty Percentage",
+    headerClassName: "data-grid-header",
+    flex: 1,
+  },
+  {
+    field: "formattedTotal",
+    headerName: "Total",
+    headerClassName: "data-grid-header",
+    flex: 1,
+  },
+];
+
 export const CLASSIFICATION_COLUMN = [
   {
     field: "classification",
