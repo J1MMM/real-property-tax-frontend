@@ -7,8 +7,11 @@ export const fetchInitialData = async () => {
     const response = await axios.get("/api/assessor/fetchLands");
     console.log("inita");
     console.log(response);
-
-    return response.data?.data;
+    const res = response.data?.data.map((data) => ({
+      ...data,
+      paymentList: [],
+    }));
+    return res;
   } catch (error) {
     console.log(error);
     throw error;

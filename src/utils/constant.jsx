@@ -5,18 +5,15 @@ import { io } from "socket.io-client";
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
+<<<<<<< HEAD
 export const BASE_URL = "http://10.10.10.86:4000";
 // export const BASE_URL = "http://localhost:4000";
+=======
+
+// export const BASE_URL = "http://10.10.10.86:4000";
+export const BASE_URL = "http://localhost:4000";
+>>>>>>> 306fd0d3e0d1d77be8e230173b803cdd657f2123
 export const SOCKET = io(BASE_URL);
-// Role IDs following a pattern for different categories
-const ROLES_LIST = {
-  SuperAdmin: 1000, // Super Administrator
-  Admin: 1100, // Administrator
-  Office1: 2100, // Custom Office 1 (Management)
-  Office2: 2200, // Custom Office 2 (Management)
-  Office3: 2300, // Custom Office 3 (Management)
-  Cashier: 3100, // Cashier role (Operations)
-};
 
 export const ALERT_SEV = {
   error: "error",
@@ -354,6 +351,87 @@ export const CENCELS_TABLE_COLUMN = [
       const dateOfEffectivity = dayjs(params.row?.dateOfEffectivity);
       return <span>{dateOfEffectivity.format("MM/DD/YYYY")}</span>;
     },
+  },
+];
+
+const quarter_labels = {
+  first: "1st Quarter",
+  second: "2nd Quarter",
+  third: "3rd Quarter",
+  fourth: "4th Quarter",
+};
+
+export const PAYMENT_ORDER_TABLE_COLUMN = [
+  {
+    field: "arpNo",
+    headerName: "ARP NO.",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "pin",
+    headerName: "PIN",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "formattedAssessedValue",
+    headerName: "Assessed Value",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "taxDue",
+    headerName: "Tax Due",
+    flex: 1,
+    headerClassName: "data-grid-header",
+    renderCell: (params) => {
+      const taxDue = params.row?.taxDue;
+      return taxDue?.year();
+    },
+  },
+  {
+    field: "basicTax",
+    headerName: "basic Tax",
+    flex: 1,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "quarter",
+    headerName: "Quarter",
+    flex: 1,
+    headerClassName: "data-grid-header",
+    renderCell: (params) => {
+      const obj = params.row?.selectedQuarters;
+
+      if (!obj) return "No quarters selected";
+
+      const labels = {
+        first: "1st",
+        second: "2nd",
+        third: "3rd",
+        fourth: "4th",
+      };
+
+      const selectedQuarters = Object.keys(obj)
+        .filter((key) => obj[key])
+        .map((key) => labels[key])
+        .join(", ");
+
+      return selectedQuarters || "No quarters selected";
+    },
+  },
+  {
+    field: "penalty",
+    headerName: "Penalty Percentage",
+    headerClassName: "data-grid-header",
+    flex: 1,
+  },
+  {
+    field: "formattedTotal",
+    headerName: "Total",
+    headerClassName: "data-grid-header",
+    flex: 1,
   },
 ];
 
