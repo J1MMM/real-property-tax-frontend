@@ -122,7 +122,11 @@ export default function AddPaymentModal(props) {
         open={props?.open}
         onClose={props?.handleClose}
         actionButton={
-          <Button variant="contained" onClick={props.handleClickSubmit}>
+          <Button
+            variant="contained"
+            onClick={props.handleClickSubmit}
+            disabled={props.paymentList.length === 0}
+          >
             submit
           </Button>
         }

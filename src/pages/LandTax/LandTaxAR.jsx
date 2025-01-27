@@ -15,6 +15,7 @@ import axios from "../../api/axios";
 import { Button } from "@mui/material";
 import PaymentModalPreview from "../../components/form/modal/PaymentModalPreview";
 import AddPaymentItemModal from "../../components/form/modal/AddPaymentItemModal";
+import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
 
 const formDataDefault = {
   id: "",
@@ -134,12 +135,12 @@ function LandTaxAR() {
   };
 
   const handleClickSubmit = () => {
+    if (paymentList.length === 0) return;
+
     setConfirmationOpen(true);
   };
 
   const handleSubmitPayment = async () => {
-    if (paymentList.length === 0) return;
-
     try {
       const response = await axios.post("/api/cashier/addOrder", {
         arpNo: "6511-5611-2131",
@@ -246,6 +247,15 @@ function LandTaxAR() {
         row={selectedRow}
         setSelectedRow={setSelectedRow}
         setPaymentModalActive={setPaymentModalActive}
+      />
+
+      <ConfirmationDialog
+        confirm={handleSubmitPayment}
+        open={confirmationOpen}
+        setOpen={setConfirmationOpen}
+        title="Submit Payment Order"
+        content="Are you sure you want to submit the payment order?"
+        label="Submit"
       />
     </>
   );
