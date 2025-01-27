@@ -5,14 +5,8 @@ import { io } from "socket.io-client";
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
-<<<<<<< HEAD
-export const BASE_URL = "http://10.10.10.86:4000";
-// export const BASE_URL = "http://localhost:4000";
-=======
-
 // export const BASE_URL = "http://10.10.10.86:4000";
 export const BASE_URL = "http://localhost:4000";
->>>>>>> 306fd0d3e0d1d77be8e230173b803cdd657f2123
 export const SOCKET = io(BASE_URL);
 
 export const ALERT_SEV = {
