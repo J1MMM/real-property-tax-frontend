@@ -115,32 +115,32 @@ export const Receipt51Print = forwardRef((props, ref) => {
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell sx={cellStyle}>Mayor's Permit</TableCell>
+              <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}>385.00</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={cellStyle}>Franchise Tax</TableCell>
+              <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}>385.00</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={cellStyle}>Health / S.S.F.</TableCell>
+              <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}> 385.00</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={cellStyle}>Sticker - Color Coding</TableCell>
+              <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}> 385.00</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={cellStyle}>Docket/Filing</TableCell>
+              <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}> 27.50/27.50</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={cellStyle}>Tin Plate/Registration</TableCell>
+              <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}></TableCell>
               <TableCell sx={cellStyle}> 27.50/27.50</TableCell>
             </TableRow>

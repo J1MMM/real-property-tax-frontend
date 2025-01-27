@@ -5,8 +5,8 @@ import { io } from "socket.io-client";
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
-// export const BASE_URL = "http://10.10.10.103:4000";
-export const BASE_URL = "http://localhost:4000";
+export const BASE_URL = "http://10.10.10.86:4000";
+// export const BASE_URL = "http://localhost:4000";
 export const SOCKET = io(BASE_URL);
 // Role IDs following a pattern for different categories
 const ROLES_LIST = {

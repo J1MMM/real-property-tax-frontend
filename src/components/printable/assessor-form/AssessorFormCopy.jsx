@@ -13,7 +13,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-// import { Height } from "@mui/icons-material";
 
 // NUMBER TO WORDS
 function numberToWords(num) {

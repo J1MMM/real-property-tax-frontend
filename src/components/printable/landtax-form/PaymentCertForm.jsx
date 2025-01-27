@@ -13,7 +13,11 @@ const formattedDate = today.toLocaleDateString("en-US", {
 
 export const PaymentCertForm = forwardRef((props, ref) => {
   return (
-    <Box ref={ref} className="PaymentCertPaper" sx={{ p: "30px", pt: "45px" }}>
+    <Box
+      ref={ref}
+      className="PaymentCertPaper"
+      sx={{ p: "30px", pt: "45px", border: "1px solid", borderBottom: "0" }}
+    >
       <Box sx={{ display: "flex", justifyContent: "space-around" }}>
         <Box
           sx={{ display: "flex", alignItems: "center", pb: "10px", pl: "10px" }}
