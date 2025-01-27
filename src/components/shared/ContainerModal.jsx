@@ -1,8 +1,10 @@
+import { CloseRounded } from "@mui/icons-material";
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
 } from "@mui/material";
 import React from "react";
 
@@ -20,20 +22,22 @@ export const ContainerModal = ({
       component={"form"}
       maxWidth={maxWidth || "md"}
       open={open}
-      onClose={onClose}
       fullWidth
       onSubmit={onSubmit}
     >
       <DialogTitle
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between",
           backgroundColor: "primary.main",
           color: "#ffffff",
           fontWeight: 600, // Correct weight for semi-bold
         }}
       >
         {title}
+        <IconButton sx={{ color: "#FFF" }} onClick={onClose}>
+          <CloseRounded />
+        </IconButton>
       </DialogTitle>
 
       <DialogContent

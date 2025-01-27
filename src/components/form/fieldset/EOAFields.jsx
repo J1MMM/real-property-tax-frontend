@@ -30,6 +30,7 @@ export const EOAFields = ({ props, handleFormChange }) => {
               label="Year"
               value={props?.row?.year == null ? null : dayjs(props?.row?.year)}
               format="YYYY"
+              openTo="year"
               readOnly={props?.readOnly}
               onChange={(newVal) =>
                 props?.setSelectedRow((prev) => ({
