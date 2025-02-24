@@ -1,10 +1,12 @@
 import { BASE_URL } from "../utils/constant";
-import axios from "./axios";
+import axios, { axiosPrivate } from "./axios";
 
 // Fetch function using REST API
 export const fetchCancelsData = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/assessor/fetchArchives`);
+    const response = await axiosPrivate.get(
+      `${BASE_URL}/api/assessor/fetchArchives`
+    );
     console.log("cancels");
     console.log(response);
 

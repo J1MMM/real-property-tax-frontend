@@ -17,7 +17,7 @@ import { useQueryClient } from "react-query";
 import AddTaxDecModal from "../../components/form/modal/AddTaxDecModal";
 import { v4 } from "uuid";
 import useData from "../../hooks/useData";
-import axios from "../../api/axios";
+import axios, { axiosPrivate } from "../../api/axios";
 import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
 import SnackBar from "../../components/shared/SnackBar";
 import dayjs from "dayjs";
@@ -123,7 +123,10 @@ function AssessmentRoll() {
         dateOfEffectivity: dayjs(formDataNew.dateOfEffectivity).toISOString(),
       };
 
-      const response = await axios.post("/api/assessor/createTax", newFormData);
+      const response = await axiosPrivate.post(
+        "/api/assessor/createTax",
+        newFormData
+      );
       console.log(response.data);
 
       queryClient.setQueryData("assessorData", (oldData) => [
@@ -166,7 +169,10 @@ function AssessmentRoll() {
         year: dayjs(selectedRow?.year).toISOString(),
       };
 
-      const response = await axios.post("/api/assessor/cancel", formatedArr);
+      const response = await axiosPrivate.post(
+        "/api/assessor/cancel",
+        formatedArr
+      );
       console.log(response);
 
       await queryClient.setQueryData("assessorData", (oldData) => [
@@ -218,7 +224,7 @@ function AssessmentRoll() {
 
       console.log(newFormData);
 
-      const response = await axios.post(
+      const response = await axiosPrivate.post(
         "/api/assessor/consolidate",
         newFormData
       );
@@ -276,7 +282,7 @@ function AssessmentRoll() {
         startArpNo: parseInt(subdivideForm?.startArpNo),
       };
 
-      const response = await axios.post(
+      const response = await axiosPrivate.post(
         "/api/assessor/subdivide",
         formatedData
       );

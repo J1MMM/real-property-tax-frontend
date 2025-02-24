@@ -21,7 +21,7 @@ import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
 import { useQueryClient } from "react-query";
 import { v4 } from "uuid";
 import dayjs from "dayjs";
-import axios from "../../api/axios";
+import axios, { axiosPrivate } from "../../api/axios";
 import SnackBar from "../../components/shared/SnackBar";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
 
@@ -69,7 +69,7 @@ function Pending() {
         dateOfEffectivity: dayjs(selectedRow.dateOfEffectivity).toISOString(),
       };
 
-      const response = await axios.post(
+      const response = await axiosPrivate.post(
         "/api/assessor/updatePending",
         newFormData
       );
