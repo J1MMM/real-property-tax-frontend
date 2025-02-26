@@ -10,6 +10,7 @@ export const DataProvider = ({ children }) => {
     data: assessorData,
     isLoading: isAssessorLoading,
     isError: isAssessorError,
+    refetch: refetchAssessorData,
   } = useQuery("assessorData", fetchInitialData);
 
   const {
@@ -35,6 +36,7 @@ export const DataProvider = ({ children }) => {
         pendingData,
         isPendingError,
         isPendingLoading,
+        refetchAssessorData,
       }}
     >
       {children}

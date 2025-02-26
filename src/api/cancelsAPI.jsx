@@ -7,8 +7,6 @@ export const fetchCancelsData = async () => {
     const response = await axiosPrivate.get(
       `${BASE_URL}/api/assessor/fetchArchives`
     );
-    console.log("cancels");
-    console.log(response);
 
     return response.data?.data;
   } catch (error) {

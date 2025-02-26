@@ -3,7 +3,7 @@ import { Typography, Box, Stack } from "@mui/material";
 import { useState } from "react";
 import { UserMenu } from "./UserMenu";
 
-const UserAvatar = () => {
+const UserAvatar = ({ fullname, email, roles }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -33,7 +33,7 @@ const UserAvatar = () => {
       {/* Typography for user name and email */}
       <Stack>
         <Typography variant="body2" fontWeight={600} color="primary.light">
-          Yman Mangaring {/* Replace with dynamic name */}
+          {fullname}
         </Typography>
         <Typography
           display="block"
@@ -42,12 +42,19 @@ const UserAvatar = () => {
           fontSize="10px"
           mt={-0.3}
         >
-          ymanmangairng@example.com {/* Replace with dynamic email */}
+          {email}
         </Typography>
       </Stack>
 
       {/* Popover with anchorOrigin and transformOrigin layout */}
-      <UserMenu open={open} handleClose={handleClose} anchorEl={anchorEl} />
+      <UserMenu
+        fullname={fullname}
+        email={email}
+        roles={roles}
+        open={open}
+        handleClose={handleClose}
+        anchorEl={anchorEl}
+      />
     </Stack>
   );
 };

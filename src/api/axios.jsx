@@ -2,6 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import Cookies from "js-cookie";
 const token = Cookies.get("token");
+
 export default axios.create({
   baseURL: BASE_URL,
   withCredentials: false,

@@ -5,8 +5,6 @@ import axios, { axiosPrivate } from "./axios";
 export const fetchInitialData = async () => {
   try {
     const response = await axiosPrivate.get("/api/assessor/fetchLands");
-    console.log("inita");
-    console.log(response);
     const res = response.data?.data.map((data) => ({
       ...data,
       paymentList: [],
@@ -21,8 +19,6 @@ export const fetchInitialData = async () => {
 export const fetchPendingData = async () => {
   try {
     const response = await axiosPrivate.get("/api/assessor/fetchIncomplete");
-    console.log("pending");
-    console.log(response);
 
     return response.data?.data;
   } catch (error) {

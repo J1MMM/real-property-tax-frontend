@@ -5,6 +5,7 @@ import logo from "../../assets/images/favicon.svg";
 import backgroundImage from "../../assets/images/header-bg.jpg";
 import UserAvatar from "../shared/UserAvatar";
 import { HEADER_HEIGHT } from "../../utils/constant";
+import useAuth from "../../hooks/useAuth";
 
 const headerContainerStyle = {
   display: "flex",
@@ -22,6 +23,10 @@ const headerContainerStyle = {
 };
 
 export const Header = (props) => {
+  const { auth } = useAuth();
+  console.log("auth");
+  console.log(auth);
+
   return (
     <AppBar
       position="fixed"
@@ -48,7 +53,11 @@ export const Header = (props) => {
           </Typography>
         </Stack>
 
-        <UserAvatar />
+        <UserAvatar
+          fullname={auth?.fullname}
+          email={auth?.email}
+          roles={auth?.roles}
+        />
       </Box>
     </AppBar>
   );

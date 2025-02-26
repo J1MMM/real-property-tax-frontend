@@ -58,13 +58,18 @@ export const UserMenu = (props) => {
           }}
         />
         <Typography component={"span"} zIndex="2" variant="h6" mt={1}>
-          Yman Mangaring
+          {props?.fullname}
         </Typography>
         <Typography component={"span"} zIndex="2" variant="caption">
-          ymanmangairng@example.com
+          {props?.email}
         </Typography>
 
-        <Chip sx={{ mt: 2 }} label="Admin" color="primary" size="small" />
+        <Chip
+          sx={{ mt: 2 }}
+          label={props?.roles}
+          color="primary"
+          size="small"
+        />
 
         <MenuItem
           onClick={handleLogout}

@@ -6,9 +6,11 @@ import "./index.scss";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
 import Cookies from "js-cookie";
+import useData from "../../hooks/useData";
 
 const LoginPage = () => {
   const { auth, setAuth } = useAuth();
+  const { refetchAssessorData } = useData();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disable, setDisable] = useState(false);
@@ -29,14 +31,23 @@ const LoginPage = () => {
           withCredentials: false,
         }
       );
-      console.log(response.data);
 
       if (response.data.token) {
+        const { email, fname, lname, mname, roles } = response.data?.data;
         const token = response?.data?.token;
         Cookies.set("token", token);
-        setAuth({ accessToken: token });
+        setAuth({
+          accessToken: token,
+          fullname: `${fname} ${mname} ${lname}`,
+          email: email,
+          roles: roles,
+        });
         setEmail("");
         setPassword("");
+        refetchAssessorData();
+        console.log("login");
+        console.log(response.data);
+
         navigate(from, { replace: true });
       } else {
         if (response.data.error) {
@@ -94,7 +105,7 @@ const LoginPage = () => {
             fullWidth
             label="Email"
             margin="dense"
-            // type="email"
+            type="email"
             variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

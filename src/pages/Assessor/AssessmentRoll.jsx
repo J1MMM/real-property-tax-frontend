@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import { Collapse, Stack } from "@mui/material";
@@ -17,7 +17,7 @@ import { useQueryClient } from "react-query";
 import AddTaxDecModal from "../../components/form/modal/AddTaxDecModal";
 import { v4 } from "uuid";
 import useData from "../../hooks/useData";
-import axios, { axiosPrivate } from "../../api/axios";
+import axios from "../../api/axios";
 import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
 import SnackBar from "../../components/shared/SnackBar";
 import dayjs from "dayjs";
@@ -32,11 +32,13 @@ import { TaxdecPrintableFormModal } from "../../components/form/modal/reactToPri
 import { TableToolbar } from "../../components/form/table/TableToolbar";
 import { ConsolidateModal } from "../../components/form/modal/ConsolidateModal";
 import AssessorTaxdecForms from "../../components/printable/assessor-form/TaxdecFormsPopover";
+import { fetchInitialData } from "../../api/assessorAPI";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function AssessmentRoll() {
   const queryClient = useQueryClient();
 
-  const { assessorData, isAssessorLoading } = useData();
+  const { assessorData, isAssessorLoading, refetchAssessorData } = useData();
 
   const [taxdecModalOpen, setTaxdecModalOpen] = useState(false);
   const [openRPTview, setOpenRPTview] = useState(false);
@@ -64,6 +66,16 @@ function AssessmentRoll() {
   const [currentFormType, setCurrentFormType] = useState("ClientForm");
 
   const [consolidateActive, setConsolidateActive] = useState(false);
+
+  const axiosPrivate = useAxiosPrivate();
+
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     refetchAssessorData();
+  //   };
+
+  //   fetch();
+  // }, []);
 
   const openPrintableForm = (formType) => {
     setCurrentFormType(formType);
