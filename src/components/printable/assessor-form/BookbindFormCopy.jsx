@@ -15,6 +15,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import useAuth from "../../../hooks/useAuth";
 // import { Height } from "@mui/icons-material";
 
 // NUMBER TO WORDS
@@ -124,6 +125,8 @@ const rows = [
 ];
 
 export const BookbindFormCopy = forwardRef((props, ref) => {
+  const { auth } = useAuth();
+
   return (
     <div ref={ref} className="BookbindPaper">
       <div className="header space-between">
@@ -243,21 +246,21 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
       <div className="stack space-between space locProp">
         <div className="bound1">
           <body1>North: NE:</body1>
-          <h5>ALN 045 (LOT 15516-F-3)</h5>
+          <h5>{props?.row?.Boundaries?.landDetails?.northBoundary}</h5>
         </div>
         <div className="bound1">
           <body1>South: SW:</body1>
-          <h5>ALN 045 (LOT 15516-F-3)</h5>
+          <h5>{props?.row?.Boundaries?.landDetails?.southBoundary}</h5>
         </div>
       </div>
       <div className="stack space-between space locProp">
         <div className="bound1">
           <body1>East: SE:</body1>
-          <h5>ALN 045 (LOT 15516-F-3)</h5>
+          <h5>{props?.row?.Boundaries?.landDetails?.EastBoundary}</h5>
         </div>
         <div className="bound1">
           <body1>West: NW:</body1>
-          <h5>ALN 045 (LOT 15516-F-3)</h5>
+          <h5>{props?.row?.Boundaries?.landDetails?.westBoundary}</h5>
         </div>
       </div>
 
@@ -267,7 +270,12 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
       </div>
       <div className="stack space-between">
         <div className="kind1">
-          <input type="checkbox" id="land" name="land" value="land"></input>
+          <input
+            type="checkbox"
+            id="land"
+            name="land"
+            checked={props?.row?.Boundaries?.land == true}
+          ></input>
           <label htmlFor="land" style={{ fontSize: "11px" }}>
             LAND
           </label>
@@ -278,7 +286,7 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
             type="checkbox"
             id="machinery"
             name="machinery"
-            value="machinery"
+            checked={props?.row?.Boundaries?.machinery == true}
           ></input>
           <label for="machinery" style={{ fontSize: "11px" }}>
             MACHINERY
@@ -293,6 +301,7 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
             id="building"
             name="building"
             value="building"
+            checked={!!props?.row?.Boundaries?.building}
           ></input>
           <label for="building" style={{ fontSize: "11px" }}>
             BUILDING
@@ -305,6 +314,7 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
             id="others"
             name="others"
             value="others"
+            checked={!!props?.row?.Boundaries?.others}
           ></input>
           <label for="others" style={{ fontSize: "11px" }}>
             OTHERS
@@ -343,19 +353,19 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {props?.row?.classification?.map((row) => (
               <TableRow>
                 <TableCell component="th" scope="row" align="center" sx={style}>
-                  {row.classification}
+                  {row?.classification}
                 </TableCell>
                 <TableCell align="center" sx={style}>
-                  {row.area}&nbsp;m²
+                  {row?.area}&nbsp;m²
                 </TableCell>
                 <TableCell align="center" sx={style}>
                   {new Intl.NumberFormat("en-US", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                  }).format(row.marketVal)}
+                  }).format(row?.marketValue)}
                 </TableCell>
                 <TableCell align="center" sx={style}>
                   {row.actualUse}
@@ -367,7 +377,7 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
                   {new Intl.NumberFormat("en-US", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                  }).format(row.assessedVal)}
+                  }).format(row?.assessedValue)}
                 </TableCell>
               </TableRow>
             ))}
@@ -443,6 +453,7 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
               id="taxable"
               name="taxable"
               value="taxable"
+              checked={props?.row?.TAXABILITY == "TAXABILITY"}
             ></input>
             <label for="taxable"> Taxable</label>
             <br></br>
@@ -453,6 +464,7 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
               id="exampt"
               name="exampt"
               value="exampt"
+              checked={props?.row?.TAXABILITY == "exempted"}
             ></input>
             <label for="exampt"> Exempt</label>
             <br></br>
@@ -502,7 +514,9 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
           <div className="stack flexgrow align">
             <div className="cancels">
               <body1>This declaration cancels T.D. No.:</body1>
-              <h5>{props?.row?.oldArp}</h5>
+              <h5>
+                <h5>{props?.row?.prevArp || props?.row?.oldArp}</h5>
+              </h5>
             </div>
             <div className="cancels">
               <body1>Property index Number:</body1>
@@ -512,7 +526,9 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
         </div>
         <div className="cancels">
           <body1>Owner:</body1>
-          <h5>{props?.row?.previousOwner}</h5>
+          <h5>
+            <h5>{props?.row?.prevOwner || props?.row?.previousOwner}</h5>
+          </h5>
         </div>
         <div className="cancels">
           <body1>Previous A. V. Php:</body1>
@@ -522,10 +538,24 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
 
       <div className="stack space-between space align">
         <div className="memoranda detail">
-          <div className="align">
+          <div
+            className="align"
+            style={{
+              width: "100%",
+            }}
+          >
             <body1>/mal</body1>
-            <h5 className="kind">MEMORANDA:</h5>
-            <h5 className="memo">{props?.row?.memoranda}</h5>
+            <h5 className="kind" style={{ marginLeft: "20px" }}>
+              MEMORANDA:
+            </h5>
+            <h5
+              className="memo"
+              style={{
+                width: "100%",
+              }}
+            >
+              {props?.row?.memoranda}
+            </h5>
           </div>
         </div>
         <div className="memoranda ctc">
@@ -559,7 +589,7 @@ export const BookbindFormCopy = forwardRef((props, ref) => {
       <div className="stack space-between ">
         <div className="initials">
           <div className="stack flexgrow">
-            <h5>Yman Mangaring</h5>
+            <h5>{auth?.fullname}</h5>
             <body1>Printed By:</body1>
           </div>
           <div className="stack flexgrow">
