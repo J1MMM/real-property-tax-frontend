@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 export const HEADER_HEIGHT = "80px";
 export const DRAWER_WIDTH_OPEN = 250;
 export const DRAWER_WIDTH_CLOSED = 60;
-// export const BASE_URL = "http://10.10.10.86:4000";
-export const BASE_URL = "http://localhost:4000";
+export const BASE_URL = "http://10.10.10.86:4000";
+// export const BASE_URL = "http://localhost:4000";
 
 export const ALERT_SEV = {
   error: "error",
