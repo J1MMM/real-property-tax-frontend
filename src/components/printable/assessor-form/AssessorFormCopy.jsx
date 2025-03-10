@@ -519,7 +519,7 @@ export const AssessorFormCopy = forwardRef((props, ref) => {
         <div className="cancels">
           <body1>Owner:</body1>
           <h5>
-            <h5>{props?.row?.prevOwner || props?.row?.previousOwner}</h5>
+            <h5>{props?.row?.previousOwner}</h5>
           </h5>
         </div>
         <div className="cancels">
