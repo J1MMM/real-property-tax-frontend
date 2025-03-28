@@ -5,14 +5,16 @@ import {
   DATA_GRID_INITIAL_STATE,
   DATA_GRID_STYLE,
   PAGE_SIZE_OPTION,
+  PAYMENTORDER_COLUMN,
 } from "../../utils/constant";
 import ComputationModal from "../../components/form/modal/ComputationModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import useData from "../../hooks/useData";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
+import { fetchOrdersFn } from "../../api/landtaxAPI";
 
 function LandTaxComputed() {
-  const { assessorData, isAssessorLoading } = useData();
+  const { assessorData, isAssessorLoading, fetchOrders } = useData();
 
   const [openComputation, setOpenComputation] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
@@ -55,8 +57,8 @@ function LandTaxComputed() {
     <>
       <PageContainer>
         <DataGrid
-          rows={assessorData}
-          columns={COMPUTED_COLUMN}
+          rows={fetchOrders}
+          columns={PAYMENTORDER_COLUMN}
           onCellDoubleClick={handleCellDoubleClick}
           initialState={DATA_GRID_INITIAL_STATE}
           pageSizeOptions={PAGE_SIZE_OPTION}

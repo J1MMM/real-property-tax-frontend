@@ -594,6 +594,58 @@ export const COMPUTED_COLUMN = [
   },
 ];
 
+export const PAYMENTORDER_COLUMN = [
+  {
+    field: "amountPaid",
+    headerName: "Amount Paid",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "cityTreasurer",
+    headerName: "City Treasurer",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "dayOfPayment",
+    headerName: "Day of Payment",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "deputy",
+    headerName: "Deputy",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "payor",
+    headerName: "Payor",
+    flex: 1,
+    editable: true,
+    headerClassName: "data-grid-header",
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    editable: true,
+    headerClassName: "data-grid-header",
+    flex: 1,
+  },
+  {
+    field: "total",
+    headerName: "Total",
+    editable: true,
+    headerClassName: "data-grid-header",
+    flex: 1,
+  },
+];
+
 export const LANDTAX_TAB_LINKS = [
   {
     to: "",

@@ -5,11 +5,13 @@ import {
   DATA_GRID_STYLE,
   PAGE_SIZE_OPTION,
   DATA_GRID_INITIAL_STATE,
+  PAYMENTORDER_COLUMN,
 } from "../../utils/constant";
 import PaymentModal from "../../components/form/modal/PaymentModal";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { Button } from "@mui/material";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
+import useData from "../../hooks/useData";
 
 const rows = [
   {
@@ -43,6 +45,7 @@ const rows = [
 function CashPendingList() {
   const [openPayment, setOpenPayment] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State to hold clicked row data
+  const { fetchOrders } = useData();
 
   const handleCellDoubleClick = (params) => {
     setSelectedRow(params.row); // Capture the double-clicked row data
@@ -53,8 +56,8 @@ function CashPendingList() {
     <>
       <PageContainer>
         <DataGrid
-          rows={rows}
-          columns={COMPUTED_COLUMN}
+          rows={fetchOrders}
+          columns={PAYMENTORDER_COLUMN}
           onCellDoubleClick={handleCellDoubleClick}
           initialState={DATA_GRID_INITIAL_STATE}
           pageSizeOptions={PAGE_SIZE_OPTION}

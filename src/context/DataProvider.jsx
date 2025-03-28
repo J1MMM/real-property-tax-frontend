@@ -2,6 +2,7 @@ import React, { createContext } from "react";
 import { fetchInitialData, fetchPendingData } from "../api/assessorAPI";
 import { useQuery } from "react-query";
 import { fetchCancelsData } from "../api/cancelsAPI";
+import { fetchOrdersFn } from "../api/landtaxAPI";
 
 const DataContext = createContext({});
 
@@ -24,6 +25,12 @@ export const DataProvider = ({ children }) => {
     isError: isPendingError,
   } = useQuery("pendingData", fetchPendingData);
 
+  const {
+    data: fetchOrders,
+    isLoading: fetchOrdersLoading,
+    isError: fetchOrdersError,
+  } = useQuery("fetchOrders", fetchOrdersFn);
+
   return (
     <DataContext.Provider
       value={{
@@ -37,6 +44,7 @@ export const DataProvider = ({ children }) => {
         isPendingError,
         isPendingLoading,
         refetchAssessorData,
+        fetchOrders,
       }}
     >
       {children}

@@ -195,6 +195,16 @@ export default function AddPaymentItemModal(props) {
             <TextField
               margin="dense"
               fullWidth
+              label="Discount"
+              variant="outlined"
+              name="discount"
+              value={props.formData.discount}
+              onChange={handleFormChange}
+              slotProps={{ input: { readOnly: true } }}
+            />
+            <TextField
+              margin="dense"
+              fullWidth
               label="TOTAL"
               name="total"
               variant="outlined"

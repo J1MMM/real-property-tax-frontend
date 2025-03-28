@@ -8,14 +8,19 @@ import {
   DATA_GRID_INITIAL_STATE,
   DATA_GRID_STYLE,
   PAGE_SIZE_OPTION,
+  PAYMENTORDER_COLUMN,
 } from "../../utils/constant";
 import { TableToolbar } from "../../components/form/table/TableToolbar";
 import AddPaymentModal from "../../components/form/modal/AddPaymentModal";
 import axios from "../../api/axios";
-import { Button } from "@mui/material";
+import { Alert, Button, Snackbar } from "@mui/material";
 import PaymentModalPreview from "../../components/form/modal/PaymentModalPreview";
 import AddPaymentItemModal from "../../components/form/modal/AddPaymentItemModal";
 import ConfirmationDialog from "../../components/shared/ConfirmationDialog";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import SnackBar from "../../components/shared/SnackBar";
+import { SmartScreen } from "@mui/icons-material";
+import { useQueryClient } from "react-query";
 
 const formDataDefault = {
   id: "",
@@ -27,6 +32,7 @@ const formDataDefault = {
   penalty: "",
   formattedTotal: "",
   total: 0,
+  discount,
   selectedQuarters: {
     first: false,
     second: false,
@@ -54,6 +60,7 @@ const computeTotal = (assessedValue, taxDue, selectedQuarters) => {
   if (!assessedValue || !taxDue || !selectedQuarters)
     return { total: 0, penalty: 0 };
 
+  let discount = 0;
   let penalty = 0;
   let basicTax = assessedValue * 0.02;
   const dateNow = new Date();
@@ -75,6 +82,7 @@ const computeTotal = (assessedValue, taxDue, selectedQuarters) => {
     basicTax *= 0.75;
   } else {
     basicTax *= 1;
+    discount = 0.1;
   }
 
   if (taxDue <= 1985) {
@@ -101,11 +109,18 @@ const computeTotal = (assessedValue, taxDue, selectedQuarters) => {
 
   totalPenalty = basicTax * penalty;
   total = basicTax + totalPenalty;
+  const totalDiscount = total * discount;
+
+  total -= totalDiscount;
 
   return { total, penalty };
 };
 
 function LandTaxAR() {
+  const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
+  const { fetchOrders } = useData();
+
   const { assessorData, isAssessorLoading } = useData();
 
   const [openComputation, setOpenComputation] = useState(false);
@@ -118,6 +133,11 @@ function LandTaxAR() {
   const [paymentList, setPaymentList] = useState([]);
 
   const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [snackModel, setSnackModel] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
 
   const handleCheckboxChange = (event) => {
     setFormData((prev) => ({
@@ -139,39 +159,78 @@ function LandTaxAR() {
 
     setConfirmationOpen(true);
   };
+  console.log("paymentList");
+  console.log(paymentList);
 
   const handleSubmitPayment = async () => {
+    console.log("submitting payment order");
+    console.log(selectedRow);
+    // console.log(formData);
+    console.log(paymentList);
+
+    const formattedPaymentList = paymentList?.map((v) => {
+      const taxDueDate = new Date(v?.taxDue);
+      const taxDue = taxDueDate.getFullYear()?.toString();
+      return {
+        ...v,
+        taxDue: taxDue,
+        selectedQuarters: Object.entries(v?.selectedQuarters)
+          .filter(([key, value]) => value)
+          .map(([key]) => {
+            switch (key) {
+              case "first":
+                return "1st Quarter";
+              case "second":
+                return "2nd Quarter";
+              case "third":
+                return "3rd Quarter";
+              case "fourth":
+                return "4th Quarter";
+              default:
+                return null;
+            }
+          }),
+      };
+    });
+
+    console.log("paymentQtr");
+    console.log(formattedPaymentList);
+    const date = new Date();
+    const yearnow = date.getFullYear();
+
     try {
-      const response = await axios.post("/api/cashier/addOrder", {
-        arpNo: "6511-5611-2131",
-        dayOfPayment: "2024",
+      const response = await axiosPrivate.post("/api/cashier/addOrder", {
         amountPaid: 5000,
         payor: "MrPayor",
-        paymentOrder: [
-          {
-            assessedValue: 20000,
-            taxDue: "2024",
-            baseTax: 2000,
-            penalty: -200,
-            total: 1800,
-          },
-          {
-            assessedValue: 50000,
-            taxDue: "2023",
-            baseTax: 500,
-            penalty: 300,
-            total: 800,
-          },
-        ],
+        paymentOrder: formattedPaymentList,
         total: 2600,
         cityTreasurer: "MrTreasurer",
         deputy: "MrDeputy",
         balance: 0,
         status: "pending",
-        yearAdded: "2024",
+        yearAdded: yearnow?.toString(),
       });
+
+      await queryClient.invalidateQueries("fetchOrders");
+
+      setConfirmationOpen(false);
+      setAddPaymentActive(false);
+      setSnackModel(() => ({
+        open: true,
+        severity: "success",
+        message: "Created successfully",
+      }));
+      setPaymentList([]);
+
+      console.log(response.data);
     } catch (error) {
       console.error(error);
+      setConfirmationOpen(false);
+      setSnackModel((prev) => ({
+        open: true,
+        severity: "error",
+        message: error?.message,
+      }));
     }
   };
 
@@ -257,6 +316,26 @@ function LandTaxAR() {
         content="Are you sure you want to submit the payment order?"
         label="Submit"
       />
+
+      <Snackbar
+        open={snackModel.open}
+        autoHideDuration={5000}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        onClose={() => setSnackModel((prev) => ({ ...prev, open: false }))}
+        sx={{
+          maxWidth: 450,
+        }}
+      >
+        <Alert
+          onClose={() => setSnackModel((prev) => ({ ...prev, open: false }))}
+          severity={snackModel.severity}
+          variant="filled"
+          icon={false}
+          sx={{ width: "100%" }}
+        >
+          {snackModel.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
